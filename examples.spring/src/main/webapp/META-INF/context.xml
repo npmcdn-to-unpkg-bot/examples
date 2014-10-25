@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context
+	path="/sss"
+	reloadable="true"
+	antiJARLocking="true">
+
+	<Resource
+		name="jdbc/exampleDB"
+		type="javax.sql.DataSource"  auth="Container"
+		description="Derby database for Examples"
+		maxActive="100" maxIdle="30" maxWait="10000"
+		username="" password="" 
+		driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
+		url="jdbc:derby:Databases/exampleDB;create=true"/>
+</Context>
