@@ -16,7 +16,7 @@
 	</properties>
 
 	<modules>
-	<module>examples.spring</module>
+		<module>examples.spring</module>
 	</modules>
 
 	<dependencies>
