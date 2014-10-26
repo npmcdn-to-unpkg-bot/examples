@@ -2,11 +2,30 @@ package com.slavi.util.web;
 
 import javax.naming.Binding;
 import javax.naming.Context;
+import javax.naming.NameClassPair;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 
 public class ContextUtil {
-	private static void dumpContext(Context context, String ident, StringBuilder result) throws NamingException {
+	static void dumpContext(Context ctx, String prefix, StringBuilder result) throws NamingException {
+		NamingEnumeration<NameClassPair> lst = ctx.list("");
+		while (lst.hasMore()) {
+			NameClassPair pair = lst.next();
+			Object o = ctx.lookup(pair.getName());
+			if (Context.class.isAssignableFrom(o.getClass())) {
+				dumpContext((Context) o, prefix + "/" + pair.getName() + "/", result);
+			} else {
+				result.append(prefix);
+				result.append(pair.getName());
+				result.append(" <");
+				result.append(pair.getClassName());
+				result.append(">");
+				result.append("\n");
+			}
+		}
+	}
+
+	static void dumpContext_OLD(Context context, String ident, StringBuilder result) throws NamingException {
 		NamingEnumeration<Binding> list = context.listBindings("");
 		while (list.hasMore()) {
 			Binding binding = list.next();
