@@ -31,8 +31,6 @@ public class MyConfig {
 	
 	public ScalarHandler scalarHandler = new ScalarHandler();
 	
-	public MyConfig() {}
-	
 	@Autowired
 	public MyConfig(DataSource dataSource) {
 		this.dataSource = dataSource;
