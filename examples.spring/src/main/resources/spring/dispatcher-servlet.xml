@@ -9,6 +9,7 @@
 	xmlns:mvc=		"http://www.springframework.org/schema/mvc"
 	xmlns:context=	"http://www.springframework.org/schema/context" 
 	xmlns:aop=		"http://www.springframework.org/schema/aop"
+	xmlns:util=		"http://www.springframework.org/schema/util"
 	xmlns:xsi=		"http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="
 		http://www.springframework.org/schema/beans		http://www.springframework.org/schema/beans/spring-beans.xsd
@@ -18,6 +19,7 @@
 		http://www.springframework.org/schema/tx		http://www.springframework.org/schema/tx/spring-tx.xsd
 		http://www.springframework.org/schema/oxm		http://www.springframework.org/schema/oxm/spring-oxm.xsd
 		http://www.springframework.org/schema/jee		http://www.springframework.org/schema/jee/spring-jee.xsd
+		http://www.springframework.org/schema/util		http://www.springframework.org/schema/util/spring-util.xsd
 ">
 
 	<context:component-scan base-package="com.slavi.examples.spring.controller" />
@@ -36,5 +38,59 @@
 			name="suffix"
 			value=".jsp" />
 	</bean>
+
+	<!-- Setup a default JSON view resolver that handles object mapping 
+	-->
+	<bean
+		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="order" value="1" />
+		<property name="mediaTypes">
+			<map>
+				<entry key="json" value="application/json" />
+			</map>
+		</property>
+		<property name="defaultViews">
+			<list>
+				<bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+				<bean class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView" />
+				<bean class="org.springframework.web.servlet.view.InternalResourceView" p:url="/WEN-INF/jsp"/>
+			</list>
+		</property>
+	</bean>
+
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="messageConverters">
+			<util:list id="beanList">
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
+<!-- 				<ref bean="marshallingHttpMessageConverter" />
+ -->
+			</util:list>
+		</property>
+	</bean>
+	
+
+	<bean id="marshallingHttpMessageConverter"
+		class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+		<property name="marshaller" ref="castorMarshaller" />
+		<property name="unmarshaller" ref="castorMarshaller" />
+	</bean>
+
+	<bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller" />
+
+	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean"/>
+<!-- 
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.FormHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+ -->
 
 </beans>
