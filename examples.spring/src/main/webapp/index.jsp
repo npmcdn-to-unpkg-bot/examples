@@ -22,7 +22,7 @@ try {
 	Context ctx = new InitialContext();
 	
 	out.println(ContextUtil.contextToString(ctx));
-	
+/*	
 	DataSource ds = (DataSource) ctx.lookup("java:comp/env/jdbc/exampleDB");
 	out.println("Found " + ds.getClass());
 	Connection conn = ds.getConnection();
@@ -32,6 +32,7 @@ try {
 //	out.println(st.execute());
 	st = conn.prepareStatement("select * from asd");
 	out.println(st.execute());
+*/
 } catch (Exception e) {
 	PrintWriter w = new PrintWriter(out);
 	e.printStackTrace(w);

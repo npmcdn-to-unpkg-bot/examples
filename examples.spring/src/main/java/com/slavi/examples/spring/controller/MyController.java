@@ -1,8 +1,12 @@
 package com.slavi.examples.spring.controller;
 
-import org.springframework.http.HttpEntity;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -43,20 +47,27 @@ public class MyController {
 		r.id = 123;
 		r.name = someVal;
 		r.body = body;
-		System.out.println("----------");
 		return r;
 	}
 	
+	@RequestMapping(value="/cookie")
+	protected String cookie(Model model, @CookieValue(value="myCookie", defaultValue="default cookie") String myCookie, HttpServletResponse response) {
+		model.addAttribute("hello", myCookie);
+		response.addCookie(new Cookie("myCookie", myCookie + " 1"));
+		System.out.println("cookie: " + myCookie);
+		return "a";
+	}
 	
-/*	@RequestMapping(value="/asd", method=RequestMethod.POST)
-	protected String asd(@ModelAttribute("myData") MyData myData, BindingResult bindingResult) {
-		System.out.println("\n\nasdasdads\n\n" + myData);
+	@RequestMapping(value="/asd", method=RequestMethod.POST)
+	protected String asd(Model model, @ModelAttribute("myData") MyData myData, BindingResult bindingResult) {
+		model.addAttribute("hello", myData);
+		System.out.println("myData: " + myData);
 		if (bindingResult.hasErrors()) {
 			return "helloworld";
 		} else {
 			return "a";
 		}
-	}*/
+	}
 /*	
 	@RequestMapping(value="/asd", method=RequestMethod.POST)
 	protected String asd(@RequestParam("myData") String myData) {
@@ -64,9 +75,18 @@ public class MyController {
 		return "helloworld";
 	}
 */
-	@RequestMapping(value="/asd", method=RequestMethod.POST)
-	protected String asd(org.springframework.web.context.request.WebRequest request) {
-		System.out.println("\n\nKEYS2: " + request.getParameterMap().keySet());
+/*
+	@RequestMapping(value="/asd", method={RequestMethod.GET, RequestMethod.POST})
+	protected String asd(Model model, HttpServletRequest request) {
+		String str = "KEYS2: ";
+		Enumeration<String> names = request.getParameterNames();
+		while (names.hasMoreElements()) {
+			str += names.nextElement();
+			str += ",";
+		}
+		model.addAttribute("hello", str);
+		System.out.println(str);
 		return "helloworld";
 	}
+	*/
 }
