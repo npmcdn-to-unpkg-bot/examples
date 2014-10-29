@@ -40,9 +40,20 @@ public class MyController {
 	}
 	
 	@ModelAttribute("hello")
-	@RequestMapping(value="/a", method = RequestMethod.POST, produces={"application/xml", "application/json", "text/html"})
+	@RequestMapping(value="/pdf", produces="application/pdf")
+	protected MyData pdf(@RequestParam(value="q", defaultValue="<default value>") String someVal,
+			@RequestBody(required=false) String body) {
+		MyData r = new MyData();
+		r.id = 123;
+		r.name = someVal;
+		r.body = body;
+		return r;
+	}
+	
+	@ModelAttribute("hello")
+	@RequestMapping(value="/a", produces={"application/xml", "application/json", "text/html", "application/pdf"})
 	protected MyData a(@RequestParam(value="q", defaultValue="<default value>") String someVal,
-			@RequestBody String body) {
+			@RequestBody(required=false) String body) {
 		MyData r = new MyData();
 		r.id = 123;
 		r.name = someVal;

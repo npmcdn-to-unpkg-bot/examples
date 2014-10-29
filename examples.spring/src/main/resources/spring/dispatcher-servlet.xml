@@ -54,6 +54,9 @@
 				<bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
 				<bean class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView" />
 				<bean class="org.springframework.web.servlet.view.InternalResourceView" p:url="/WEN-INF/jsp"/>
+				<bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+					p:url="/WEB-INF/jasper/dummy.jrxml"
+				/>
 			</list>
 		</property>
 	</bean>
