@@ -13,16 +13,40 @@ public class MyData {
 	
 	@JsonView(JustId.class)
 	@XmlAttribute
-	public int id;
+	int id;
 	
 	@JsonView(WithoutBody.class)
 	@XmlAttribute
-	public String name;
+	String name;
 	
 	@JsonView(WithBody.class)
 	@XmlAttribute
-	public String body;
+	String body;
 	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getBody() {
+		return body;
+	}
+
+	public void setBody(String body) {
+		this.body = body;
+	}
+
 	public String toString() {
 		return "ID: " + id + ", NAME: " + name + ", BODY: " + body;
 	}

@@ -16,9 +16,9 @@ public class MyRestController {
 	protected MyData json(@RequestParam(value="q", defaultValue="<default value>") String someVal,
 			@RequestBody(required=false) String body) {
 		MyData r = new MyData();
-		r.id = 111;
-		r.name = someVal;
-		r.body = body;
+		r.setId(111);
+		r.setName(someVal);
+		r.setBody(body);
 		return r;
 	}
 }

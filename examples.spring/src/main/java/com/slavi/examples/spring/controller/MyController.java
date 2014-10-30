@@ -25,6 +25,29 @@ public class MyController {
 		return new ModelAndView("helloworld", "hello", hello);
 	}
 	
+	@RequestMapping(value="/myData/{myDataId}", method=RequestMethod.GET)
+	protected String getMyData(Model model,
+			@PathVariable("myDataId") int myDataId,
+			@RequestBody(required=false) String body) {
+		MyData r = new MyData();
+		r.setId(myDataId);
+		r.setName("Name of myData with id of " + myDataId);
+		r.setBody(body);
+		model.addAttribute("myData", r);
+		model.addAttribute("hello", "Invoked getMyData");
+		return "myData";
+	}
+	
+	@RequestMapping(value="/myData", method=RequestMethod.POST)
+	protected String setMyData(Model model,
+			@ModelAttribute("myData") MyData myData) {
+		myData.setId(myData.getId() + 1);
+		model.addAttribute("myData", myData);
+		model.addAttribute("hello", "Saved some data");
+		return "myData";
+	}
+	
+
 	@RequestMapping("/t1/{someVal}")
 	protected String t1(@PathVariable("someVal") String someVal, Model model) {
 		String hello = "";
@@ -44,9 +67,9 @@ public class MyController {
 	protected MyData pdf(@RequestParam(value="q", defaultValue="<default value>") String someVal,
 			@RequestBody(required=false) String body) {
 		MyData r = new MyData();
-		r.id = 123;
-		r.name = someVal;
-		r.body = body;
+		r.setId(123);
+		r.setName(someVal);
+		r.setBody(body);
 		return r;
 	}
 	
@@ -55,9 +78,9 @@ public class MyController {
 	protected MyData a(@RequestParam(value="q", defaultValue="<default value>") String someVal,
 			@RequestBody(required=false) String body) {
 		MyData r = new MyData();
-		r.id = 123;
-		r.name = someVal;
-		r.body = body;
+		r.setId(123);
+		r.setName(someVal);
+		r.setBody(body);
 		return r;
 	}
 	
