@@ -23,7 +23,6 @@
 ">
 
 	<context:component-scan base-package="com.slavi.examples.spring.controller" />
-	<mvc:annotation-driven/>
 
 	<bean
 		id="viewResolver"
@@ -39,6 +38,17 @@
 			value=".jsp" />
 	</bean>
 
+	<bean id="MappingJackson2JsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+	
+	<mvc:view-resolvers>
+		<mvc:content-negotiation>
+			<mvc:default-views>
+				<ref bean="MappingJackson2JsonView" />
+			</mvc:default-views>
+		</mvc:content-negotiation>
+	</mvc:view-resolvers>
+
+
 	<!-- Setup a default JSON view resolver that handles object mapping 
 	-->
 	<bean
@@ -47,11 +57,25 @@
 		<property name="mediaTypes">
 			<map>
 				<entry key="json" value="application/json" />
+				<entry key="atom" value="application/atom+xml" />
+				<entry key="rss"  value="application/rss+xml" />
+				<entry key="xml"  value="application/xml" />
 			</map>
+		</property>
+		
+		<property name="viewResolvers">
+			<list>
+				<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
+				<bean
+					class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+					<property name="prefix" value="/WEB-INF/jsp/" />
+					<property name="suffix" value=".jsp" />
+				</bean>
+			</list>
 		</property>
 		<property name="defaultViews">
 			<list>
-				<bean class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+				<ref bean="MappingJackson2JsonView" />
 				<bean class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView" />
 				<bean class="org.springframework.web.servlet.view.InternalResourceView" p:url="/WEN-INF/jsp"/>
 				<bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
@@ -72,6 +96,13 @@
 		</property>
 	</bean>
 	
+<!-- 	<bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver" /> -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- one of the properties available; the maximum file size in bytes -->
+		<property name="maxUploadSize" value="100000" />
+	</bean>
+
 
 	<bean id="marshallingHttpMessageConverter"
 		class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
@@ -118,5 +149,14 @@
 	</bean>
  -->
 
+	<mvc:resources mapping="/resources/**" location="/WEB-INF/public-resources/, classpath:/META-INF/public-resources/"/>
 
+	<mvc:annotation-driven>
+		<mvc:path-matching
+			suffix-pattern="true"
+			trailing-slash="true"
+			/>
+	</mvc:annotation-driven>
+
+	<mvc:default-servlet-handler/>
 </beans>

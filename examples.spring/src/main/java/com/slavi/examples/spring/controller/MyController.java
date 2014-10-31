@@ -74,7 +74,7 @@ public class MyController {
 	}
 	
 	@ModelAttribute("hello")
-	@RequestMapping(value="/a", produces={"application/xml", "application/json", "text/html", "application/pdf"})
+	@RequestMapping(value="/a") //, produces={"application/xml", "application/json", "text/html", "application/pdf", "application/atom+xml"})
 	protected MyData a(@RequestParam(value="q", defaultValue="<default value>") String someVal,
 			@RequestBody(required=false) String body) {
 		MyData r = new MyData();
