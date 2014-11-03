@@ -13,7 +13,7 @@ public class MyData {
 	
 	@JsonView(JustId.class)
 	@XmlAttribute
-	int id;
+	Integer id;
 	
 	@JsonView(WithoutBody.class)
 	@XmlAttribute
@@ -23,11 +23,11 @@ public class MyData {
 	@XmlAttribute
 	String body;
 	
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

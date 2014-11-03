@@ -13,7 +13,7 @@
 </head>
 
 <body>
-	<form:form modelAttribute="myData" method="POST" action="${action}">
+	<form:form modelAttribute="myData" method="POST">
 		<app:inputField label="Id of the record" name="id"/>
 		<app:inputField label="Just a name" name="name"/>
 		<button type="submit">Save</button>
