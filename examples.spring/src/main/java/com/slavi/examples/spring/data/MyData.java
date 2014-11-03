@@ -23,6 +23,14 @@ public class MyData {
 	@XmlAttribute
 	String body;
 	
+	public MyData() {
+	}
+	
+	public MyData(Integer id, String name) {
+		this.id = id;
+		this.name = name;
+	}
+	
 	public Integer getId() {
 		return id;
 	}
