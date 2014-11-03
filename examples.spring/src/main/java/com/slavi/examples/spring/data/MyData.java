@@ -13,21 +13,21 @@ public class MyData {
 	
 	@JsonView(JustId.class)
 	@XmlAttribute
-	int id;
+	Integer id = 0;
 	
 	@JsonView(WithoutBody.class)
 	@XmlAttribute
-	String name;
+	String name = "";
 	
 	@JsonView(WithBody.class)
 	@XmlAttribute
-	String body;
+	String body = "";
 	
-	public int getId() {
+	public Integer getId() {
 		return id;
 	}
 
-	public void setId(int id) {
+	public void setId(Integer id) {
 		this.id = id;
 	}
 

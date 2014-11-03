@@ -1,5 +1,8 @@
 package com.slavi.examples.spring.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
@@ -14,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.slavi.examples.spring.data.MyData;
 
@@ -25,29 +29,6 @@ public class MyController {
 		return new ModelAndView("helloworld", "hello", hello);
 	}
 	
-	@RequestMapping(value="/myData/{myDataId}", method=RequestMethod.GET)
-	protected String getMyData(Model model,
-			@PathVariable("myDataId") int myDataId,
-			@RequestBody(required=false) String body) {
-		MyData r = new MyData();
-		r.setId(myDataId);
-		r.setName("Name of myData with id of " + myDataId);
-		r.setBody(body);
-		model.addAttribute("myData", r);
-		model.addAttribute("hello", "Invoked getMyData");
-		return "myData";
-	}
-	
-	@RequestMapping(value="/myData", method=RequestMethod.POST)
-	protected String setMyData(Model model,
-			@ModelAttribute("myData") MyData myData) {
-		myData.setId(myData.getId() + 1);
-		model.addAttribute("myData", myData);
-		model.addAttribute("hello", "Saved some data");
-		return "myData";
-	}
-	
-
 	@RequestMapping("/t1/{someVal}")
 	protected String t1(@PathVariable("someVal") String someVal, Model model) {
 		String hello = "";

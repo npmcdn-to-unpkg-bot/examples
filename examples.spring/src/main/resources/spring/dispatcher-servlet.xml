@@ -40,15 +40,6 @@
 
 	<bean id="MappingJackson2JsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
 	
-	<mvc:view-resolvers>
-		<mvc:content-negotiation>
-			<mvc:default-views>
-				<ref bean="MappingJackson2JsonView" />
-			</mvc:default-views>
-		</mvc:content-negotiation>
-	</mvc:view-resolvers>
-
-
 	<!-- Setup a default JSON view resolver that handles object mapping 
 	-->
 	<bean
@@ -87,6 +78,7 @@
 
 	<bean
 		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="ignoreDefaultModelOnRedirect" value="true" />
 		<property name="messageConverters">
 			<util:list id="beanList">
 				<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
@@ -159,4 +151,14 @@
 	</mvc:annotation-driven>
 
 	<mvc:default-servlet-handler/>
+	
+<!-- 	<mvc:view-resolvers>
+		<mvc:content-negotiation>
+			<mvc:default-views>
+				<ref bean="MappingJackson2JsonView" />
+			</mvc:default-views>
+		</mvc:content-negotiation>
+	</mvc:view-resolvers>
+ -->
+	
 </beans>
