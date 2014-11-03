@@ -11,9 +11,21 @@
 
 	<properties>
 		<slf4j.version></slf4j.version>
+		<dandelion.version>0.10.1</dandelion.version>
 	</properties>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.github.dandelion</groupId>
+			<artifactId>datatables-jsp</artifactId>
+			<version>${dandelion.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.dandelion</groupId>
+			<artifactId>datatables-export-itext</artifactId>
+			<version>${dandelion.version}</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>

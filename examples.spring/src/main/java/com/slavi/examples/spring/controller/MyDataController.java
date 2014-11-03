@@ -1,16 +1,14 @@
 package com.slavi.examples.spring.controller;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -20,50 +18,55 @@ import com.slavi.examples.spring.data.MyData;
 @Controller
 @RequestMapping("/myData")
 public class MyDataController {
-
-	@InitBinder
-	public void setAllowedFields(WebDataBinder dataBinder) {
-//		dataBinder.setDisallowedFields("id");
+	static final String messageName = "myData.message";
+	
+	Map<Integer, MyData> data = new HashMap<Integer, MyData>();
+	
+	@RequestMapping(value="{id}", method=RequestMethod.POST)
+	protected String setMyData(Model model, RedirectAttributes redir,
+			@PathVariable("id") Integer id,
+			@ModelAttribute("myData") MyData myData) {
+		if ((myData == null) || 
+			(id != null && (!id.equals(myData.getId()))) || 
+			(id == null && myData.getId() != null)) {
+			model.addAttribute(messageName, "Oooops");
+			return "redirect:new";
+		}
+		data.put(myData.getId(), myData);
+		String msg = "Saved some data " + (new Date()).toString();
+		redir.addFlashAttribute(messageName, msg);
+		System.out.println("--- set session attribute to " + msg);
+		return "redirect:{id}";
+	}
+	
+	@RequestMapping(value="{id}", method=RequestMethod.GET)
+	protected String getMyData(ModelMap model,
+			@PathVariable("id") Integer id) {
+		MyData r = data.get(id);
+		if (r == null) {
+			return "redirect:new";
+		}
+		String message = (String) model.get(messageName);
+		System.out.println("--- message: " + message);
+		model.addAttribute("hello", message == null ? "no message" : message);
+		model.addAttribute("myData", r);
+		return "myData";
 	}
 
-	Map<Integer, MyData> data = new ConcurrentHashMap<Integer, MyData>();
-	
 	@RequestMapping(value="new", method=RequestMethod.GET)
-	protected String makeItem(Model model) {
+	protected String getNewMyData(Model model) {
 		MyData r = new MyData();
+		r.setId(data.size() + 1);
+		r.setName("Name of myData with id of " + r.getId());
+		r.setBody("Some body");
+		model.addAttribute("hello", "Creating new");
 		model.addAttribute("myData", r);
-		model.addAttribute("hello", "Invoked add");
 		return "myData";
 	}
 
 	@RequestMapping(value="new", method=RequestMethod.POST)
-	protected String addNewItem(Model model, RedirectAttributes redir,
+	protected String setNewMyData(Model model,
 			@ModelAttribute("myData") MyData myData) {
-		data.put(myData.getId(), myData);
-		model.addAttribute("myData", myData);
-		model.addAttribute("hello", "Invoked add");
-		return "redirect:" + myData.getId();
+		return "forward:" + myData.getId();
 	}
-	
-	@RequestMapping(value="{myDataId}", method=RequestMethod.GET)
-	protected String getMyData(Model model, RedirectAttributes redir,
-			@PathVariable("myDataId") Integer myDataId,
-			@RequestBody(required=false) String body) {
-		MyData r = data.get(myDataId);
-		if (r == null)
-			return "redirect:new";
-		model.addAttribute("myData", r);
-		model.addAttribute("hello", "Invoked getMyData");
-		return "myData";
-	}
-	
-	@RequestMapping(value="{myDataId}", method=RequestMethod.POST)
-	protected String setMyData(Model model, RedirectAttributes redir,
-			@ModelAttribute("myData") MyData myData) {
-		myData.setId(myData.getId() + 1);
-		model.addAttribute("myData", myData);
-		model.addAttribute("hello", "Saved some data");
-		return "redirect:new";
-	}
-
 }

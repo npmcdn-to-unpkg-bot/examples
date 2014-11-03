@@ -14,7 +14,7 @@ public class MyData {
 	@JsonView(JustId.class)
 	@XmlAttribute
 	Integer id;
-	
+
 	@JsonView(WithoutBody.class)
 	@XmlAttribute
 	String name;

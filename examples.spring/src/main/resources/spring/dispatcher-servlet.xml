@@ -87,6 +87,7 @@
 
 	<bean
 		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="ignoreDefaultModelOnRedirect" value="true" />
 		<property name="messageConverters">
 			<util:list id="beanList">
 				<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
