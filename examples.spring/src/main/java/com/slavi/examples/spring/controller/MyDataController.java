@@ -1,6 +1,5 @@
 package com.slavi.examples.spring.controller;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,11 +24,7 @@ public class MyDataController {
 	
 	@RequestMapping(method=RequestMethod.GET)
 	protected String list(Model model, RedirectAttributes redir) {
-		ArrayList<MyData> r = new ArrayList<>();
-		r.add(new MyData(1, "Name 1"));
-		r.add(new MyData(2, "Name 2"));
-		r.add(new MyData(3, "Name 3"));
-		model.addAttribute("myDataList", r);
+		model.addAttribute("myDataList", data.values());
 		return "myDataList";
 	}
 	

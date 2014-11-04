@@ -21,8 +21,16 @@
 	<pre>${hello}</pre>
 	<hr />
 
-	<datatables:table id="myDataListTable" data="${myDataList}" >
+	<datatables:table id="myDataListTable" data="${myDataList}" row="myData" theme="bootstrap2" >
+		<datatables:column title="edit" cssStyle="width: 150px;" display="html">
+			<spring:url value="/ex/myData/{myDataId}" var="myDataUrl">
+				<spring:param name="myDataId" value="${myData.id}" />
+			</spring:url>
+			<a href="${fn:escapeXml(myDataUrl)}"><c:out value="edit" /></a>
+		</datatables:column>
+		<datatables:column title="Id" property="id" />
 		<datatables:column title="Name" property="name" />
+		<datatables:column title="Body" property="body" />
 	</datatables:table>
 	<hr />
 <%
