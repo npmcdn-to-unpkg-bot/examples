@@ -4,9 +4,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,21 +31,32 @@ public class MyDataController {
 		return "myDataList";
 	}
 	
+	@RequestMapping(value="{id}/delete")
+	protected String deleteMyData(ModelMap model, RedirectAttributes redir,
+			@PathVariable("id") Integer id) {
+		MyData r = data.remove(id);
+		if (r == null) {
+			redir.addFlashAttribute("status", "Object with the specified id not found. ID=" + id);
+			return "redirect:/ex/status";
+		}
+		return "redirect:/ex/myData";
+	}
+
 	@RequestMapping(value="{id}", method=RequestMethod.POST)
 	protected String setMyData(Model model, RedirectAttributes redir,
 			@PathVariable("id") Integer id,
-			@ModelAttribute("myData") MyData myData) {
-		if ((myData == null) || 
+			@Valid MyData myData, BindingResult result) {
+		if (result.hasErrors() || (myData == null) || 
 			(id != null && (!id.equals(myData.getId()))) || 
 			(id == null && myData.getId() != null)) {
-			model.addAttribute(messageName, "Oooops");
-			return "redirect:new";
+			redir.addFlashAttribute(messageName, "Oooops");
+			return "myData";
 		}
 		data.put(myData.getId(), myData);
 		String msg = "Saved some data " + (new Date()).toString();
 		redir.addFlashAttribute(messageName, msg);
 		System.out.println("--- set session attribute to " + msg);
-		return "redirect:{id}";
+		return "redirect:/ex/myData";
 	}
 	
 	@RequestMapping(value="{id}", method=RequestMethod.GET)

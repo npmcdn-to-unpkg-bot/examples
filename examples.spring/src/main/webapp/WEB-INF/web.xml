@@ -34,7 +34,7 @@
 		<url-pattern>/ex/*</url-pattern>
 	</servlet-mapping>
 
-	<filter>
+<!-- 	<filter>
 		<filter-name>etagFilter</filter-name>
 		<filter-class>org.springframework.web.filter.ShallowEtagHeaderFilter</filter-class>
 	</filter>
@@ -42,6 +42,7 @@
 		<filter-name>etagFilter</filter-name>
 		<servlet-name>dispatcher</servlet-name>
 	</filter-mapping>
+ -->
 
 	<resource-ref>
 		<description>Example DataSource</description>
@@ -69,7 +70,7 @@
 	</filter>
 	<filter-mapping>
 		<filter-name>dandelionFilter</filter-name>
-		<url-pattern>/ex/*</url-pattern>
+		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
 	<!-- Dandelion-Datatables filter, used for basic export -->

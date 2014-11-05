@@ -19,6 +19,8 @@
 	<hr />
 	<p>A.JSP</p>
 	<pre>${hello}</pre>
+	<spring:url value="/ex/myData/new" var="addNewMyDataUrl"/>
+	<a href="${addNewMyDataUrl}">Add new</a>
 	<hr />
 
 	<datatables:table id="myDataListTable" data="${myDataList}" row="myData" theme="bootstrap2" >
@@ -26,7 +28,8 @@
 			<spring:url value="/ex/myData/{myDataId}" var="myDataUrl">
 				<spring:param name="myDataId" value="${myData.id}" />
 			</spring:url>
-			<a href="${fn:escapeXml(myDataUrl)}"><c:out value="edit" /></a>
+			<a href="${fn:escapeXml(myDataUrl)}"><c:out value="edit" /></a>&nbsp;|&nbsp;
+			<a href="${fn:escapeXml(myDataUrl)}/delete"><c:out value="delete" /></a>
 		</datatables:column>
 		<datatables:column title="Id" property="id" />
 		<datatables:column title="Name" property="name" />

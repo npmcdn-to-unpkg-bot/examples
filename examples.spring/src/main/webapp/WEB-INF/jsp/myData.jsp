@@ -12,7 +12,9 @@
 </head>
 
 <body>
+	<a href=".">back to List</a><br/>
 	<form:form modelAttribute="myData" method="POST">
+		<form:errors path="*" cssClass="errorBox" />
 		<app:inputField label="Id of the record" name="id"/>
 		<app:inputField label="Just a name" name="name"/>
 		<button type="submit">Save</button>
