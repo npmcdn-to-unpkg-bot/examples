@@ -16,6 +16,7 @@
 	</properties>
 
 	<modules>
+		<module>cement</module>
 		<module>examples.spring</module>
 	</modules>
 

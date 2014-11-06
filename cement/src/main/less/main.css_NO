@@ -1,0 +1,463 @@
+#main {
+	display: block;
+	float: left;
+	width: 690px;
+
+	.post {
+		position: relative;
+		line-height: 120%;
+		position: relative;
+		margin-bottom: 30px;
+		padding-bottom: 15px;
+		color: #333;
+		background-color: #FFF;
+		/*border: 1px solid #1F2223;*/
+		border: 1px solid #FF5A00;
+		border-radius: 5px;
+		box-shadow: inset 0px 0px 5px 1px #000;
+		
+		.date {
+			position: absolute;
+			right: -10px;
+			width: 50px;
+			height: 43px;
+			line-height: 14px;
+			margin-top: 16px;
+			padding-top: 4px;
+			color: #fff;
+			font-size: 12px;
+			font-family: "Trebuchet MS", Georgia, sans-serif;
+			text-align: center;
+			vertical-align: middle;
+			background: url(images/date2.png) no-repeat;
+		}
+		
+		.title {
+			float: left;
+			margin: 16px 15px 10px;
+
+			h2 {
+				line-height: 100%;
+				margin: 0px 30px 10px 0px;
+				color: #FF5A00;
+				font-size: 22px;
+				font-weight: bold;
+				font-family: Helvetica, "Trebuchet MS", Verdana, sans-serif;
+				letter-spacing: -1px;
+
+				a { 
+					color: #FF5A00;
+					&:hover { color: #D34D04; }
+				}
+			}
+
+			.postmeta {
+				font-size: 11px;
+				color: #666;
+				width: 580px;
+				overflow: hidden;
+
+				a {
+					color: #444;
+					/*border-bottom: 1px solid #131313;*/
+					text-decoration: none;
+
+					&:hover {
+						color: #ff5a00;
+						border-bottom: 1px solid #ff5a00;
+						text-decoration: none;
+					}
+				}
+			}
+		}
+
+		.entry {
+			width: 658px;
+			overflow: hidden;
+			margin: 0px 20px 10px 15px;
+			font-size: 13px;
+			
+			> p > a > img { box-shadow: 3px 3px 10px -2px #333; }
+		}
+
+		div.no_result {
+			padding: 20px;
+			
+			p.no_result {
+				margin-bottom: 0;
+			}
+		}
+
+		div.entry {
+			a {
+				color: #ff5a00;
+				/*font-size: 12px;*/
+				border: none;
+				text-decoration: none;
+
+				&:hover {
+					color: #D34D04;
+					text-decoration: underline;
+				}
+			}
+			
+			p {
+				padding: 5px 0px;
+				margin-bottom: 10px;
+			}
+			ul, ol {
+				padding-bottom: 24px;
+				margin-left: 40px;
+				margin-right: 40px;
+				
+				li {
+					padding: 1px 0;
+					list-style: inside;
+				}
+			}
+			ul {
+				list-style-type: disc;
+			}
+			ol {
+				list-style-type: decimal;
+			}
+			
+			blockquote {
+				background: url(images/blockquote.gif) no-repeat;
+				padding: 35px 20px 10px 50px;
+				margin: 0 15px 24px 15px;
+				background-color: #181818;
+				border-top: 1px solid #2a2e2f;
+				border-bottom: 1px solid #2a2e2f;
+				color: #999;
+				
+				p {
+					margin-bottom: 8px;
+				}
+			}
+
+			code {
+				font-family: "Courier New", mono;
+				background-color: #181818;
+				/*background-color: #F5F5F5;*/
+				border-left: 1px solid #2a2e2f;
+				color: #197b30;
+				padding: 5px 10px;
+				display: block;
+			}
+		}
+	}
+	/* div:hover.post {
+		background-color: #FFF;
+    }*/
+	.sticky { background-color: #FFF; }
+	
+	div.navigation {
+		font-size: 11px;
+		
+		.wp-pagenavi {
+			clear: both;
+			color: #BFBFBF;
+			
+			a, span {
+				padding: 3px 8px;
+				margin: 3px;
+				color: #BFBFBF;
+				text-decoration: none;
+				border: 1px solid #BFBFBF;
+			}
+			a:hover, span.current {
+				color: #FF5A00;
+				border-color: #FF5A00;
+			}
+			span.current {
+				font-weight: bold;
+			}
+		}
+	}
+
+	#comments {
+		margin-bottom: 10px;
+
+		h3 {
+			float: left;
+			font-size: 16px;
+			color: #ccc;
+			line-height: 24px;
+			font-weight: normal;
+		}
+		.add_your_comment a {
+			float: right;
+			font-size: 16px;
+			color: #ccc;
+			line-height: 24px;
+			font-weight: normal;
+
+			&:hover {
+				color: #ff5a00;
+			}
+		}
+	}
+	ol.commentlist {
+		font-size: 13px;
+		color: #ccc;
+		overflow: hidden;
+		
+		li {
+			margin-bottom: 15px;
+			background-color: #101010;
+			border: 1px solid #1f2223;
+			-moz-border-radius: 2px;
+			-webkit-border-radius: 2px;
+			padding: 20px 20px 15px 20px;
+			
+			ul {
+				list-style-type: none;
+				margin-left: 60px;
+				margin-top: 6px;
+				
+				&.children li {
+					background-color: #0d0d0d;
+					border-left: 1px solid #181a1b;
+					border-top: 0;
+					border-bottom: 0;
+					border-right: 0;
+				}
+			}
+			div.vcard {
+				float: left;
+				div.left {
+					width: 56px;
+					margin-right: 5px;
+					
+					img {
+						border: 1px solid #000;
+						display: block;
+						height: 48px;
+						width: 48px;
+					}
+					div.reply a {
+						background: url(images/reply.gif) no-repeat 0 0;
+						display: block;
+						height: 0;
+						padding-top: 17px;
+						width: 41px;
+						overflow: hidden;
+						margin-left: 5px;
+						margin-top: 5px;
+						
+						&:hover {
+							background-position: 0 -17px;
+						}
+					}
+				}
+			}
+			div.right {
+				float: left;
+				line-height: 20px;
+				width: 80%;/* 3-level or less thread comments display well. 4 or more leves may have some issue. */
+				
+				p {
+					margin-bottom: 20px;
+					a {
+						color: #ccc;
+						text-decoration: none;
+						border-bottom: 1px solid #ccc;
+						&:hover {
+							color: #ff5a00;
+							border-bottom: 1px solid #ff5a00;
+						}
+					}
+					.commentmetadata {
+						font-size: 12px;
+						color: #999;
+						border-bottom: 1px solid #181a1b;
+						padding-bottom: 3px;
+						margin-bottom: 8px;
+						
+						a {
+							color: #ccc;
+							text-decoration: none;
+							font-weight: bold;
+							&:hover {
+								color: #ff5a00;
+							}
+						}
+					}
+				}
+			}
+			
+		}
+	}
+	
+	.comments_navi {
+		font-size: 12px;
+		
+		.alignleft {
+			float: left;
+		}
+		.alignright {
+			float: right;
+		}
+		
+		.alignleft a,
+		.alignright a {
+			display: block;
+			color: #ccc;
+			border: 1px solid #1f2223;
+			padding: 0 5px;
+			background-color: #101010;
+			line-height: 28px;
+			
+			&:hover {
+				color: #ff5a00;
+				background-color: #000;
+			}
+		}
+	}
+	
+	#respond {
+		background-color: #101010;
+		border: 1px solid #181a1b;
+		-moz-border-radius: 2px;
+		-webkit-border-radius: 2px;
+		color: #ccc;
+		padding: 15px 20px;
+		margin-top: 15px;
+		
+		div.h3_cancel_reply {
+			margin-bottom: 5px;
+		}
+		h3 {
+			font-size: 16px;
+			color: #ccc;
+			line-height: 24px;
+			font-weight: normal;
+			float: left;
+			display: inline;/* fix double margin */
+		}
+		span.cancel-comment-reply {
+			float: right;
+			display: inline;/* fix double margin */
+			padding-top: 6px;
+
+			a {
+				font-size: 12px;
+				color: #999;
+				text-decoration: none;
+				&:hover {
+					color: #ff5a00;
+				}
+			}
+		}
+		form#commentform {
+			p {
+				font-size: 12px;
+				color: #999;
+				padding: 3px 0;
+				
+				a {
+					color: #fff;
+					border: 0;
+					
+					&:hover {
+						border-bottom: 1px solid #fff;
+					}
+				}
+			}
+
+			div.submit_button {
+				input.button {
+					display: block;
+					background: url(images/submit.gif) no-repeat 0 0;
+					width: 76px;
+					height: 28px;
+					padding: 0;
+					border: 0;
+					text-indent: -9999px;
+					cursor: pointer;
+					float: left;
+					
+					&:active {
+						background-position: 0 -28px;
+					}
+				}
+				span.key {
+					float: left;
+					margin-left: 10px;
+					padding-top: 6px;
+					font-size: 12px;
+					line-height: 16px;
+					color: #333;
+				}
+			}
+		}
+		div.input_area {
+			padding: 15px 30px;
+		}
+		div.message_input {
+			font-family: "Trebuchet MS", "Lucida Grande", Arial, sans-serif;
+			background-color: #eee;
+			border: 2px solid #000;
+			color: #333;
+			font-size: 13px;
+			padding: 5px;
+			height: 120px;
+			width: 98%;
+		}
+		div.user_info {
+			font-size: 12px;
+			line-height: 16px;
+			display: block;
+			padding: 0 30px;
+			
+			div.single_field {
+				display: inline;
+				float: left;
+				width: 33%;
+			}
+			
+			label.desc {
+				display: block;
+				color: #999;
+				padding-bottom: 4px;
+
+				abbr {
+					color: #ff5a00;
+					border: 0;
+				}
+			}
+
+			input.comment_input {
+				background-color: #eee;
+				color: #666;
+				border: 2px solid #000;
+				padding: 2px 3px;
+				width: 90%;
+			}
+
+			div.submit_button {
+				margin: 15px 30px 0;
+			}
+		}
+	}
+
+	.nocomments {
+		color: #ccc;
+		font-size: 16px;
+	}
+	.tags {
+		margin: 2px 0px;
+		padding-left: 20px;
+		background: transparent url(images/ticket.gif) no-repeat top left;
+	}
+	.category {
+		padding-left: 20px;
+		background: transparent url(images/category.gif) no-repeat top left;
+	}
+	.comments {
+		padding-left: 20px;
+		background: transparent url(images/comments.gif) no-repeat top left;
+		a { color: #FF5A00 !important; }
+	}
+}

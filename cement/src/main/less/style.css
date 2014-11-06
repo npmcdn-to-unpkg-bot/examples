@@ -1,0 +1,99 @@
+body {
+	font-family: Arial;
+	background-color: #a1a160;
+}
+
+#header {
+	background-color: navy;
+}
+
+#title {
+	color: white;
+	font-size: 18px;
+	font-weight: bolder;
+}
+
+div#main {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	width: 800px;
+	background-color: #e1e1e1;
+	padding: 10px;
+}
+
+div#menu {
+	display: block;
+	float: left;
+	width: 100px;
+}
+	
+div#container {
+	margin-left: auto;
+	margin-right: auto;
+	width: 100%;
+	padding-top: 1em;
+}
+
+h3.title {
+	margin-top: 0em;
+	margin-bottom: 1em;
+}
+
+table.form {
+	width: 100%;
+}
+
+table.fields {
+	width: 100%;
+	td.fields {
+		width: 200px;
+	}
+	td {
+		width: 100%;
+	}
+}
+
+table.simple {
+	thead {
+		th.ascending, th.descending {
+			background-color: #a1a160;
+		}
+		th {
+			background-color: #a0a0a0;
+		}
+	} 
+	tbody {
+		tr.even {
+			background-color: #c0c0c0;
+		}
+		tr.odd {
+			background-color: #fff;
+		}
+	}
+	
+	a.view, a.edit, a.delete {
+		display: inline-block;
+		color: transparent;
+		background-size: 20px 20px;
+		width: 20px;
+		height: 20px;
+	}
+	
+	td.actions { 
+		white-space: nowrap;
+		vertical-align: middle;
+		text-align: right;
+	}
+	a.view { background-image: url('resource/view.png'); }
+	a.edit { background-image: url('resource/edit.png'); }
+	a.delete { background-image: url('resource/delete.png'); }
+}
+
+table#passesTable {
+	width: auto;
+}
+
+form {
+	width: 100%;
+}
