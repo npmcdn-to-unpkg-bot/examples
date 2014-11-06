@@ -1,5 +1,7 @@
 package com.slavi.examples.spring.data;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -13,6 +15,8 @@ public class MyData {
 	
 	@JsonView(JustId.class)
 	@XmlAttribute
+	@Max(value=100)
+	@Min(value=1)
 	Integer id;
 
 	@JsonView(WithoutBody.class)

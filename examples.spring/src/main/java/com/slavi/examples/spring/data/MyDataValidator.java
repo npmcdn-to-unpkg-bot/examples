@@ -14,8 +14,9 @@ public class MyDataValidator implements Validator {
 	@Override
 	public void validate(Object target, Errors errors) {
 		ValidationUtils.rejectIfEmpty(errors, "name", "name.empty");
+		ValidationUtils.rejectIfEmpty(errors, "id", "id.empty");
 		MyData myData = (MyData) target;
-		if (myData.getId() < 1)
+		if (myData.getId() != null && myData.getId() < 1)
 			errors.rejectValue("id", "negative_value", "Negative value not allowed");
 	}
 

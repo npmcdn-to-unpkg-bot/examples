@@ -10,6 +10,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.slavi.examples.spring.data.MyData;
+import com.slavi.examples.spring.data.MyDataValidator;
 
 @Controller
 @RequestMapping("/myData")
@@ -24,6 +27,11 @@ public class MyDataController {
 	static final String messageName = "myData.message";
 	
 	Map<Integer, MyData> data = new HashMap<Integer, MyData>();
+	
+//	@InitBinder
+	protected void initBinder(WebDataBinder binder) {
+//		binder.setValidator(new MyDataValidator());
+	}
 	
 	@RequestMapping(method=RequestMethod.GET)
 	protected String list(Model model, RedirectAttributes redir) {
@@ -49,7 +57,7 @@ public class MyDataController {
 		if (result.hasErrors() || (myData == null) || 
 			(id != null && (!id.equals(myData.getId()))) || 
 			(id == null && myData.getId() != null)) {
-			redir.addFlashAttribute(messageName, "Oooops");
+			model.addAttribute("hello", "Oooops");
 			return "myData";
 		}
 		data.put(myData.getId(), myData);
