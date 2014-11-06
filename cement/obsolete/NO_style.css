@@ -1,0 +1,38 @@
+body {
+	font-family: Arial;
+	background: #e1e1e1;
+}
+
+#header {
+	background-color: navy;
+}
+
+#title {
+	color: white;
+	font-size: 18px;
+	font-weight: bolder;
+}
+
+div#container {
+	margin-left: auto;
+	margin-right: auto;
+	width: 70%;
+	padding-top: 1em;
+}
+
+h3.title {
+	margin-top: 0em;
+	margin-bottom: 1em;
+}
+
+table {
+	width: 100%
+}
+
+table.fields td.fields {
+	width: 200px
+}
+
+form {
+	width: 100%
+}

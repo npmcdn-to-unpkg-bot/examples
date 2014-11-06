@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure.dtd">
+
+<Configure id="server" class="org.eclipse.jetty.server.Server">
+	<Call class="java.lang.System" name="setProperty">
+		<Arg>org.apache.jasper.compiler.disablejsr199</Arg>
+		<Arg>true</Arg>
+	</Call>
+
+	<Call name="addConnector">
+		<Arg>
+			<New class="org.eclipse.jetty.server.ServerConnector">
+				<Arg><Ref refid="server" /></Arg>
+				<Set name="port">8080</Set>
+			</New>
+		</Arg>
+	</Call>
+
+	<New id="cement" class="org.eclipse.jetty.plus.jndi.Resource">
+		<Arg></Arg>
+		<Arg>jdbc/cement</Arg>
+		<Arg>
+			<New id="sqlite" class="org.sqlite.SQLiteDataSource">
+				<Set name="Url">jdbc:sqlite:Database/cement.rcp</Set>
+			</New>
+		</Arg>
+	</New>
+
+	<New id="webApp" class="org.eclipse.jetty.webapp.WebAppContext">
+		<Set name="ContextPath">/</Set>
+		<Set name="War">target/classes</Set>
+		<Set name="configurationClasses">
+			<Array type="java.lang.String">
+				<Item>org.eclipse.jetty.webapp.WebInfConfiguration</Item>
+				<Item>org.eclipse.jetty.webapp.WebXmlConfiguration</Item>
+				<Item>org.eclipse.jetty.webapp.MetaInfConfiguration</Item>
+				<Item>org.eclipse.jetty.webapp.FragmentConfiguration</Item>
+				<Item>org.eclipse.jetty.plus.webapp.EnvConfiguration</Item>     <!-- add for jndi -->
+				<Item>org.eclipse.jetty.plus.webapp.PlusConfiguration</Item>    <!-- add for jndi -->
+				<Item>org.eclipse.jetty.webapp.JettyWebXmlConfiguration</Item>
+			</Array>
+		</Set>
+	</New>
+
+	<New id="filesApp" class="org.eclipse.jetty.server.handler.ContextHandler">
+		<Set name="contextPath">/files</Set>
+		<Set name="handler">
+			<New class="org.eclipse.jetty.server.handler.ResourceHandler">
+				<Set name="directoriesListed">true</Set>
+				<Set name="resourceBase">../data</Set>
+			</New>
+		</Set>
+	</New>
+
+	<Set name="handler">
+		<New class="org.eclipse.jetty.server.handler.HandlerList">
+			<Set name="handlers">
+				<Array type="org.eclipse.jetty.server.Handler">
+					<Item><Ref refid="filesApp" /></Item>
+					<Item><Ref refid="webApp" /></Item>
+					<Item>
+						<New class="org.eclipse.jetty.server.handler.DefaultHandler"></New>
+					</Item>
+				</Array>
+			</Set>
+		</New>
+	</Set>
+
+</Configure>

@@ -1,0 +1,170 @@
+package com.slavi.cement.page;
+
+import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.click.control.Column;
+import org.apache.click.control.Form;
+import org.apache.click.control.HiddenField;
+import org.apache.click.control.Submit;
+import org.apache.click.control.Table;
+import org.apache.click.control.TextField;
+import org.apache.click.extras.control.DateField;
+import org.apache.click.extras.control.DoubleField;
+import org.apache.click.extras.control.FieldColumn;
+import org.apache.click.extras.control.FormTable;
+import org.apache.click.extras.control.IntegerField;
+import org.apache.commons.dbutils.handlers.ColumnListHandler;
+import org.apache.commons.lang.StringUtils;
+
+import com.slavi.cement.service.Config;
+import com.slavi.cement.service.Util;
+
+public class SamplePage extends BorderPage {
+
+	public Integer id;
+	
+	Form form = new Form("form");
+	
+	HiddenField idField = new HiddenField("sample_id", Integer.class);
+	HiddenField mate_id = new HiddenField("mate_id", Integer.class);
+	TextField client = new TextField("sample_place", "Client");
+	DateField sampleDate = new DateField("sampleDate", "Sample date", true);
+	DateField sampleMeasurementDate = new DateField("sampleDateMesr", "Measurement date", true);
+	DoubleField density = new DoubleField("density", "Density", true);
+	DoubleField weight = new DoubleField("weight", "Weight", true);
+	DoubleField field1 = new DoubleField("field1", "Дробимост", false);
+	DoubleField field2 = new DoubleField("field2", "Отмиваеми частици", false);
+	
+	FormTable table;
+	
+	public void onInit() {
+		sampleDate.setFormatPattern("yyyy-MM-dd");
+		sampleMeasurementDate.setFormatPattern("yyyy-MM-dd");
+		
+		form.add(idField);
+		form.add(mate_id);
+		form.add(client);
+		form.add(sampleDate);
+		form.add(sampleMeasurementDate);
+		form.add(density);
+		form.add(weight);
+		form.add(field1);
+		form.add(field2);
+		form.add(new Submit("ok", "OK", this, "onOkClick"));
+		form.add(new Submit("cancel", "Cancel", this, "onCancelClick"));
+		addControl(form);
+		
+		table = new FormTable("table", form);
+		table.setClass(Table.CLASS_SIMPLE);
+		table.setPageSize(10);
+		table.setShowBanner(true);
+		
+		String sql = "select sieve_id, sieve_d from sieve order by 2";
+		List<Map<String,Object>> sieves = Config.getInstance().queryAsMapList(sql);
+		for (Map<String,Object> sieve : sieves) {
+			FieldColumn fcolumn = new FieldColumn(sieve.get("sieve_id").toString(), sieve.get("sieve_d").toString(), new IntegerField());
+			table.addColumn(fcolumn);
+		}
+		
+		form.add(table);
+	}
+
+	SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
+	
+	public void onGet() {
+		if (id == null)
+			return;
+		Map item = Config.getInstance().queryAsMap("select * from material_sample where sample_id=?", id);
+		form.copyFrom(item);
+		try {
+			sampleDate.setDate(df.parse((String) item.get("sample_date")));
+			sampleMeasurementDate.setDate(df.parse((String) item.get("sample_date_mesr")));
+			
+			String sql = "select distinct pass_id from material_sample_sieve_pass where sample_id=?";
+			List<Integer> passes = Config.getInstance().getRunner().query(sql, new ColumnListHandler<Integer>(), id);
+			
+			sql = "select p.*, s.sieve_d " +
+				"from material_sample_sieve_pass p join sieve s on p.sieve_id=s.sieve_id " +
+				"where p.sample_id=? " +
+				"order by p.pass_id, s.sieve_d";
+			List<Map> items = (List) Config.getInstance().queryAsMapList(sql, id);
+			for (Map i : items) {
+				Integer sieve_id = (Integer) i.get("sieve_id");
+				Integer pass_id = (Integer) i.get("pass_id");
+				Integer value = (Integer) i.get("value");
+				
+				Map row = rows.get(sieve_id);
+				row.put("pass_" + pass_id, value);
+			}
+			ArrayList<Map> rows_lst = new ArrayList(rows.values());
+			Collections.sort(rows_lst, new Comparator<Map>() {
+				public int compare(Map o1, Map o2) {
+					return Integer.compare((Integer) o1.get("sieve_id"), (Integer) o2.get("sieve_id"));
+				}
+			});
+			
+			table.setRowList(rows_lst);
+		} catch (Exception e) {
+			error(e);
+		}
+	}
+	
+	public boolean onOkClick() {
+		if (form.isValid()) {
+			ArrayList param = new ArrayList();
+			param.add(client.getValue());
+			param.add(sampleDate.getValue());
+			param.add(sampleMeasurementDate.getValue());
+			param.add(density.getValue());
+			param.add(weight.getValue());
+			param.add(field1.getValue());
+			param.add(field2.getValue());
+			
+			String sql;
+			if (StringUtils.isBlank(idField.getValue())) {
+				if (StringUtils.isBlank(mate_id.getValue())) {
+					error(new Exception("Material not set"));
+					return true;
+				}
+				sql = "insert into material_sample(sample_place,sample_date,sample_date_mesr,density,weight,field1,field2,mate_id) values(?,?,?,?,?,?,?,?)";
+				param.add(mate_id.getValue());
+			} else {
+				sql = "update material_sample set sample_place=?,sample_date=?,sample_date_mesr=?,density=?,weight=?,field1=?,field2=? where sample_id=?";
+				param.add(idField.getValue());
+			}
+/*			try {
+				Config.getInstance().getRunner().update(sql, param.toArray());
+			} catch (SQLException e) {
+				error(e);
+			}
+*/			
+			System.out.println("----------");
+			List<Map<String, Object>> list = Util.extractFormTableValuesAsList("pass", getContext().getRequest().getParameterMap());
+			System.out.println(list);
+			System.out.println("----------");
+			
+			//System.out.println(getContext().getRequest().getParameterMap());
+		}
+		return true;
+	}
+	
+	
+	
+	public boolean onCancelClick() {
+		if (StringUtils.isBlank(mate_id.getValue())) {
+			setRedirect(MaterialsPage.class);
+		} else {
+			Map map = new HashMap();
+			map.put("id", mate_id.getValue());
+			setRedirect(SamplesPage.class, map);
+		}
+		return false;
+	}
+}
