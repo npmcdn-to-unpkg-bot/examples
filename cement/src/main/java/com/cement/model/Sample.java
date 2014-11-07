@@ -1,100 +1,178 @@
 package com.cement.model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+@Entity
+@Table(name = "material_sample")
+@Access(AccessType.FIELD)
 public class Sample implements Serializable {
 
-	int sample_id;
-	int mate_id;
-	String sample_place;
-	Date sample_date;
-	Date sample_date_mesr;
-	int sample_passnumb;
-	int sample_satus;
-	double density;
-	double weight;
-	String filed1, field2;
-	double module_size;
-	String sample_content;
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="sample_id")
+	int id;
 	
-	public int getSample_id() {
-		return sample_id;
+	@ManyToOne
+	@JoinColumn(name="mate_id", nullable=false)
+	Material material;
+	
+	@Column(name="sample_place")
+	String samplePlace;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="sample_date")
+	Date sampleDate;
+	
+	@Temporal(TemporalType.DATE)
+	@Column(name="sample_date_mesr")
+	Date dateMeasure;
+	
+	@Column(name="sample_passnumb")
+	int passNumber;
+	
+	@Column(name="sample_satus")
+	int satus;
+	
+	double density;
+	
+	double weight;
+
+	String filed1;
+	
+	String field2;
+	
+	@Column(name="module_size")
+	double moduleSize;
+
+	@Column(name="sample_content")
+	String sampleContent;
+	
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="sievePass.sample")
+	@JoinColumn(name="sample_id")
+	Collection<SievePass> sievePasses;
+
+	public int getId() {
+		return id;
 	}
-	public void setSample_id(int sample_id) {
-		this.sample_id = sample_id;
+
+	public void setId(int id) {
+		this.id = id;
 	}
-	public int getMate_id() {
-		return mate_id;
+
+	public Material getMaterial() {
+		return material;
 	}
-	public void setMate_id(int mate_id) {
-		this.mate_id = mate_id;
+
+	public void setMaterial(Material material) {
+		this.material = material;
 	}
-	public String getSample_place() {
-		return sample_place;
+
+	public String getSamplePlace() {
+		return samplePlace;
 	}
-	public void setSample_place(String sample_place) {
-		this.sample_place = sample_place;
+
+	public void setSamplePlace(String samplePlace) {
+		this.samplePlace = samplePlace;
 	}
-	public Date getSample_date() {
-		return sample_date;
+
+	public Date getSampleDate() {
+		return sampleDate;
 	}
-	public void setSample_date(Date sample_date) {
-		this.sample_date = sample_date;
+
+	public void setSampleDate(Date sampleDate) {
+		this.sampleDate = sampleDate;
 	}
-	public Date getSample_date_mesr() {
-		return sample_date_mesr;
+
+	public Date getDateMeasure() {
+		return dateMeasure;
 	}
-	public void setSample_date_mesr(Date sample_date_mesr) {
-		this.sample_date_mesr = sample_date_mesr;
+
+	public void setDateMeasure(Date dateMeasure) {
+		this.dateMeasure = dateMeasure;
 	}
-	public int getSample_passnumb() {
-		return sample_passnumb;
+
+	public int getPassNumber() {
+		return passNumber;
 	}
-	public void setSample_passnumb(int sample_passnumb) {
-		this.sample_passnumb = sample_passnumb;
+
+	public void setPassNumber(int passNumber) {
+		this.passNumber = passNumber;
 	}
-	public int getSample_satus() {
-		return sample_satus;
+
+	public int getSatus() {
+		return satus;
 	}
-	public void setSample_satus(int sample_satus) {
-		this.sample_satus = sample_satus;
+
+	public void setSatus(int satus) {
+		this.satus = satus;
 	}
+
 	public double getDensity() {
 		return density;
 	}
+
 	public void setDensity(double density) {
 		this.density = density;
 	}
+
 	public double getWeight() {
 		return weight;
 	}
+
 	public void setWeight(double weight) {
 		this.weight = weight;
 	}
+
 	public String getFiled1() {
 		return filed1;
 	}
+
 	public void setFiled1(String filed1) {
 		this.filed1 = filed1;
 	}
+
 	public String getField2() {
 		return field2;
 	}
+
 	public void setField2(String field2) {
 		this.field2 = field2;
 	}
-	public double getModule_size() {
-		return module_size;
+
+	public double getModuleSize() {
+		return moduleSize;
 	}
-	public void setModule_size(double module_size) {
-		this.module_size = module_size;
+
+	public void setModuleSize(double moduleSize) {
+		this.moduleSize = moduleSize;
 	}
-	public String getSample_content() {
-		return sample_content;
+
+	public String getSampleContent() {
+		return sampleContent;
 	}
-	public void setSample_content(String sample_content) {
-		this.sample_content = sample_content;
+
+	public void setSampleContent(String sampleContent) {
+		this.sampleContent = sampleContent;
 	}
-	
+
+	public Collection<SievePass> getSievePasses() {
+		return sievePasses;
+	}
 }

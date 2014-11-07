@@ -1,22 +1,16 @@
 package com.cement.model;
 
-import java.io.Serializable;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-public class Location implements Serializable {
-
-	int geo_id;
-	String geo_name;
-	
-	public int getGeo_id() {
-		return geo_id;
-	}
-	public void setGeo_id(int geo_id) {
-		this.geo_id = geo_id;
-	}
-	public String getGeo_name() {
-		return geo_name;
-	}
-	public void setGeo_name(String geo_name) {
-		this.geo_name = geo_name;
-	}
+@Entity
+@Table(name = "mate_geo")
+@AttributeOverrides({
+	@AttributeOverride(name="id", column=@Column(name="geo_id")),
+	@AttributeOverride(name="name", column=@Column(name="geo_name"))
+})
+public class Location extends IdNamePair {
 }

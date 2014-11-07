@@ -1,22 +1,16 @@
 package com.cement.model;
 
-import java.io.Serializable;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-public class MaterialSize implements Serializable {
-	
-	int size_id;
-	String size_name;
-
-	public int getSize_id() {
-		return size_id;
-	}
-	public void setSize_id(int size_id) {
-		this.size_id = size_id;
-	}
-	public String getSize_name() {
-		return size_name;
-	}
-	public void setSize_name(String size_name) {
-		this.size_name = size_name;
-	}
+@Entity
+@Table(name = "mate_size")
+@AttributeOverrides({
+	@AttributeOverride(name="id", column=@Column(name="size_id")),
+	@AttributeOverride(name="name", column=@Column(name="size_name"))
+})
+public class MaterialSize extends IdNamePair {
 }

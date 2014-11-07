@@ -1,22 +1,16 @@
 package com.cement.model;
 
-import java.io.Serializable;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-public class Supplier implements Serializable {
-	
-	int supp_id;
-	String supp_name;
-
-	public int getSupp_id() {
-		return supp_id;
-	}
-	public void setSupp_id(int supp_id) {
-		this.supp_id = supp_id;
-	}
-	public String getSupp_name() {
-		return supp_name;
-	}
-	public void setSupp_name(String supp_name) {
-		this.supp_name = supp_name;
-	}
+@Entity
+@Table(name = "mate_supplier")
+@AttributeOverrides({
+	@AttributeOverride(name="id", column=@Column(name="supp_id")),
+	@AttributeOverride(name="name", column=@Column(name="supp_name"))
+})
+public class Supplier extends IdNamePair {
 }

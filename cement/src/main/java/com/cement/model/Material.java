@@ -2,51 +2,84 @@ package com.cement.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Access;
+import javax.persistence.AccessType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "material")
+@Access(AccessType.FIELD)
 public class Material implements Serializable {
 
-	int mate_id;
-	int type_id;
-	int size_id;
-	int reg_id;
-	int geo_id;
-	int supp_id;
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	@Column(name="mate_id")
+	int id;
+
+	@ManyToOne
+	@JoinColumn(name="type_id", nullable=false)
+	MaterialType materialType;
+	
+	@ManyToOne
+	@JoinColumn(name="size_id", nullable=false)
+	MaterialSize materialSize;
+	
+	@ManyToOne
+	@JoinColumn(name="reg_id", nullable=false)
+	Region region;
+	
+	@ManyToOne
+	@JoinColumn(name="geo_id", nullable=false)
+	Location location;
+	
+	@ManyToOne
+	@JoinColumn(name="supp_id", nullable=false)
+	Supplier supplier;
+	
 	String comment;
 	
-	public int getMate_id() {
-		return mate_id;
+	public int getId() {
+		return id;
 	}
-	public void setMate_id(int mate_id) {
-		this.mate_id = mate_id;
+	public void setId(int id) {
+		this.id = id;
 	}
-	public int getType_id() {
-		return type_id;
+	public MaterialType getMaterialType() {
+		return materialType;
 	}
-	public void setType_id(int type_id) {
-		this.type_id = type_id;
+	public void setMaterialType(MaterialType materialType) {
+		this.materialType = materialType;
 	}
-	public int getSize_id() {
-		return size_id;
+	public MaterialSize getMaterialSize() {
+		return materialSize;
 	}
-	public void setSize_id(int size_id) {
-		this.size_id = size_id;
+	public void setMaterialSize(MaterialSize materialSize) {
+		this.materialSize = materialSize;
 	}
-	public int getReg_id() {
-		return reg_id;
+	public Region getRegion() {
+		return region;
 	}
-	public void setReg_id(int reg_id) {
-		this.reg_id = reg_id;
+	public void setRegion(Region region) {
+		this.region = region;
 	}
-	public int getGeo_id() {
-		return geo_id;
+	public Location getLocation() {
+		return location;
 	}
-	public void setGeo_id(int geo_id) {
-		this.geo_id = geo_id;
+	public void setLocation(Location Location) {
+		this.location = Location;
 	}
-	public int getSupp_id() {
-		return supp_id;
+	public Supplier getSupplier() {
+		return supplier;
 	}
-	public void setSupp_id(int supp_id) {
-		this.supp_id = supp_id;
+	public void setSupplier(Supplier supplier) {
+		this.supplier = supplier;
 	}
 	public String getComment() {
 		return comment;

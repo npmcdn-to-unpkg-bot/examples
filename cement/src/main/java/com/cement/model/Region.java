@@ -1,22 +1,16 @@
 package com.cement.model;
 
-import java.io.Serializable;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 
-public class Region implements Serializable {
-	
-	int reg_id;
-	String reg_name;
-
-	public int getReg_id() {
-		return reg_id;
-	}
-	public void setReg_id(int reg_id) {
-		this.reg_id = reg_id;
-	}
-	public String getReg_name() {
-		return reg_name;
-	}
-	public void setReg_name(String reg_name) {
-		this.reg_name = reg_name;
-	}
+@Entity
+@Table(name = "mate_reg")
+@AttributeOverrides({
+	@AttributeOverride(name="id", column=@Column(name="reg_id")),
+	@AttributeOverride(name="name", column=@Column(name="reg_name"))
+})
+public class Region extends IdNamePair {
 }
