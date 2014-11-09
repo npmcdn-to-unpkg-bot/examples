@@ -1,8 +1,5 @@
 package com.slavi.examples.spring.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,11 +14,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.slavi.examples.spring.data.MyData;
 
 @Controller
+@RequestMapping("/my")
 public class MyController {
 	@RequestMapping("/helloworld")
 	protected ModelAndView HelloWorld() throws Exception {
@@ -55,13 +52,15 @@ public class MyController {
 	}
 	
 	@ModelAttribute("hello")
-	@RequestMapping(value="/a") //, produces={"application/xml", "application/json", "text/html", "application/pdf", "application/atom+xml"})
-	protected MyData a(@RequestParam(value="q", defaultValue="<default value>") String someVal,
+	@RequestMapping(value="/b", produces={"application/xml", "application/json", "text/html", "application/pdf", "application/atom+xml"})
+	protected ModelAndView b(@RequestParam(value="q", defaultValue="<default value>") String someVal,
 			@RequestBody(required=false) String body) {
-		MyData r = new MyData();
-		r.setId(123);
-		r.setName(someVal);
-		r.setBody(body);
+		MyData myData = new MyData();
+		myData.setId(123);
+		myData.setName(someVal);
+		myData.setBody(body);
+		ModelAndView r = new ModelAndView("a");
+		r.addObject("hello", myData);
 		return r;
 	}
 	

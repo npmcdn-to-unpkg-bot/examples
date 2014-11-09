@@ -12,6 +12,7 @@ import com.slavi.examples.spring.data.MyData;
 
 @RestController
 @ControllerAdvice
+@RequestMapping("/myJsonp")
 public class MyJsonpController extends AbstractJsonpResponseBodyAdvice {
 
 	public MyJsonpController() {

@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.slavi.examples.spring.data.MyData;
 
 @RestController
+@RequestMapping("/myRest")
 public class MyRestController {
 
 	@RequestMapping(value="/json", produces="application/json")

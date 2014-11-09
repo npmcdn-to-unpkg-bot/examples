@@ -45,9 +45,9 @@ public class MyDataController {
 		MyData r = data.remove(id);
 		if (r == null) {
 			redir.addFlashAttribute("status", "Object with the specified id not found. ID=" + id);
-			return "redirect:/ex/status";
+			return "redirect:/myData/status";
 		}
-		return "redirect:/ex/myData";
+		return "redirect:/myData/myData";
 	}
 
 	@RequestMapping(value="{id}", method=RequestMethod.POST)
@@ -64,7 +64,7 @@ public class MyDataController {
 		String msg = "Saved some data " + (new Date()).toString();
 		redir.addFlashAttribute(messageName, msg);
 		System.out.println("--- set session attribute to " + msg);
-		return "redirect:/ex/myData";
+		return "redirect:/myData/myData";
 	}
 	
 	@RequestMapping(value="{id}", method=RequestMethod.GET)

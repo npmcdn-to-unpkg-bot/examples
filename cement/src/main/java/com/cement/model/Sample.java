@@ -25,7 +25,7 @@ import javax.persistence.TemporalType;
 public class Sample implements Serializable {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="sample_id")
 	int id;
 	
@@ -64,10 +64,10 @@ public class Sample implements Serializable {
 	@Column(name="sample_content")
 	String sampleContent;
 	
-	@OneToMany(fetch=FetchType.LAZY, mappedBy="sievePass.sample")
+/*	@OneToMany(fetch=FetchType.LAZY, mappedBy="sample")
 	@JoinColumn(name="sample_id")
 	Collection<SievePass> sievePasses;
-
+*/
 	public int getId() {
 		return id;
 	}
@@ -172,7 +172,8 @@ public class Sample implements Serializable {
 		this.sampleContent = sampleContent;
 	}
 
-	public Collection<SievePass> getSievePasses() {
+/*	public Collection<SievePass> getSievePasses() {
 		return sievePasses;
 	}
+*/
 }
