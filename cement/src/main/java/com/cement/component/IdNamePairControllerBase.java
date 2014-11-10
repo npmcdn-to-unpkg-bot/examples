@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cement.model.IdNamePair;
@@ -41,7 +40,7 @@ public abstract class IdNamePairControllerBase<T extends IdNamePair> {
 	protected String deleteItem(ModelMap model, RedirectAttributes redir,
 			@PathVariable("id") Integer id) throws Exception {
 		jpa.delete(id);
-		return "redirect:../list";
+		return "redirect:/list";
 	}
 	
 	@RequestMapping(value="item/{id}", method=RequestMethod.POST)
@@ -56,7 +55,7 @@ public abstract class IdNamePairControllerBase<T extends IdNamePair> {
 		}
 		jpa.save(item);
 		redir.addFlashAttribute(messageName, "Data saved.");
-		return "redirect:../list";
+		return "redirect:/list";
 	}
 	
 	@RequestMapping(value="item/{id}", method=RequestMethod.GET, produces={"text/html", "application/xml", "application/json"})
@@ -65,7 +64,7 @@ public abstract class IdNamePairControllerBase<T extends IdNamePair> {
 		Object item = jpa.load(id);
 		if (item == null) {
 			redir.addFlashAttribute(messageName, "Item not found. Creating new.");
-			return "redirect:../new";
+			return "redirect:/new";
 		}
 		if (!model.containsAttribute(messageName))
 			model.addAttribute(messageName, "");
@@ -92,6 +91,6 @@ public abstract class IdNamePairControllerBase<T extends IdNamePair> {
 		}
 		jpa.save(item);
 		redir.addFlashAttribute(messageName, "Data saved.");
-		return "redirect:list";
+		return "redirect:/list";
 	}
 }

@@ -2,12 +2,12 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<c:if test="${not empty title}"><title>${fn:escapeXml(title)}</title></c:if>
-<%/* 
+
 	<spring:url value="/webjars/bootstrap/2.3.0/css/bootstrap.min.css" var="bootstrapCss"/>
 	<link href="${bootstrapCss}" rel="stylesheet"/>
 
-	<spring:url value="/resources/css/petclinic.css" var="petclinicCss"/>
-	<link href="${petclinicCss}" rel="stylesheet"/>
+	<spring:url value="/resources/css/cement.css" var="cementCss"/>
+	<link href="${cementCss}" rel="stylesheet"/>
 
 	<spring:url value="/webjars/jquery/2.0.3/jquery.js" var="jQuery"/>
 	<script src="${jQuery}"></script>
@@ -22,6 +22,7 @@
     <!-- jquery-ui.css file is not that big so we can afford to load it -->
     <spring:url value="/webjars/jquery-ui/1.10.3/themes/base/jquery-ui.css" var="jQueryUiCss"/>
     <link href="${jQueryUiCss}" rel="stylesheet"></link>
+<%/* 
 */%>
 </head>
 

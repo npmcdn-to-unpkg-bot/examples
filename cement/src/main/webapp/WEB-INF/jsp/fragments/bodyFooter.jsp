@@ -1,5 +1,3 @@
-<%@include file="importTags.include.jsp" %>
-
 <hr />
 <table class="footer">
 <tr>
@@ -8,4 +6,7 @@
 		alt="Sponsored by Pivotal"/></td>
 </tr>
 </table>
+</div>
 
+</body>
+</html>
