@@ -1,28 +1,22 @@
 package com.cement.model;
 
-import java.io.Serializable;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.AttributeOverride;
+import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "material")
+@AttributeOverrides({
+	@AttributeOverride(name="id", column=@Column(name="mate_id"))
+})
 @Access(AccessType.FIELD)
-public class Material implements Serializable {
-
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(name="mate_id")
-	int id;
-
+public class Material extends EntityWithId {
 	@ManyToOne
 	@JoinColumn(name="type_id", nullable=false)
 	MaterialType materialType;
@@ -45,12 +39,6 @@ public class Material implements Serializable {
 	
 	String comment;
 	
-	public int getId() {
-		return id;
-	}
-	public void setId(int id) {
-		this.id = id;
-	}
 	public MaterialType getMaterialType() {
 		return materialType;
 	}
