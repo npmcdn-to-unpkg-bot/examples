@@ -21,9 +21,16 @@
 		http://www.springframework.org/schema/jee		http://www.springframework.org/schema/jee/spring-jee.xsd
 		http://www.springframework.org/schema/util		http://www.springframework.org/schema/util/spring-util.xsd
 ">
-	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+<!-- 	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
 		<property name="driverClassName" value="org.sqlite.JDBC" />
 		<property name="url" value="jdbc:sqlite::memory:" />
+		<property name="username" value="" />
+		<property name="password" value="" />
+	</bean>
+ -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.apache.derby.jdbc.EmbeddedDriver" />
+		<property name="url" value="jdbc:derby:memory:cement;create=true" />
 		<property name="username" value="" />
 		<property name="password" value="" />
 	</bean>
