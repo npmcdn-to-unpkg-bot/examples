@@ -1,16 +1,11 @@
-<%@include file="fragments/importTags.include.jsp" %>
-<html>
-<jsp:include page="fragments/headTag.jsp" />
+<%@include file="fragments/bodyHeader.jsp" %>
 
-<body>
-	<jsp:include page="fragments/bodyHeader.jsp" />
+<a href="../list">back to List</a><br/>
+<form:form modelAttribute="model" method="POST">
+	<form:errors path="*" cssClass="errorBox" />
+	<app:selectField label="Material type" name="materialType" names="${materialTypes}" size="10" />
+	<app:inputField label="Comment" name="comment"/>
+	<button type="submit">Save</button>
+</form:form>
 
-	<a href="list">back to List</a><br/>
-	<form:form modelAttribute="model" method="POST">
-		<form:errors path="*" cssClass="errorBox" />
-		<app:inputField label="Name" name="name"/>
-		<button type="submit">Save</button>
-	</form:form>
-	<jsp:include page="fragments/bodyFooter.jsp" />
-</body>
-</html>
+<%@include file="fragments/bodyFooter.jsp" %>

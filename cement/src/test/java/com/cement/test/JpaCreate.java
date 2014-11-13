@@ -8,6 +8,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbutils.DbUtils;
@@ -17,6 +19,7 @@ import org.apache.ddlutils.PlatformFactory;
 import org.apache.ddlutils.io.DatabaseIO;
 import org.apache.ddlutils.model.Database;
 import org.flywaydb.core.Flyway;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.slavi.util.StringPrintStream;
@@ -33,7 +36,7 @@ public class JpaCreate {
 		Connection conn = dataSource.getConnection();
 		try {
 			Platform  platform = PlatformFactory.createNewPlatformInstance(dataSource);
-			Database db = platform.readModelFromDatabase(conn, "MyDbTest");
+			Database db = platform.readModelFromDatabase(conn, "cement");
 			DatabaseIO dbio = new DatabaseIO();
 			Writer wr = new OutputStreamWriter(out);
 			dbio.write(db, wr);
@@ -53,33 +56,28 @@ public class JpaCreate {
 
 	void flyWay(DataSource dataSource) throws Exception {
 		System.out.println(dbToXml(dataSource));
-/*		Connection connection = dataSource.getConnection();
-		connection.close();
-*/		
+
 		Flyway flyway = new Flyway();
 		flyway.setLocations("com/cement/test/flyway");
 		flyway.setDataSource(dataSource);
 		flyway.migrate();
 	}
 
-	void doIt() throws Exception {
-		ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext("JpaCreate-sping.xml", getClass());
-		DataSource dataSource = appContext.getBean("dataSource", DataSource.class);
-
-		flyWay(dataSource);
-		
-/*		EmbeddedConnectionPoolDataSource40 dd = new EmbeddedConnectionPoolDataSource40();
-		dd.setDatabaseName("");
-		EmbeddedDataSource40 dataSource = new EmbeddedDataSource40();
-		dataSource.setDatabaseName("memory:MyDbTest");
-		dataSource.setCreateDatabase("create");
-*/		dbToXml(dataSource);
-/*		
+	public void createORMs(ApplicationContext appContext) {
 		EntityManagerFactory emf = appContext.getBean("entityManagerFactory", EntityManagerFactory.class);
 		EntityManager em = emf.createEntityManager();
 		// ... more
 		em.close();
-*/		
+	}
+	
+	void doIt() throws Exception {
+		ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext("JpaCreate-sping.xml", getClass());
+		DataSource dataSource = appContext.getBean("dataSource", DataSource.class);
+
+//		flyWay(dataSource);
+		createORMs(appContext);
+		
+		dbToXml(dataSource);
 		appContext.close();
 	}
 

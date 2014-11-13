@@ -41,7 +41,7 @@
 		<property name="jpaProperties">
 			<props>
 				<!-- <prop key="hibernate.hbm2ddl.auto">create-drop</prop> -->
-				<prop key="eclipselink.ddl-generation">drop-and-create-tables</prop>
+				<prop key="eclipselink.ddl-generation">none</prop>
 				<prop key="eclipselink.weaving">false</prop>
 
 				<prop key="eclipselink.logging.logger">org.eclipse.persistence.logging.slf4j.Slf4jSessionLogger</prop>
@@ -143,9 +143,8 @@
 				<ref bean="MappingJackson2JsonView" />
 				<bean class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView" p:modelKey="model"/>
 				<bean class="org.springframework.web.servlet.view.InternalResourceView" p:url="/WEN-INF/jsp"/>
-				<bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
-					p:url="/WEB-INF/jasper/dummy.jrxml"
-				/>
+			<!-- <bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+					p:url="/WEB-INF/jasper/dummy.jrxml" /> -->
 			</list>
 		</property>
 	</bean>

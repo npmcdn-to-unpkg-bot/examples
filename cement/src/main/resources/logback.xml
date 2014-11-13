@@ -22,9 +22,9 @@
 
 	<logger name="uk.org.lidalia.sysoutslf4j.context" level="none" additivity="false" />
 
-	<logger name="my.logger.file" level="all" additivity="false">
+<!-- 	<logger name="my.logger.file" level="all" additivity="false">
 		<appender-ref ref="my.appender.file" />
-	</logger>
+	</logger> -->
 
 	<logger name="com.slavi.example.logging.Log4J" level="info" />
 

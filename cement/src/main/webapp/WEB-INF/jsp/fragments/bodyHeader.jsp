@@ -7,6 +7,7 @@
 <div class="navbar">
 	<div class="navbar-inner">
 		<ul class="nav">
+			<li><a href="<spring:url value='/material/list'/>">Material</a></li>
 			<li><a href="<spring:url value='/nom/supplier/list'/>">Supplier</a></li>
 			<li><a href="<spring:url value='/nom/location/list'/>">Locations</a></li>
 			<li><a href="<spring:url value='/nom/region/list'/>">Region</a></li>

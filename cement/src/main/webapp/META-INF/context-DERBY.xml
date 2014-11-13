@@ -9,7 +9,6 @@
 		type="javax.sql.DataSource"  auth="Container"
 		maxActive="100" maxIdle="30" maxWait="10000"
 		username="" password="" 
-		validationQuery="SELECT date('now');"
-		driverClassName="org.sqlite.JDBC"
-		url="jdbc:sqlite:Databases/cement.rcp"/>
+		driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
+		url="jdbc:derby:memory:cement;create=true"/>
 </Context>
