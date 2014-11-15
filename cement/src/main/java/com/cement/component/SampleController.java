@@ -2,6 +2,8 @@ package com.cement.component;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -12,50 +14,71 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.cement.model.EntityWithId;
+import com.cement.model.Material;
+import com.cement.model.Sample;
 
-// @Controller
-// @RequestMapping("/nom/someItem")
-public abstract class EntityWithIdControllerBase<T extends EntityWithId> {
+@Controller
+@RequestMapping("/material/{materialId}/sample")
+public class SampleController {
 	public static final String messageName = "message";
-	
-	protected EntityWithIdJpa<T> jpa;
-	
-	public EntityWithIdControllerBase(EntityWithIdJpa<T> jpa) {
-		this.jpa = jpa;
-	}
+
+	@Autowired
+	MaterialJpa materialJpa;
+
+	@Autowired
+	SampleJpa jpa;
 
 	@ModelAttribute("title")
 	String getTitle() {
 		return jpa.getEntityClass().getSimpleName();
 	}
 	
-	protected abstract String getViewItemEdit();
-	protected abstract String getViewItemList();
+	@ModelAttribute
+	void populateModel(Model model, @PathVariable("materialId") int materialId) throws Exception {
+		model.addAttribute("material", materialJpa.load(materialId));
+	}
+	
+	protected String getViewItemEdit() {
+		return "SampleEdit";
+	}
 
+	protected String getViewItemList() {
+		return "SampleList";
+	}
+	
 	@RequestMapping(value="/", method=RequestMethod.GET, produces={"text/html", "application/xml", "application/json"})
-	protected String list(Model model) throws Exception {
-		model.addAttribute("model", jpa.list());
+	protected String list(Model model, @ModelAttribute("material") Material material) throws Exception {
+		model.addAttribute("model", material.getSamples());
 		return getViewItemList();
 	}
 
 	@RequestMapping(value="/delete/{id}")
 	protected String deleteItem(ModelMap model, RedirectAttributes redir,
+			@PathVariable("materialId") int materialId,
 			@PathVariable("id") Integer id) throws Exception {
-		jpa.delete(id);
+		Sample item = jpa.load(id);
+		if ((item != null) && 
+			(item.getMaterial().getId() == materialId)) {
+			jpa.delete(id);
+		}
 		return "redirect:..";
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.POST)
 	protected String saveItem(Model model, RedirectAttributes redir,
+			@PathVariable("materialId") int materialId,
 			@PathVariable("id") Integer id,
-			@Valid T item, BindingResult result) throws Exception {
+			@Valid Sample item, BindingResult result) throws Exception {
+		Sample dbSample = jpa.load(id);
 		if (result.hasErrors() || (item == null) || 
 			(id != null && (!id.equals(item.getId()))) || 
-			(id == null && item.getId() != null)) {
+			(id == null && item.getId() != null) ||
+			(dbSample == null) ||
+			(dbSample.getMaterial().getId() != materialId)) {
 			model.addAttribute(messageName, "Oooops");
 			return getViewItemEdit();
 		}
+		item.setMaterial(dbSample.getMaterial());
 		jpa.save(item);
 		redir.addFlashAttribute(messageName, "Data saved.");
 		return "redirect:.";
@@ -63,9 +86,11 @@ public abstract class EntityWithIdControllerBase<T extends EntityWithId> {
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET, produces={"text/html", "application/xml", "application/json"})
 	protected String loadItem(Model model, RedirectAttributes redir,
+			@PathVariable("materialId") int materialId,
 			@PathVariable("id") Integer id) throws Exception {
-		Object item = jpa.load(id);
-		if (item == null) {
+		Sample item = jpa.load(id);
+		if ((item == null) ||
+			(item.getMaterial().getId() != materialId)) {
 			redir.addFlashAttribute(messageName, "Item not found. Creating new.");
 			return "redirect:new";
 		}
@@ -83,11 +108,13 @@ public abstract class EntityWithIdControllerBase<T extends EntityWithId> {
 	@Transactional
 	@RequestMapping(value="/new", method=RequestMethod.POST)
 	protected String setNewItem(Model model, RedirectAttributes redir,
-			@Valid T item, BindingResult result) throws Exception {
+			@ModelAttribute("material") Material material,
+			@Valid Sample item, BindingResult result) throws Exception {
 		if (result.hasErrors() || (item == null)) {
 			model.addAttribute(messageName, "Oooops");
 			return getViewItemEdit();
 		}
+		item.setMaterial(material);
 		jpa.save(item);
 		redir.addFlashAttribute(messageName, "Data saved.");
 		return "redirect:.";

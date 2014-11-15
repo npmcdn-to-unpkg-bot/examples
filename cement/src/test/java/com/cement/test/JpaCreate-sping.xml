@@ -49,8 +49,14 @@
 	
 		<property name="jpaProperties">
 			<props>
-				<prop key="eclipselink.logging.level" >FINE</prop>
 				<prop key="eclipselink.weaving">false</prop>
+
+				<prop key="eclipselink.logging.logger">org.eclipse.persistence.logging.slf4j.Slf4jSessionLogger</prop>
+				<prop key="eclipselink.logging.level">FINEST</prop>
+				<prop key="eclipselink.logging.sql">FINEST</prop>
+				<prop key="eclipselink.logging.level.sql">FINEST</prop>
+				<prop key="eclipselink.logging.parameters">false</prop>
+
 
 				<prop key="eclipselink.ddl-generation">drop-and-create-tables</prop>
 				<prop key="eclipselink.create-ddl-jdbc-file-name">target/createDDL_ddlGeneration.sql</prop>

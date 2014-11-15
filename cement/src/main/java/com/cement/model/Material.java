@@ -1,13 +1,18 @@
 package com.cement.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -38,6 +43,9 @@ public class Material extends EntityWithId {
 	Supplier supplier;
 	
 	String comment;
+	
+	@OneToMany(fetch=FetchType.LAZY, mappedBy="material")
+	Collection<Sample> samples = new ArrayList<Sample>();
 	
 	public MaterialType getMaterialType() {
 		return materialType;
@@ -74,5 +82,9 @@ public class Material extends EntityWithId {
 	}
 	public void setComment(String comment) {
 		this.comment = comment;
+	}
+
+	public Collection<Sample> getSamples() {
+		return samples;
 	}
 }

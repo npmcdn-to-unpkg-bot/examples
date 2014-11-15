@@ -41,7 +41,7 @@
 		<property name="jpaProperties">
 			<props>
 				<!-- <prop key="hibernate.hbm2ddl.auto">create-drop</prop> -->
-				<prop key="eclipselink.ddl-generation">none</prop>
+				<prop key="eclipselink.ddl-generation">create-or-extend-tables</prop>
 				<prop key="eclipselink.weaving">false</prop>
 
 				<prop key="eclipselink.logging.logger">org.eclipse.persistence.logging.slf4j.Slf4jSessionLogger</prop>

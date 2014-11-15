@@ -82,6 +82,7 @@ public class JpaCreate {
 	}
 
 	public static void main(String[] args) throws Exception {
+		System.setProperty("derby.stream.error.method", "com.cement.misc.DerbyLogOverSlf4j.getLogger");
 		new JpaCreate().doIt();
 		System.out.println("Done.");
 	}
