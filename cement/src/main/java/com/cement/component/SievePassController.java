@@ -16,89 +16,99 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cement.model.Material;
 import com.cement.model.Sample;
+import com.cement.model.SievePass;
 
 @Controller
-@RequestMapping("/material/{materialId}")
-public class SampleController {
+@RequestMapping("/material/{materialId}/{sampleId}")
+public class SievePassController {
 	public static final String messageName = "message";
 
 	@Autowired
-	MaterialJpa materialJpa;
+	SampleJpa sampleJpa;
 
 	@Autowired
-	SampleJpa jpa;
+	SievePassJpa jpa;
 
 	@ModelAttribute("title")
 	String getTitle() {
-		return jpa.getEntityClass().getSimpleName();
+		return SievePass.class.getSimpleName();
 	}
 	
 	@ModelAttribute
-	void populateModel(Model model, @PathVariable("materialId") int materialId) throws Exception {
-		model.addAttribute("material", materialJpa.load(materialId));
+	void populateModel(Model model, 
+			@PathVariable("materialId") int materialId,
+			@PathVariable("sampleId") int sampleId) throws Exception {
+		Sample sample = sampleJpa.load(sampleId);
+		if (sample.getMaterial().getId() != materialId)
+			throw new Exception("Invalid arguments");
+		model.addAttribute("sample", sample);
+		model.addAttribute("material", sample.getMaterial());
 	}
 	
 	protected String getViewItemEdit() {
-		return "SampleEdit";
+		return "SievePassEdit";
 	}
 
 	protected String getViewItemList() {
-		return "SampleList";
+		return "SievePassList";
 	}
 	
-	@RequestMapping(value="/samples", method=RequestMethod.GET, produces={"text/html", "application/xml", "application/json"})
-	protected String list(Model model, @ModelAttribute("material") Material material) throws Exception {
-		model.addAttribute("model", material.getSamples());
+	@RequestMapping(value="/passes", method=RequestMethod.GET, produces={"text/html", "application/xml", "application/json"})
+	protected String list(Model model, @PathVariable("sampleId") int sampleId) throws Exception {
+		model.addAttribute("passes", sampleJpa.getSievePasses(sampleId));
+		model.addAttribute("model", sampleJpa.getSampleData(sampleId));
 		return getViewItemList();
 	}
 
 	@RequestMapping(value="/delete/{id}")
 	protected String deleteItem(ModelMap model, RedirectAttributes redir,
 			@PathVariable("materialId") int materialId,
+			@PathVariable("sampleId") int sampleId,
 			@PathVariable("id") int id) throws Exception {
-		Sample item = jpa.load(id);
+		Sample item = sampleJpa.load(sampleId);
 		if ((item != null) && 
 			(item.getMaterial().getId() == materialId)) {
-			jpa.delete(id);
+			jpa.passDelete(sampleId, id);
 		}
-		return "redirect:../samples";
+		return "redirect:../passes";
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.POST)
 	protected String saveItem(Model model, RedirectAttributes redir,
 			@PathVariable("materialId") int materialId,
+			@PathVariable("sampleId") int sampleId,
 			@PathVariable("id") int id,
 			@Valid Sample item, BindingResult result) throws Exception {
-		Sample dbSample = jpa.load(id);
-		if (result.hasErrors() || (item == null) || (item.getId() == null) || (id != item.getId()) ||
-			(dbSample == null) ||
-			(dbSample.getMaterial().getId() != materialId)) {
+		// TODO:
+		Sample dbSample = sampleJpa.load(sampleId);
+		if (result.hasErrors() || (dbSample == null) || (dbSample.getMaterial().getId() != sampleId)) {
 			model.addAttribute(messageName, "Oooops");
 			return getViewItemEdit();
 		}
-		item.setMaterial(dbSample.getMaterial());
-		jpa.save(item);
+		sampleJpa.save(item);
 		redir.addFlashAttribute(messageName, "Data saved.");
-		return "redirect:samples";
+		return "redirect:passes";
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET, produces={"text/html", "application/xml", "application/json"})
 	protected String loadItem(Model model, RedirectAttributes redir,
 			@PathVariable("materialId") int materialId,
+			@PathVariable("sampleId") int sampleId,
 			@PathVariable("id") Integer id) throws Exception {
-		Sample item = jpa.load(id);
+		Sample item = sampleJpa.load(id);
 		if ((item == null) ||
 			(item.getMaterial().getId() != materialId)) {
 			redir.addFlashAttribute(messageName, "Item not found. Creating new.");
 			return "redirect:new";
 		}
+		sampleJpa.loadPass(sampleId, id);
 		model.addAttribute("model", item);
 		return getViewItemEdit();
 	}
 
 	@RequestMapping(value="/new", method=RequestMethod.GET)
 	protected String loadNewItem(Model model) throws Exception {
-		Object item = jpa.makeNew();
+		Object item = sampleJpa.makeNew();
 		model.addAttribute("model", item);
 		return getViewItemEdit();
 	}
@@ -113,8 +123,8 @@ public class SampleController {
 			return getViewItemEdit();
 		}
 		item.setMaterial(material);
-		jpa.save(item);
+		sampleJpa.save(item);
 		redir.addFlashAttribute(messageName, "Data saved.");
-		return "redirect:samples";
+		return "redirect:.";
 	}
 }

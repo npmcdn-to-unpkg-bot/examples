@@ -1,6 +1,6 @@
 <%@include file="fragments/bodyHeader.jsp" %>
 
-<a href="list">back to List</a><br/>
+<a href="..">back to material</a><br/>
 
 <table style="border-width:0px;">
 <app:labelField label="Location"		name="${material.location.name}" />
@@ -18,7 +18,7 @@
 <datatables:table id="itemListTable" data="${material.samples}" row="item" theme="bootstrap2" filterable="false" >
 	<datatables:column title="edit" cssStyle="width: 150px;" display="html">
 		<a href="${fn:escapeXml(item.id)}"><c:out value="edit" /></a>&nbsp;|&nbsp;
-		<a href="${fn:escapeXml(item.id)}/sieve/"><c:out value="view" /></a>&nbsp;|&nbsp;
+		<a href="${fn:escapeXml(item.id)}/passes"><c:out value="view" /></a>&nbsp;|&nbsp;
 		<a href="delete/${fn:escapeXml(item.id)}"><c:out value="delete" /></a>
 	</datatables:column>
 	<datatables:column title="Id" property="id" />

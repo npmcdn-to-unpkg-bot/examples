@@ -21,13 +21,13 @@ public class SievePass implements Serializable {
 	Sample sample;
 	
 	@Id
-	@Column(nullable=false)
-	int sieve_id;
+	@Column(name="sieve_id", nullable=false)
+	int sieveId;
 	
 	@Id
-	@Column(nullable=false)
-	int pass_id;
+	@Column(name="pass_id", nullable=false)
+	int passId;
 	
-	@Column(nullable=false)
+	@Column(name="value", nullable=false)
 	int value;
 }

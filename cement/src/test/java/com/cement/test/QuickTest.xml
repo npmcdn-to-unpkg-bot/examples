@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns=			"http://www.springframework.org/schema/beans"
+	xmlns:aop=		"http://www.springframework.org/schema/aop"
+	xmlns:c=		"http://www.springframework.org/schema/c"
+	xmlns:context=	"http://www.springframework.org/schema/context" 
+	xmlns:jee=		"http://www.springframework.org/schema/jee"
+	xmlns:jpa=		"http://www.springframework.org/schema/data/jpa"
+	xmlns:mvc=		"http://www.springframework.org/schema/mvc"
+	xmlns:oxm=		"http://www.springframework.org/schema/oxm"
+	xmlns:p=		"http://www.springframework.org/schema/p"
+	xmlns:tx=		"http://www.springframework.org/schema/tx"
+	xmlns:util=		"http://www.springframework.org/schema/util"
+	xmlns:xsi=		"http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/aop		http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/beans		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context	http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/data/jpa 	http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+		http://www.springframework.org/schema/jee		http://www.springframework.org/schema/jee/spring-jee.xsd
+		http://www.springframework.org/schema/mvc		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/oxm		http://www.springframework.org/schema/oxm/spring-oxm.xsd
+		http://www.springframework.org/schema/tx		http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/util		http://www.springframework.org/schema/util/spring-util.xsd
+">
+
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="org.sqlite.JDBC" />
+		<property name="url" value="jdbc:sqlite:/home/slavian/S/java/workspace/Servers/work/Databases/cement.rcp" />
+		<property name="username" value="" />
+		<property name="password" value="" />
+	</bean>
+	<!-- <jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/cement" /> -->
+
+	<bean
+		id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+		p:dataSource-ref="dataSource"
+		p:packagesToScan="com.cement.model">
+		
+		<property name="persistenceUnitName" value="cement"/>
+		<property name="jpaVendorAdapter">
+			<!-- <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" p:database="DERBY" p:showSql="true" /> -->
+			<bean class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter" p:database="DERBY" p:showSql="true" />
+		</property>
+	
+		<property name="jpaProperties">
+			<props>
+				<!-- <prop key="hibernate.hbm2ddl.auto">create-drop</prop> -->
+				<prop key="eclipselink.ddl-generation">create-or-extend-tables</prop>
+				<prop key="eclipselink.weaving">false</prop>
+
+				<prop key="eclipselink.logging.logger">org.eclipse.persistence.logging.slf4j.Slf4jSessionLogger</prop>
+				<prop key="eclipselink.logging.level">FINEST</prop>
+				<prop key="eclipselink.logging.sql">FINEST</prop>
+				<prop key="eclipselink.logging.level.sql">FINEST</prop>
+				<prop key="eclipselink.logging.parameters">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager" p:entityManagerFactory-ref="entityManagerFactory"/>
+	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+	
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+
+	<context:annotation-config />
+	<context:component-scan base-package="com.cement.component" />
+	<context:component-scan base-package="com.slavi.examples.spring.controller" />
+	
+	<!-- Tells Spring to use persistence context annotation -->
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+	
+	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean"/>
+</beans>

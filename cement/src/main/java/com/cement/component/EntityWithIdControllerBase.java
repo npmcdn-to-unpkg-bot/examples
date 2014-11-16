@@ -41,18 +41,16 @@ public abstract class EntityWithIdControllerBase<T extends EntityWithId> {
 
 	@RequestMapping(value="/delete/{id}")
 	protected String deleteItem(ModelMap model, RedirectAttributes redir,
-			@PathVariable("id") Integer id) throws Exception {
+			@PathVariable("id") int id) throws Exception {
 		jpa.delete(id);
 		return "redirect:..";
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.POST)
 	protected String saveItem(Model model, RedirectAttributes redir,
-			@PathVariable("id") Integer id,
+			@PathVariable("id") int id,
 			@Valid T item, BindingResult result) throws Exception {
-		if (result.hasErrors() || (item == null) || 
-			(id != null && (!id.equals(item.getId()))) || 
-			(id == null && item.getId() != null)) {
+		if (result.hasErrors() || (item == null) || (item.getId() == null) || (id != item.getId())) {
 			model.addAttribute(messageName, "Oooops");
 			return getViewItemEdit();
 		}
@@ -63,7 +61,7 @@ public abstract class EntityWithIdControllerBase<T extends EntityWithId> {
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.GET, produces={"text/html", "application/xml", "application/json"})
 	protected String loadItem(Model model, RedirectAttributes redir,
-			@PathVariable("id") Integer id) throws Exception {
+			@PathVariable("id") int id) throws Exception {
 		Object item = jpa.load(id);
 		if (item == null) {
 			redir.addFlashAttribute(messageName, "Item not found. Creating new.");

@@ -1,10 +1,19 @@
 select name, sql from sqlite_master where type='view'
 
-material_sample_sieve	
-CREATE VIEW material_sample_sieve as select sample_id, sieve_id, sum(value) as value from material_sample_sieve_pass group by sample_id, sieve_id
+CREATE VIEW material_sample_sieve as 
+select sample_id, sieve_id, sum(value) as value 
+from material_sample_sieve_pass 
+group by sample_id, sieve_id
 
-sample_weight	
-CREATE VIEW sample_weight as select sample_id, sum(value) as weight from material_sample_sieve where sieve_id > 0 group by sample_id
 
-sample_sieve_share	
-CREATE VIEW sample_sieve_share as select sieve_id, material_sample_sieve.sample_id as sample_id, cast(value as real)/cast(weight as real) as share from material_sample_sieve, sample_weight where material_sample_sieve.sample_id=sample_weight.sample_id and sieve_id > 0
+CREATE VIEW sample_weight as 
+select sample_id, sum(value) as weight 
+from material_sample_sieve 
+where sieve_id > 0
+group by sample_id
+
+
+CREATE VIEW sample_sieve_share as 
+select sieve_id, material_sample_sieve.sample_id as sample_id, cast(value as real)/cast(weight as real) as share 
+from material_sample_sieve, sample_weight 
+where material_sample_sieve.sample_id=sample_weight.sample_id and sieve_id > 0

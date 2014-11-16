@@ -6,7 +6,7 @@
 <datatables:table id="itemListTable" data="${model}" row="item" theme="bootstrap2" filterable="false" >
 	<datatables:column title="edit" cssStyle="width: 150px;" display="html">
 		<a href="${fn:escapeXml(item.id)}"><c:out value="edit" /></a>&nbsp;|&nbsp;
-		<a href="${fn:escapeXml(item.id)}/sample/"><c:out value="view" /></a>&nbsp;|&nbsp;
+		<a href="${fn:escapeXml(item.id)}/samples"><c:out value="view" /></a>&nbsp;|&nbsp;
 		<a href="delete/${fn:escapeXml(item.id)}"><c:out value="delete" /></a>
 	</datatables:column>
 	<datatables:column title="Id" property="id" />
