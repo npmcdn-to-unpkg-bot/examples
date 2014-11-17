@@ -33,7 +33,7 @@ public abstract class EntityWithIdControllerBase<T extends EntityWithId> {
 	protected abstract String getViewItemEdit();
 	protected abstract String getViewItemList();
 
-	@RequestMapping(value="/", method=RequestMethod.GET, produces={"text/html", "application/xml", "application/json"})
+	@RequestMapping(value="", method=RequestMethod.GET, produces={"text/html", "application/xml", "application/json"})
 	protected String list(Model model) throws Exception {
 		model.addAttribute("model", jpa.list());
 		return getViewItemList();

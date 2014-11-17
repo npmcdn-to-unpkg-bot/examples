@@ -1,4 +1,6 @@
 <%@include file="importTags.include.jsp" %>
+<c:set var="pagePath" value="${requestScope['javax.servlet.forward.request_uri']}" />
+<c:set var="pagePath" value="#{pagePath.endsWith('/') ? pagePath : pagePath.concat('/')}" />
 <html>
 <jsp:include page="/WEB-INF/jsp/fragments/headTag.jsp" />
 <body>

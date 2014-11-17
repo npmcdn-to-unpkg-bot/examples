@@ -1,6 +1,6 @@
 <%@include file="fragments/bodyHeader.jsp" %>
 
-<a href=".">back to List</a><br/>
+<a href="${pagePath}..">back to List</a><br/>
 <form:form modelAttribute="model" method="POST">
 	<form:errors path="*" cssClass="errorBox" />
 	<app:selectField label="Location" name="location.id" names="${locations}" />

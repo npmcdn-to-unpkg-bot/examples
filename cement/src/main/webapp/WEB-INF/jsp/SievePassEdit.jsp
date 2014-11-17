@@ -1,6 +1,6 @@
 <%@include file="fragments/bodyHeader.jsp" %>
 
-<a href="passes">back to List</a><br/>
+<a href="${pagePath}passes">back to List</a><br/>
 
 <table style="border-width:0px;">
 <app:labelField label="Location"		name="${material.location.name}" />

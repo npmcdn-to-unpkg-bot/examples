@@ -68,7 +68,7 @@ public class SievePassController {
 		Sample item = sampleJpa.load(sampleId);
 		if ((item != null) && 
 			(item.getMaterial().getId() == materialId)) {
-			jpa.passDelete(sampleId, id);
+			jpa.delete(sampleId, id);
 		}
 		return "redirect:../passes";
 	}
