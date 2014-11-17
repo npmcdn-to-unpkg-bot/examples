@@ -9,6 +9,15 @@
 <app:labelField label="Region"			name="${material.region.name}" />
 <app:labelField label="Supplier"		name="${material.supplier.name}" />
 <app:labelField label="Comment"			name="${material.comment}"/>
+
+<tr><td><hr/></td></tr>
+
+<app:labelField label="Place"			name="${sample.samplePlace}" />
+<app:labelField label="Date"			name="${sample.sampleDate}" />
+<app:labelField label="Date measure"	name="${sample.dateMeasure}" />
+<app:labelField label="Density"			name="${sample.density}" />
+<app:labelField label="Weight"			name="${sample.weight}" />
+<app:labelField label="Comment"			name="${sample.comment}"/>
 </table>
 <hr/>
 

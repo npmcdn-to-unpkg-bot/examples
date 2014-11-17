@@ -21,7 +21,7 @@ public class SievePassJpa {
 	protected EntityManager em;
 
 	@Transactional(readOnly=true)
-	public Collection<Integer> passList(int sampleId) {
+	public Collection<Integer> listPassIds(int sampleId) {
 		Query q = em.createQuery("select s.passId from SievePass s where s.sample.id=:id group by s.passId", Integer.class);
 		q.setParameter("id", sampleId);
 		return q.getResultList();
@@ -74,7 +74,7 @@ public class SievePassJpa {
 	}
 	
 	@Transactional
-	public void passDelete(int sampleId, int passId) throws Exception {
+	public void delete(int sampleId, int passId) throws Exception {
 		Query q = em.createQuery("delete from SievePass s where s.sample.id=:id and s.passId=:passId");
 		q.setParameter("id", sampleId);
 		q.setParameter("passId", passId);
