@@ -67,22 +67,22 @@ public class SampleJpa extends EntityWithIdJpa<Sample> {
 	}
 	
 	@Transactional(readOnly=true)
-	public List getSampleData(int sampleId) {
+	public List<Map> getSampleData(int sampleId) {
 		Map<Integer, Map> map = makeSievesMap();
-		Query q = em.createQuery("select s.sieveId, s.passId, s.value from SievePass s where s.sample.id=:id", Object[].class);
+		Query q = em.createQuery("select s.sieveId, s.value, s.passId from SievePass s where s.sample.id=:id", Object[].class);
 		q.setParameter("id", sampleId);
 		List<Object[]> items = q.getResultList();
 		for (Object[] i : items) {
 			Map m = map.get(i[0]);
 			if (m == null)
 				continue;
-			m.put(i[1], i[2]);
+			m.put(i[2], i[1]);
 		}
 		return sieveMapToList(map);
 	}
 	
 	@Transactional(readOnly=true)
-	public List loadPass(int sampleId, int passId) {
+	public List<Map> loadPass(int sampleId, int passId) {
 		Map<Integer, Map> map = makeSievesMap();
 		Query q = em.createQuery("select s.sieveId, s.value from SievePass s where s.sample.id=:id and s.passId=:passId", Object[].class);
 		q.setParameter("id", sampleId);
@@ -98,7 +98,7 @@ public class SampleJpa extends EntityWithIdJpa<Sample> {
 	}
 	
 	@Transactional(readOnly=true)
-	public List makeNewPass() {
+	public List<Map> makeNewPass() {
 		Map<Integer, Map> map = makeSievesMap();
 		List<Map> r = sieveMapToList(map);
 		for (Map m : r) {

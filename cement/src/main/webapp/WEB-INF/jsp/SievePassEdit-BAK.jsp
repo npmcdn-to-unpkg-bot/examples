@@ -24,11 +24,6 @@
 <form:form modelAttribute="model" method="POST">
 	<form:errors path="*" cssClass="errorBox" />
 	<c:forEach items="${model}" var="item">
-		<form:input path="map[''${item.sieve}'']" />
-<%-- 
-		<c:set var="inputName" value="map['${item.sieve}']" />
-		<app:inputField label="item.label" name="${inputName}" />
-
 		<c:set var="cssGroup"
 			value="control-group ${item.status.error ? 'error' : '' }" />
 		<div class="${cssGroup}">
@@ -39,7 +34,6 @@
 				<span class="help-inline">${item.status.errorMessage}</span>
 			</div>
 		</div>
- --%>
 	</c:forEach>
 
 	<button type="submit">Save</button>

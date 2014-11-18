@@ -1,19 +1,29 @@
 package com.cement.component;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.cement.misc.StringMapForm;
 import com.cement.model.Material;
 import com.cement.model.Sample;
 import com.cement.model.SievePass;
@@ -32,6 +42,14 @@ public class SievePassController {
 	@ModelAttribute("title")
 	String getTitle() {
 		return SievePass.class.getSimpleName();
+	}
+	
+	@InitBinder
+	public void initBinder(WebDataBinder binder) {
+//		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+//		dateFormat.setLenient(false);
+//		binder.registerCustomEditor(requiredType, propertyEditor);
+//		binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
 	}
 	
 	@ModelAttribute
@@ -78,38 +96,57 @@ public class SievePassController {
 			@PathVariable("materialId") int materialId,
 			@PathVariable("sampleId") int sampleId,
 			@PathVariable("id") int id,
-			@Valid Sample item, BindingResult result) throws Exception {
-		// TODO:
-		Sample dbSample = sampleJpa.load(sampleId);
-		if (result.hasErrors() || (dbSample == null) || (dbSample.getMaterial().getId() != sampleId)) {
+			@ModelAttribute("model") StringMapForm items) throws Exception {
+			// @Valid StringMapForm items, BindingResult result) throws Exception {
+/*		Sample dbSample = sampleJpa.load(sampleId);
+		if (result.hasErrors() || (dbSample == null) || (dbSample.getMaterial().getId() != materialId)) {
 			model.addAttribute(messageName, "Oooops");
 			return getViewItemEdit();
-		}
-		sampleJpa.save(item);
+		}*/
+		System.out.println(items);
+//		System.out.println(request.getHeaderNames());
+//		System.out.println(request.getParameterMap());
+		// sampleJpa.save(item);
 		redir.addFlashAttribute(messageName, "Data saved.");
 		return "redirect:passes";
 	}
-	
+
 	@RequestMapping(value="/{id}", method=RequestMethod.GET, produces={"text/html", "application/xml", "application/json"})
 	protected String loadItem(Model model, RedirectAttributes redir,
 			@PathVariable("materialId") int materialId,
 			@PathVariable("sampleId") int sampleId,
 			@PathVariable("id") Integer id) throws Exception {
-		Sample item = sampleJpa.load(id);
+		Sample item = sampleJpa.load(sampleId);
 		if ((item == null) ||
 			(item.getMaterial().getId() != materialId)) {
 			redir.addFlashAttribute(messageName, "Item not found. Creating new.");
 			return "redirect:new";
 		}
-		sampleJpa.loadPass(sampleId, id);
-		model.addAttribute("model", item);
+		List<Map> pass = sampleJpa.loadPass(sampleId, id);
+		model.addAttribute("model", pass);
 		return getViewItemEdit();
 	}
 
+/*	@RequestMapping(value="/{id}", method=RequestMethod.GET, produces={"text/html", "application/xml", "application/json"})
+	protected String loadItem(Model model, RedirectAttributes redir,
+			@PathVariable("materialId") int materialId,
+			@PathVariable("sampleId") int sampleId,
+			@PathVariable("id") Integer id) throws Exception {
+		Sample item = sampleJpa.load(sampleId);
+		if ((item == null) ||
+			(item.getMaterial().getId() != materialId)) {
+			redir.addFlashAttribute(messageName, "Item not found. Creating new.");
+			return "redirect:new";
+		}
+		List<Map> pass = sampleJpa.loadPass(sampleId, id);
+		model.addAttribute("model", pass);
+		return getViewItemEdit();
+	}
+*/
 	@RequestMapping(value="/new", method=RequestMethod.GET)
 	protected String loadNewItem(Model model) throws Exception {
-		Object item = sampleJpa.makeNew();
-		model.addAttribute("model", item);
+		List<Map> pass = sampleJpa.makeNewPass();
+		model.addAttribute("model", pass);
 		return getViewItemEdit();
 	}
 
