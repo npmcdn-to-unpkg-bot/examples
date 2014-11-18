@@ -1,6 +1,6 @@
 <%@include file="fragments/bodyHeader.jsp" %>
 
-<a href="../samples">back to List</a><br/>
+<a href="${pagePath}../samples">back to List</a><br/>
 
 <table style="border-width:0px;">
 <app:labelField label="Location"		name="${material.location.name}" />
@@ -21,21 +21,16 @@
 </table>
 <hr/>
 
-<a href="new/">Add new</a>
+<a href="${pagePath}new">Add new</a>
 <hr />
 
 
 <datatables:table id="itemListTable" data="${model}" row="item" theme="bootstrap2" filterable="false" pageable="false" sortable="false">
-	<datatables:column title="edit" cssStyle="width: 150px;" display="html">
-		<a href="${fn:escapeXml(item.id)}"><c:out value="edit" /></a>&nbsp;|&nbsp;
-		<a href="${fn:escapeXml(item.id)}/sieve"><c:out value="view" /></a>&nbsp;|&nbsp;
-		<a href="delete/${fn:escapeXml(item.id)}"><c:out value="delete" /></a>
-	</datatables:column>
 	<datatables:column title="Sieve label" property="label" />
 	<c:forEach items="${passes}" var="passId">
 		<datatables:column display="html">
 			<datatables:columnHead>
-				<c:out value="Pass ${passId}" /><a href="${passId}">[edit]</a>&nbsp;|&nbsp;<a href="delete/${passId}">[x]</a>
+				<c:out value="Pass ${passId}" /><a href="${pagePath}../${passId}">[edit]</a>&nbsp;|&nbsp;<a href="delete/${passId}">[x]</a>
 			</datatables:columnHead>
 			<c:out value="${item[passId]}" />
 		</datatables:column>
