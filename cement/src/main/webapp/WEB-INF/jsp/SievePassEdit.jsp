@@ -23,11 +23,17 @@
 
 <form:form modelAttribute="model" method="POST">
 	<form:errors path="*" cssClass="errorBox" />
-	<c:forEach items="${model}" var="item">
-		<form:input path="map[''${item.sieve}'']" />
+	<table>
+	<c:forEach items="${model.sieve}" varStatus="item">
+		<tr>
+		<td><label class="control-label">${model.sieve[item.index].sieve}</label></td>
+		<td><form:hidden path="sieve[${item.index}].sieve" />
+			<form:input path="sieve[${item.index}].value" />
+		</td>
+		</tr>
 <%-- 
 		<c:set var="inputName" value="map['${item.sieve}']" />
-		<app:inputField label="item.label" name="${inputName}" />
+		<app:inputField label="sieves[${item.index}].sieve" name="sieves[${item.index}].sieve" />
 
 		<c:set var="cssGroup"
 			value="control-group ${item.status.error ? 'error' : '' }" />
@@ -41,6 +47,7 @@
 		</div>
  --%>
 	</c:forEach>
+	</table>
 
 	<button type="submit">Save</button>
 </form:form>

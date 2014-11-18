@@ -12,6 +12,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cement.misc.SieveValue;
 import com.cement.model.Sample;
 
 @Repository
@@ -82,7 +83,7 @@ public class SampleJpa extends EntityWithIdJpa<Sample> {
 	}
 	
 	@Transactional(readOnly=true)
-	public List<Map> loadPass(int sampleId, int passId) {
+	public List<SieveValue> loadPass(int sampleId, int passId) {
 		Map<Integer, Map> map = makeSievesMap();
 		Query q = em.createQuery("select s.sieveId, s.value from SievePass s where s.sample.id=:id and s.passId=:passId", Object[].class);
 		q.setParameter("id", sampleId);
@@ -94,7 +95,19 @@ public class SampleJpa extends EntityWithIdJpa<Sample> {
 				continue;
 			m.put("pass", i[1]);
 		}
-		return sieveMapToList(map);
+		List<Map> list = sieveMapToList(map);
+		List<SieveValue> r = new ArrayList<>();
+		for (Map m : list) {
+			SieveValue v = new SieveValue();
+			v.setSieve(m.get("label").toString());
+			Object o = m.get("pass");
+			Double d = 0.0;
+			if (o instanceof Number)
+				d = ((Number) o).doubleValue();
+			v.setValue(d);
+			r.add(v);
+		}
+		return r;
 	}
 	
 	@Transactional(readOnly=true)
