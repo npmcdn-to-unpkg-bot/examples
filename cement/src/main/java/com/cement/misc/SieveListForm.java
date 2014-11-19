@@ -2,6 +2,8 @@ package com.cement.misc;
 
 import java.util.List;
 
+import com.cement.model.SieveValue;
+
 public class SieveListForm {
 
 	private List<SieveValue> sieve;

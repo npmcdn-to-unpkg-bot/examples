@@ -1,14 +1,10 @@
 package com.cement.component;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
@@ -20,15 +16,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cement.misc.SieveListForm;
-import com.cement.misc.SieveValue;
-import com.cement.misc.StringMapForm;
 import com.cement.model.Material;
 import com.cement.model.Sample;
 import com.cement.model.SievePass;
+import com.cement.model.SieveValue;
 
 @Controller
 @RequestMapping("/material/{materialId}/{sampleId}")
@@ -75,7 +69,7 @@ public class SievePassController {
 	
 	@RequestMapping(value="/passes", method=RequestMethod.GET, produces={"text/html", "application/xml", "application/json"})
 	protected String list(Model model, @PathVariable("sampleId") int sampleId) throws Exception {
-		model.addAttribute("passes", sampleJpa.getSievePasses(sampleId));
+		model.addAttribute("passes", jpa.listPassIds(sampleId));
 		model.addAttribute("model", sampleJpa.getSampleData(sampleId));
 		return getViewItemList();
 	}
@@ -100,11 +94,11 @@ public class SievePassController {
 			@PathVariable("id") int id,
 			@Valid SieveListForm data, BindingResult result) throws Exception {
 			// @Valid StringMapForm items, BindingResult result) throws Exception {
-/*		Sample dbSample = sampleJpa.load(sampleId);
+		Sample dbSample = sampleJpa.load(sampleId);
 		if (result.hasErrors() || (dbSample == null) || (dbSample.getMaterial().getId() != materialId)) {
 			model.addAttribute(messageName, "Oooops");
 			return getViewItemEdit();
-		}*/
+		}
 		System.out.println(data);
 //		System.out.println(request.getHeaderNames());
 //		System.out.println(request.getParameterMap());
@@ -124,7 +118,7 @@ public class SievePassController {
 			redir.addFlashAttribute(messageName, "Item not found. Creating new.");
 			return "redirect:new";
 		}
-		List<SieveValue> pass = sampleJpa.loadPass(sampleId, id);
+		List<SieveValue> pass = jpa.load(sampleId, id);
 		SieveListForm data = new SieveListForm();
 		data.setSieve(pass);
 		model.addAttribute("model", data);
@@ -149,7 +143,7 @@ public class SievePassController {
 */
 	@RequestMapping(value="/new", method=RequestMethod.GET)
 	protected String loadNewItem(Model model) throws Exception {
-		List<Map> pass = sampleJpa.makeNewPass();
+		List<SieveValue> pass = jpa.makeNew();
 		model.addAttribute("model", pass);
 		return getViewItemEdit();
 	}

@@ -2,11 +2,7 @@ package com.cement.component;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,6 +11,11 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cement.model.Sample;
+import com.cement.model.Sieve;
+import com.cement.model.SievePass;
+import com.cement.model.SieveValue;
+
 @Repository
 public class SievePassJpa {
 	@PersistenceContext
@@ -22,56 +23,70 @@ public class SievePassJpa {
 
 	@Transactional(readOnly=true)
 	public Collection<Integer> listPassIds(int sampleId) {
-		Query q = em.createQuery("select s.passId from SievePass s where s.sample.id=:id group by s.passId", Integer.class);
-		q.setParameter("id", sampleId);
+		Query q = em.createQuery("select p.passId from SievePass p where p.sample.id=:sampleId group by p.passId order by p.passId", Integer.class);
+		q.setParameter("sampleId", sampleId);
 		return q.getResultList();
 	}
-	
-/*	@Transactional(readOnly=true)
-	public List<Object[]> getSievePassValues(int sampleId, int passId) {
-		Query q = em.createQuery("select s.sieve_id, s.value from SievePass s where s.sample.id=:id and s.pass_id=:passId order by s.sieve_id", Object[].class);
+
+	@Transactional(readOnly=true)
+	public List<SieveValue> makeNew() {
+		Query q = em.createQuery("select s.id sieveId, s.name sieve, 0 value from Sieve s order by s.id", SieveValue.class);
+		List<SieveValue> items = q.getResultList();
+		List<SieveValue> result = new ArrayList<>();
+		result.add(new SieveValue(-2, "Value -2", 0));
+		result.add(new SieveValue(-1, "Value -1", 0));
+		result.addAll(items);
+		return result;
+	}
+
+	@Transactional(readOnly=true)
+	public List<SieveValue> load(int sampleId, int passId) {
+		Query q = em.createQuery("select p.sieve.id as sieveId, s.name as sieve, p.value as value from SievePass p left join Sieve s where p.sample.id=:id and p.passId=:passId order by p.sieve.id", SieveValue.class);
 		q.setParameter("id", sampleId);
 		q.setParameter("passId", passId);
-		return q.getResultList();
-	}
-*/
-	private static void addMap(Integer sieveId, String sieveLabel, Map<Integer, Map> map) {
-		Map m = new HashMap();
-		m.put("id", sieveId);
-		m.put("label", sieveLabel);
-		map.put(sieveId, m);
-	}
-	
-	@Transactional(readOnly=true)
-	public Collection<Map> loadData(int sampleId) {
-		Query q = em.createQuery("select s.id, s.name from Sieve s", Object[].class);
-		List<Object[]> items = q.getResultList();
-		Map<Integer, Map> map = new HashMap<Integer, Map>();
-		for (Object[] i : items) {
-			addMap((Integer) i[0], (String) i[1], map);
-		}
-		addMap(-2, "Value -2", map);
-		addMap(-1, "Value -1", map);
-		
-		q = em.createQuery("select s.sieveId, s.passId, s.value from SievePass s where s.sample.id=:id", Object[].class);
-		q.setParameter("id", sampleId);
-		items = q.getResultList();
-		for (Object[] i : items) {
-			Map m = map.get(i[0]);
-			if (m == null)
-				continue;
-			m.put(i[1], i[2]);
-		}
-		
-		List<Map> r = new ArrayList(map.values());
-		Collections.sort(r, new Comparator<Map>() {
-			public int compare(Map o1, Map o2) {
-				return Integer.compare((Integer) o1.get("id"), (Integer) o2.get("id"));
+		List<SieveValue> items = q.getResultList();
+		for (SieveValue i : items) {
+			switch (i.getSieveId()) {
+			case -2:
+				i.setSieve("Value -2");
+				break;
+			case -1:
+				i.setSieve("Value -1");
+				break;
 			}
-		});
-
-		return r;
+		}
+		return items;
 	}
+
+	/**
+	 * passId = -1 => create new
+	 */
+	@Transactional
+	public void save(int sampleId, int passId, List<SieveValue> items) {
+		if (passId == -1) {
+			Collection<Integer> passes = listPassIds(sampleId);
+			passId = 0;
+			for (Integer i : passes) {
+				if (i == passId)
+					passId++;
+			}
+		}
+		Query q = em.createQuery("delete from SievePass p where p.sample.id=:sampleId and p.passId=:passId");
+		q.setParameter("sampleId", sampleId);
+		q.setParameter("passId", passId);
+		q.executeUpdate();
+
+		Sample sample = em.find(Sample.class, sampleId);
+		for (SieveValue item : items) {
+			SievePass pass = new SievePass();
+			pass.setSample(sample);
+			pass.setSieve(em.find(Sieve.class, item.getSieveId()));
+			pass.setPassId(passId);
+			pass.setValue(item.getValue());
+			em.merge(pass);
+		}
+	}
+
 	
 	@Transactional
 	public void delete(int sampleId, int passId) throws Exception {
