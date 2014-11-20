@@ -30,6 +30,9 @@ public class SievePassController {
 	public static final String messageName = "message";
 
 	@Autowired
+	SieveJpa sieveJpa;
+	
+	@Autowired
 	SampleJpa sampleJpa;
 
 	@Autowired
@@ -97,6 +100,7 @@ public class SievePassController {
 		Sample dbSample = sampleJpa.load(sampleId);
 		if (result.hasErrors() || (dbSample == null) || (dbSample.getMaterial().getId() != materialId)) {
 			model.addAttribute(messageName, "Oooops");
+			model.addAttribute("sieves", sieveJpa.list());
 			return getViewItemEdit();
 		}
 		System.out.println(data);
@@ -118,10 +122,8 @@ public class SievePassController {
 			redir.addFlashAttribute(messageName, "Item not found. Creating new.");
 			return "redirect:new";
 		}
-		List<SieveValue> pass = jpa.load(sampleId, id);
-		SieveListForm data = new SieveListForm();
-		data.setSieve(pass);
-		model.addAttribute("model", data);
+		model.addAttribute("sieves", sieveJpa.list());
+		model.addAttribute("model", jpa.load(sampleId, id));
 		return getViewItemEdit();
 	}
 

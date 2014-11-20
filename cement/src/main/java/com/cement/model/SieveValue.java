@@ -28,7 +28,10 @@ public class SieveValue {
 		this.sieve = sieve;
 		this.val = val;
 	}
-	
+
+	public SieveValue(int sieveId, double sieve, double val) {
+		this(sieveId, Double.toString(sieve), val);
+	}
 	public int getSieveId() {
 		return sieveId;
 	}
@@ -54,6 +57,6 @@ public class SieveValue {
 	}
 	
 	public String toString() {
-		return "S:" + sieve + ", V:" + val;
+		return "S:" + sieve + ", V:" + val + ", id:" + sieveId;
 	}
 }

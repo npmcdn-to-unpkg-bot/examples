@@ -24,9 +24,9 @@
 <form:form modelAttribute="model" method="POST">
 	<form:errors path="*" cssClass="errorBox" />
 	<table>
-	<c:forEach items="${model.sieve}" varStatus="item">
+	<c:forEach items="${sieves}" varStatus="item">
 		<tr>
-		<td><label class="control-label">${model.sieve[item.index].sieve}</label></td>
+		<td><label class="control-label">${sieves[item.index].name}</label></td>
 		<td><form:hidden path="sieve[${item.index}].sieveId" />
 			<form:input path="sieve[${item.index}].val" />
 		</td>

@@ -22,8 +22,8 @@ public class QuickTest {
 		EntityManagerFactory emf = appContext.getBean("entityManagerFactory", EntityManagerFactory.class);
 		EntityManager em = emf.createEntityManager();
 
-		Query q = em.createQuery("select p.sieve.id sieveId, s.name sieve, p.value from SievePass p left join Sieve s where p.sample.id=:id and p.passId=:passId order by p.sieve.id", SieveValue.class);	
-		q.setParameter("id", 23);
+		Query q = em.createQuery("select new com.cement.model.SieveValue(p.sieve.id, s.name, p.value) from SievePass p left join Sieve s where p.sample.id=:sampleId and p.passId=:passId and p.sieve.id <= 1 order by p.sieve.id", SieveValue.class);	
+		q.setParameter("sampleId", 23);
 		q.setParameter("passId", 0);
 		List items = q.getResultList();
 		for (Object item : items) {

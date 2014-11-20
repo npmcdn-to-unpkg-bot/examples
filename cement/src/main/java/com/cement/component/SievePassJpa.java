@@ -11,6 +11,7 @@ import javax.persistence.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cement.misc.SieveListForm;
 import com.cement.model.Sample;
 import com.cement.model.Sieve;
 import com.cement.model.SievePass;
@@ -29,6 +30,18 @@ public class SievePassJpa {
 	}
 
 	@Transactional(readOnly=true)
+	public Collection<Sieve> listSieves(int sampleId) {
+		Query q = em.createQuery("select s.id sieveId, s.name sieve, 0 value from Sieve s order by s.id", SieveValue.class);
+		List<SieveValue> items = q.getResultList();
+		List<SieveValue> result = new ArrayList<>();
+		result.add(new SieveValue(-2, "Value -2", 0));
+		result.add(new SieveValue(-1, "Value -1", 0));
+//		Query q = em.createQuery("select p.passId from SievePass p where p.sample.id=:sampleId group by p.passId order by p.passId", Integer.class);
+//		q.setParameter("sampleId", sampleId);
+		return q.getResultList();
+	}
+
+	@Transactional(readOnly=true)
 	public List<SieveValue> makeNew() {
 		Query q = em.createQuery("select s.id sieveId, s.name sieve, 0 value from Sieve s order by s.id", SieveValue.class);
 		List<SieveValue> items = q.getResultList();
@@ -40,13 +53,13 @@ public class SievePassJpa {
 	}
 
 	@Transactional(readOnly=true)
-	public List<SieveValue> load(int sampleId, int passId) {
+	public SieveListForm load(int sampleId, int passId) {
 		//Query q = em.createQuery("select p.sieve.id as sieveId, s.name as sieve, p.value as val from SievePass p left join Sieve s where p.sample.id=:id and p.passId=:passId order by p.sieve.id", SieveValue.class);
 		Query q = em.createNativeQuery("select p.sieve_id as sieveId, s.sieve_d as sieve, p.value as val from material_sample_sieve_pass p left join sieve s on p.sieve_id=s.sieve_id where p.sample_id=?1 and p.pass_id=?2 order by p.sieve_id");
 		q.setParameter(1, sampleId);
 		q.setParameter(2, passId);
 		List<Object[]> items = q.getResultList();
-		List<SieveValue> result = new ArrayList<>();
+		List<SieveValue> list = new ArrayList<>();
 		for (Object[] o : items) {
 			SieveValue v = new SieveValue();
 			int sieveId = (Integer) o[0];
@@ -64,9 +77,11 @@ public class SievePassJpa {
 				v.setSieve(o[1] == null ? "" : o[1].toString());
 				break;
 			}
-			result.add(v);
+			list.add(v);
 		}
-		return result;
+		SieveListForm r = new SieveListForm();
+		r.setSieve(list);
+		return r;
 	}
 
 	/**
