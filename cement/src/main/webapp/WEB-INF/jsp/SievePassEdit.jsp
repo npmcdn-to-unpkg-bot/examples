@@ -27,8 +27,8 @@
 	<c:forEach items="${model.sieve}" varStatus="item">
 		<tr>
 		<td><label class="control-label">${model.sieve[item.index].sieve}</label></td>
-		<td><form:hidden path="sieve[${item.index}].id" />
-			<form:input path="sieve[${item.index}].value" />
+		<td><form:hidden path="sieve[${item.index}].sieveId" />
+			<form:input path="sieve[${item.index}].val" />
 		</td>
 		</tr>
 <%-- 

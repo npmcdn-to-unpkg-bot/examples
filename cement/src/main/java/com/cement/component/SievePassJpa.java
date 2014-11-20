@@ -41,21 +41,32 @@ public class SievePassJpa {
 
 	@Transactional(readOnly=true)
 	public List<SieveValue> load(int sampleId, int passId) {
-		Query q = em.createQuery("select p.sieve.id as sieveId, s.name as sieve, p.value as value from SievePass p left join Sieve s where p.sample.id=:id and p.passId=:passId order by p.sieve.id", SieveValue.class);
-		q.setParameter("id", sampleId);
-		q.setParameter("passId", passId);
-		List<SieveValue> items = q.getResultList();
-		for (SieveValue i : items) {
-			switch (i.getSieveId()) {
-			case -2:
-				i.setSieve("Value -2");
+		//Query q = em.createQuery("select p.sieve.id as sieveId, s.name as sieve, p.value as val from SievePass p left join Sieve s where p.sample.id=:id and p.passId=:passId order by p.sieve.id", SieveValue.class);
+		Query q = em.createNativeQuery("select p.sieve_id as sieveId, s.sieve_d as sieve, p.value as val from material_sample_sieve_pass p left join sieve s on p.sieve_id=s.sieve_id where p.sample_id=?1 and p.pass_id=?2 order by p.sieve_id");
+		q.setParameter(1, sampleId);
+		q.setParameter(2, passId);
+		List<Object[]> items = q.getResultList();
+		List<SieveValue> result = new ArrayList<>();
+		for (Object[] o : items) {
+			SieveValue v = new SieveValue();
+			int sieveId = (Integer) o[0];
+			v.setSieveId(sieveId);
+			v.setVal(((Number) o[2]).doubleValue());
+			
+			switch (sieveId) {
+			case 0:
+				v.setSieve("Value 0");
 				break;
 			case -1:
-				i.setSieve("Value -1");
+				v.setSieve("Value -1");
+				break;
+			default:
+				v.setSieve(o[1] == null ? "" : o[1].toString());
 				break;
 			}
+			result.add(v);
 		}
-		return items;
+		return result;
 	}
 
 	/**
@@ -82,7 +93,7 @@ public class SievePassJpa {
 			pass.setSample(sample);
 			pass.setSieve(em.find(Sieve.class, item.getSieveId()));
 			pass.setPassId(passId);
-			pass.setValue(item.getValue());
+			pass.setValue(item.getVal());
 			em.merge(pass);
 		}
 	}

@@ -17,16 +17,16 @@ public class SieveValue {
 	@Column(name="sieve")
 	private String sieve;
 
-	@Column(name="value")
-	private double value;
+	@Column(name="val")
+	private double val;
 
 	public SieveValue() {
 	}
 	
-	public SieveValue(int sieveId, String sieve, double value) {
+	public SieveValue(int sieveId, String sieve, double val) {
 		this.sieveId = sieveId;
 		this.sieve = sieve;
-		this.value = value;
+		this.val = val;
 	}
 	
 	public int getSieveId() {
@@ -45,15 +45,15 @@ public class SieveValue {
 		this.sieve = sieve;
 	}
 
-	public double getValue() {
-		return value;
+	public double getVal() {
+		return val;
 	}
 
-	public void setValue(double value) {
-		this.value = value;
+	public void setVal(double value) {
+		this.val = value;
 	}
 	
 	public String toString() {
-		return "S:" + sieve + ", V:" + value;
+		return "S:" + sieve + ", V:" + val;
 	}
 }
