@@ -1,5 +1,7 @@
 package com.cement.component;
 
+import java.util.Collection;
+
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import com.cement.misc.SieveListForm;
+import com.cement.misc.SievePassForm;
+import com.cement.model.IdName;
 import com.cement.model.Sample;
 import com.cement.model.SievePass;
 
@@ -36,7 +39,7 @@ public class SievePassController {
 
 	@ModelAttribute("title")
 	String getTitle() {
-		return SievePass.class.getSimpleName();
+		return "SievePass";
 	}
 	
 	@InitBinder
@@ -92,12 +95,14 @@ public class SievePassController {
 			@PathVariable("materialId") int materialId,
 			@PathVariable("sampleId") int sampleId,
 			@PathVariable("id") int id,
-			@ModelAttribute("model") @Valid SieveListForm data, BindingResult result) throws Exception {
+			@ModelAttribute("model") @Valid SievePassForm data, BindingResult result) throws Exception {
 			// @Valid StringMapForm items, BindingResult result) throws Exception {
 		Sample dbSample = sampleJpa.load(sampleId);
-		if (result.hasErrors() || (dbSample == null) || (dbSample.getMaterial().getId() != materialId)) {
+		Collection<IdName> sieves = jpa.listSieves();
+		if (result.hasErrors() || (dbSample == null) || (dbSample.getMaterial().getId() != materialId) ||
+				(data == null) || (data.getValues() == null) || (data.getValues().size() != sieves.size())) {
 			model.addAttribute(messageName, "Oooops");
-			model.addAttribute("sieves", jpa.listSieves());
+			model.addAttribute("sieves", sieves);
 			//model.addAttribute("model", result);
 			return getViewItemEdit();
 		}
@@ -125,22 +130,6 @@ public class SievePassController {
 		return getViewItemEdit();
 	}
 
-/*	@RequestMapping(value="/{id}", method=RequestMethod.GET, produces={"text/html", "application/xml", "application/json"})
-	protected String loadItem(Model model, RedirectAttributes redir,
-			@PathVariable("materialId") int materialId,
-			@PathVariable("sampleId") int sampleId,
-			@PathVariable("id") Integer id) throws Exception {
-		Sample item = sampleJpa.load(sampleId);
-		if ((item == null) ||
-			(item.getMaterial().getId() != materialId)) {
-			redir.addFlashAttribute(messageName, "Item not found. Creating new.");
-			return "redirect:new";
-		}
-		List<Map> pass = sampleJpa.loadPass(sampleId, id);
-		model.addAttribute("model", pass);
-		return getViewItemEdit();
-	}
-*/
 	@RequestMapping(value="/new", method=RequestMethod.GET)
 	protected String loadNewItem(Model model) throws Exception {
 		model.addAttribute("sieves", jpa.listSieves());
@@ -153,9 +142,11 @@ public class SievePassController {
 	protected String setNewItem(Model model, RedirectAttributes redir,
 			@PathVariable("materialId") int materialId,
 			@PathVariable("sampleId") int sampleId,
-			@ModelAttribute("model") @Valid SieveListForm data, BindingResult result) throws Exception {
+			@ModelAttribute("model") @Valid SievePassForm data, BindingResult result) throws Exception {
 		Sample dbSample = sampleJpa.load(sampleId);
-		if (result.hasErrors() || (dbSample == null) || (dbSample.getMaterial().getId() != materialId)) {
+		Collection<IdName> sieves = jpa.listSieves();
+		if (result.hasErrors() || (dbSample == null) || (dbSample.getMaterial().getId() != materialId) ||
+				(data == null) || (data.getValues() == null) || (data.getValues().size() != sieves.size())) {
 			model.addAttribute(messageName, "Oooops");
 			model.addAttribute("sieves", jpa.listSieves());
 			//model.addAttribute("model", result);

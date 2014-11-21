@@ -24,34 +24,11 @@
 <form:form modelAttribute="model" method="POST">
 	<form:errors path="*" cssClass="errorBox" />
 	<table>
-	<c:forEach items="${sieves}" varStatus="item">
+	<c:forEach items="${sieves}" varStatus="item" var="sieve">
 		<tr>
-<%-- 		<td><label class="control-label">${sieves[item.index].name}</label></td>
-		<td><form:hidden path="sieve[${item.index}].sieveId" />
-			<form:input path="sieve[${item.index}].val" />
-		</td>
- --%>
-		<td><label class="control-label"></label></td>
-		<td><form:hidden path="sieve[${item.index}].sieveId" />
-			<app:inputField2 label="${sieves[item.index].name}" name="sieve[${item.index}].val" />
-		</td>
-
+			<td><app:inputField2 label="${sieve.name}" name="values[${item.index}]" />
+			</td>
 		</tr>
-<%-- 
-		<c:set var="inputName" value="map['${item.sieve}']" />
-		<app:inputField label="sieves[${item.index}].sieve" name="sieves[${item.index}].sieve" />
-
-		<c:set var="cssGroup"
-			value="control-group ${item.status.error ? 'error' : '' }" />
-		<div class="${cssGroup}">
-			<label class="control-label"><c:out value="${fn:escapeXml(item.label)}" /></label>
-			
-			<div class="controls">
-				<input name="map['${item.sieve}']" type="text" value="${fn:escapeXml(item.pass)}"/>
-				<span class="help-inline">${item.status.errorMessage}</span>
-			</div>
-		</div>
- --%>
 	</c:forEach>
 	</table>
 

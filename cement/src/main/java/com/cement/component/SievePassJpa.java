@@ -2,25 +2,19 @@ package com.cement.component;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.cement.misc.SieveListForm;
-import com.cement.misc.SieveMapForm;
+import com.cement.misc.SievePassForm;
 import com.cement.model.IdName;
-import com.cement.model.Sample;
-import com.cement.model.Sieve;
-import com.cement.model.SievePass;
 import com.cement.model.SievePassJustIds;
-import com.cement.model.SieveValue;
 
 @Repository
 public class SievePassJpa {
@@ -35,7 +29,7 @@ public class SievePassJpa {
 	}
 
 	@Transactional(readOnly=true)
-	public Collection<IdName> listSieves() {
+	public List<IdName> listSieves() {
 		Query q = em.createNamedQuery("SieveName_list");
 		List<IdName> result = new ArrayList<>();
 		result.add(new IdName(-1, "Value -1"));
@@ -46,40 +40,30 @@ public class SievePassJpa {
 	}
 
 	@Transactional(readOnly=true)
-	public SieveListForm makeNew() {
-		List<SieveValue> list = new ArrayList<>();
+	public SievePassForm makeNew() {
 		Collection<IdName> sieves = listSieves();
+		SievePassForm result = new SievePassForm();
 		for (IdName sieve : sieves) {
-			list.add(new SieveValue(sieve.getId(), 0));
+			result.getValues().add(0.0);
 		}
-		SieveListForm result = new SieveListForm();
-		result.setSieve(list);
 		return result;
 	}
 
 	@Transactional(readOnly=true)
-	public SieveListForm load(int sampleId, int passId) {
-		Query q = em.createNamedQuery("SieveValue_loadPass");
-		q.setParameter(1, sampleId);
-		q.setParameter(2, passId);
-		SieveListForm r = new SieveListForm();
-		r.setSieve(q.getResultList());
-		return r;
-	}
-
-	@Transactional(readOnly=true)
-	public SieveMapForm load2(int sampleId, int passId) {
-		//Query q = em.createNativeQuery("select p.sieve_id, p.value from material_sample_sieve_pass p where p.sample_id=23 and p.pass_id=0");
-		Query q = em.createNamedQuery("SieveValue_loadPass");
-		q.setParameter(1, sampleId);
-		q.setParameter(2, passId);
-		List<SieveValue> list = q.getResultList();
-		Map<Integer, SieveValue> map = new HashMap<>();
-		for (SieveValue i : list) {
-			map.put(i.getSieveId(), i);
+	public SievePassForm load(int sampleId, int passId) {
+		SievePassForm r = new SievePassForm();
+		Query q = em.createQuery("select p.value val from SievePassJustIds p where p.sample=:sampleId and p.sieve=:sieveId and p.passId=:passId");
+		q.setParameter("sampleId", sampleId);
+		q.setParameter("passId", passId);
+		for (IdName sieve : listSieves()) {
+			q.setParameter("sieveId", sieve.getId());
+			double d = 0.0;
+			try {
+				d = ((Number) q.getSingleResult()).doubleValue();
+			} catch (NoResultException e) {
+			}
+			r.getValues().add(d);
 		}
-		SieveMapForm r = new SieveMapForm();
-		r.setSieve(map);
 		return r;
 	}
 
@@ -87,7 +71,7 @@ public class SievePassJpa {
 	 * passId = -1 => create new
 	 */
 	@Transactional
-	public void save(int sampleId, int passId, SieveListForm data) {
+	public void save(int sampleId, int passId, SievePassForm data) {
 		if (passId == -1) {
 			Collection<Integer> passes = listPassIds(sampleId);
 			passId = 0;
@@ -101,12 +85,14 @@ public class SievePassJpa {
 		q.setParameter("passId", passId);
 		q.executeUpdate();
 
-		for (SieveValue item : data.getSieve()) {
+		List<IdName> sieves = listSieves();
+		for (int i = 0; i < sieves.size(); i++) {
+			IdName sieve = sieves.get(i);
 			SievePassJustIds pass = new SievePassJustIds();
 			pass.setSample(sampleId);
-			pass.setSieve(item.getSieveId());
+			pass.setSieve(sieve.getId());
 			pass.setPassId(passId);
-			pass.setValue(item.getVal());
+			pass.setValue(data.getValues().get(i));
 			em.persist(pass);
 		}
 	}
