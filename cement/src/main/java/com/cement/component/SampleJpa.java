@@ -35,8 +35,8 @@ public class SampleJpa extends EntityWithIdJpa<Sample> {
 		for (Object[] i : items) {
 			addMap((Integer) i[0], i[1], map);
 		}
-		addMap(-2, "Value -2", map);
 		addMap(-1, "Value -1", map);
+		addMap(0, "Value 0", map);
 		
 		return map;
 	}
@@ -54,8 +54,8 @@ public class SampleJpa extends EntityWithIdJpa<Sample> {
 	@Transactional(readOnly=true)
 	public List<Map> getSampleData(int sampleId) {
 		Map<Integer, Map> map = makeSievesMap();
-		Query q = em.createQuery("select p.sieve.id, p.value, p.passId from SievePass p where p.sample.id=:id", Object[].class);
-		q.setParameter("id", sampleId);
+		Query q = em.createNativeQuery("select p.sieve_id sieve_id, p.value val, p.pass_id from material_sample_sieve_pass p where p.sample_id=?1");
+		q.setParameter(1, sampleId);
 		List<Object[]> items = q.getResultList();
 		for (Object[] i : items) {
 			Map m = map.get(i[0]);

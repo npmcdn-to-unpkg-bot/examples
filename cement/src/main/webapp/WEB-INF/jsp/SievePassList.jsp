@@ -21,7 +21,7 @@
 </table>
 <hr/>
 
-<a href="${pagePath}new">Add new</a>
+<a href="${pagePath}../new">Add new</a>
 <hr />
 
 

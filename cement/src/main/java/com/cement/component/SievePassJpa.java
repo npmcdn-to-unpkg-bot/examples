@@ -19,6 +19,7 @@ import com.cement.model.IdName;
 import com.cement.model.Sample;
 import com.cement.model.Sieve;
 import com.cement.model.SievePass;
+import com.cement.model.SievePassJustIds;
 import com.cement.model.SieveValue;
 
 @Repository
@@ -45,14 +46,14 @@ public class SievePassJpa {
 	}
 
 	@Transactional(readOnly=true)
-	public List<SieveValue> makeNew() {
-		List<SieveValue> result = new ArrayList<>();
-		result.add(new SieveValue(-1, 0));
-		result.add(new SieveValue(0, 0));
+	public SieveListForm makeNew() {
+		List<SieveValue> list = new ArrayList<>();
 		Collection<IdName> sieves = listSieves();
 		for (IdName sieve : sieves) {
-			result.add(new SieveValue(sieve.getId(), 0));
+			list.add(new SieveValue(sieve.getId(), 0));
 		}
+		SieveListForm result = new SieveListForm();
+		result.setSieve(list);
 		return result;
 	}
 
@@ -100,13 +101,10 @@ public class SievePassJpa {
 		q.setParameter("passId", passId);
 		q.executeUpdate();
 
-		Sample sample = em.find(Sample.class, sampleId);
-		
 		for (SieveValue item : data.getSieve()) {
-			SievePass pass = new SievePass();
-			pass.setSample(sample);
-			Sieve sieve = em.find(Sieve.class, item.getSieveId());
-			pass.setSieve(sieve);
+			SievePassJustIds pass = new SievePassJustIds();
+			pass.setSample(sampleId);
+			pass.setSieve(item.getSieveId());
 			pass.setPassId(passId);
 			pass.setValue(item.getVal());
 			em.persist(pass);

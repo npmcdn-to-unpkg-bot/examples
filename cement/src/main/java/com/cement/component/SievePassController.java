@@ -1,7 +1,5 @@
 package com.cement.component;
 
-import java.util.List;
-
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,11 +17,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cement.misc.SieveListForm;
-import com.cement.misc.SieveMapForm;
-import com.cement.model.Material;
 import com.cement.model.Sample;
 import com.cement.model.SievePass;
-import com.cement.model.SieveValue;
 
 @Controller
 @RequestMapping("/material/{materialId}/{sampleId}")
@@ -73,6 +68,7 @@ public class SievePassController {
 	
 	@RequestMapping(value="/passes", method=RequestMethod.GET, produces={"text/html", "application/xml", "application/json"})
 	protected String list(Model model, @PathVariable("sampleId") int sampleId) throws Exception {
+		model.addAttribute("sieves", jpa.listSieves());
 		model.addAttribute("passes", jpa.listPassIds(sampleId));
 		model.addAttribute("model", sampleJpa.getSampleData(sampleId));
 		return getViewItemList();
@@ -147,23 +143,26 @@ public class SievePassController {
 */
 	@RequestMapping(value="/new", method=RequestMethod.GET)
 	protected String loadNewItem(Model model) throws Exception {
-		List<SieveValue> pass = jpa.makeNew();
-		model.addAttribute("model", pass);
+		model.addAttribute("sieves", jpa.listSieves());
+		model.addAttribute("model", jpa.makeNew());
 		return getViewItemEdit();
 	}
 
 	@Transactional
 	@RequestMapping(value="/new", method=RequestMethod.POST)
 	protected String setNewItem(Model model, RedirectAttributes redir,
-			@ModelAttribute("material") Material material,
-			@Valid Sample item, BindingResult result) throws Exception {
-		if (result.hasErrors() || (item == null)) {
+			@PathVariable("materialId") int materialId,
+			@PathVariable("sampleId") int sampleId,
+			@ModelAttribute("model") @Valid SieveListForm data, BindingResult result) throws Exception {
+		Sample dbSample = sampleJpa.load(sampleId);
+		if (result.hasErrors() || (dbSample == null) || (dbSample.getMaterial().getId() != materialId)) {
 			model.addAttribute(messageName, "Oooops");
+			model.addAttribute("sieves", jpa.listSieves());
+			//model.addAttribute("model", result);
 			return getViewItemEdit();
 		}
-		item.setMaterial(material);
-		sampleJpa.save(item);
+		jpa.save(sampleId, -1, data);
 		redir.addFlashAttribute(messageName, "Data saved.");
-		return "redirect:.";
+		return "redirect:passes";
 	}
 }
