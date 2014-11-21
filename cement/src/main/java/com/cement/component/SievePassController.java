@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cement.misc.SieveListForm;
+import com.cement.misc.SieveMapForm;
 import com.cement.model.Material;
 import com.cement.model.Sample;
 import com.cement.model.SievePass;
@@ -95,18 +96,19 @@ public class SievePassController {
 			@PathVariable("materialId") int materialId,
 			@PathVariable("sampleId") int sampleId,
 			@PathVariable("id") int id,
-			@Valid SieveListForm data, BindingResult result) throws Exception {
+			@ModelAttribute("model") @Valid SieveListForm data, BindingResult result) throws Exception {
 			// @Valid StringMapForm items, BindingResult result) throws Exception {
 		Sample dbSample = sampleJpa.load(sampleId);
 		if (result.hasErrors() || (dbSample == null) || (dbSample.getMaterial().getId() != materialId)) {
 			model.addAttribute(messageName, "Oooops");
-			model.addAttribute("sieves", sieveJpa.list());
+			model.addAttribute("sieves", jpa.listSieves());
+			//model.addAttribute("model", result);
 			return getViewItemEdit();
 		}
 		System.out.println(data);
 //		System.out.println(request.getHeaderNames());
 //		System.out.println(request.getParameterMap());
-		// sampleJpa.save(item);
+		jpa.save(sampleId, id, data);
 		redir.addFlashAttribute(messageName, "Data saved.");
 		return "redirect:passes";
 	}
@@ -117,12 +119,12 @@ public class SievePassController {
 			@PathVariable("sampleId") int sampleId,
 			@PathVariable("id") Integer id) throws Exception {
 		Sample item = sampleJpa.load(sampleId);
+		model.addAttribute("sieves", jpa.listSieves());
 		if ((item == null) ||
 			(item.getMaterial().getId() != materialId)) {
 			redir.addFlashAttribute(messageName, "Item not found. Creating new.");
 			return "redirect:new";
 		}
-		model.addAttribute("sieves", sieveJpa.list());
 		model.addAttribute("model", jpa.load(sampleId, id));
 		return getViewItemEdit();
 	}
