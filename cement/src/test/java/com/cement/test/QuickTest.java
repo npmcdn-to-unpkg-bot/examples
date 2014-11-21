@@ -27,24 +27,13 @@ public class QuickTest {
 //		Query q = em.createQuery("select new com.cement.model.SieveValue(p.sieve.id, p.sieve.name, p.value) " +
 //				"from SievePass p where p.sample.id=:sampleId and p.passId=:passId and p.sieve.id <= 1 order by p.sieve.id", SieveValue.class);
 
-/*		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery<Tuple> criteria = builder.createTupleQuery();
-		Root<Sieve> root = criteria.from(Sieve.class);
-		criteria.multiselect(root.get("id"), root.get("name"));
-		Query q = em.createQuery(criteria);
-*/
-/*		Query q = em.createQuery("select p.sieve, p.value from SievePass p left join fetch p.sieve where p.sample.id=:sampleId and p.passId=:passId");
-		q.setParameter("sampleId", 23);
-		q.setParameter("passId", 0);
-*/		
-		Query q = em.createNativeQuery("select s.sieve_id id, s.sieve_d name from sieve s order by s.sieve_id", "SieveName_list2"); 
-		//Query q = em.createNamedQuery("SieveName_list2");
-/*		List<Object> items = q.getResultList();
+		Query q = em.createNamedQuery("SieveName_list2");
+		List<Object> items = q.getResultList();
 		for (Object item : items) {
 			System.out.println(item);
 		}
-*/
-		List<Object[]> items = q.getResultList();
+
+/*		List<Object[]> items = q.getResultList();
 		for (Object[] item : items) {
 			System.out.println(Arrays.toString(item) + " " + item[0].getClass() + ", " + item[1].getClass());
 		}

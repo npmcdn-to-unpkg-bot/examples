@@ -5,8 +5,9 @@ import javax.persistence.AccessType;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
+import javax.persistence.ColumnResult;
+import javax.persistence.ConstructorResult;
 import javax.persistence.Entity;
-import javax.persistence.EntityResult;
 import javax.persistence.NamedNativeQueries;
 import javax.persistence.NamedNativeQuery;
 import javax.persistence.SqlResultSetMapping;
@@ -24,7 +25,12 @@ import javax.persistence.Table;
 		query=	"select s.sieve_id id, s.sieve_d name from sieve s order by s.sieve_id")
 })
 @SqlResultSetMappings({
-	@SqlResultSetMapping(name="SieveName_list", entities={ @EntityResult(entityClass=IdName.class) } )
+	@SqlResultSetMapping(name="SieveName_list", classes={
+		@ConstructorResult(targetClass=IdNamePair.class, columns = {
+			@ColumnResult(name="id"),
+			@ColumnResult(name="name")
+		})
+	})
 })
 public class Sieve extends EntityWithId {
 

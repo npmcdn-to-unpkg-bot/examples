@@ -19,9 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.cement.misc.SievePassForm;
-import com.cement.model.IdName;
+import com.cement.model.IdNamePair;
 import com.cement.model.Sample;
-import com.cement.model.SievePass;
 
 @Controller
 @RequestMapping("/material/{materialId}/{sampleId}")
@@ -73,7 +72,7 @@ public class SievePassController {
 	protected String list(Model model, @PathVariable("sampleId") int sampleId) throws Exception {
 		model.addAttribute("sieves", jpa.listSieves());
 		model.addAttribute("passes", jpa.listPassIds(sampleId));
-		model.addAttribute("model", sampleJpa.getSampleData(sampleId));
+		model.addAttribute("model", jpa.getSampleData(sampleId));
 		return getViewItemList();
 	}
 
@@ -98,7 +97,7 @@ public class SievePassController {
 			@ModelAttribute("model") @Valid SievePassForm data, BindingResult result) throws Exception {
 			// @Valid StringMapForm items, BindingResult result) throws Exception {
 		Sample dbSample = sampleJpa.load(sampleId);
-		Collection<IdName> sieves = jpa.listSieves();
+		Collection<IdNamePair> sieves = jpa.listSieves();
 		if (result.hasErrors() || (dbSample == null) || (dbSample.getMaterial().getId() != materialId) ||
 				(data == null) || (data.getValues() == null) || (data.getValues().size() != sieves.size())) {
 			model.addAttribute(messageName, "Oooops");
@@ -144,7 +143,7 @@ public class SievePassController {
 			@PathVariable("sampleId") int sampleId,
 			@ModelAttribute("model") @Valid SievePassForm data, BindingResult result) throws Exception {
 		Sample dbSample = sampleJpa.load(sampleId);
-		Collection<IdName> sieves = jpa.listSieves();
+		Collection<IdNamePair> sieves = jpa.listSieves();
 		if (result.hasErrors() || (dbSample == null) || (dbSample.getMaterial().getId() != materialId) ||
 				(data == null) || (data.getValues() == null) || (data.getValues().size() != sieves.size())) {
 			model.addAttribute(messageName, "Oooops");

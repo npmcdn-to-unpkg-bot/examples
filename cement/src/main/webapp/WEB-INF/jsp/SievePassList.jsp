@@ -26,13 +26,15 @@
 
 
 <datatables:table id="itemListTable" data="${model}" row="item" theme="bootstrap2" filterable="false" pageable="false" sortable="false">
-	<datatables:column title="Sieve label" property="label" />
-	<c:forEach items="${passes}" var="passId">
+	<datatables:column title="Sieve label">
+		<c:out value="${item[0].name}" />
+	</datatables:column>
+	<c:forEach items="${passes}" varStatus="pass" var="passId">
 		<datatables:column display="html">
 			<datatables:columnHead>
 				<c:out value="Pass ${passId}" /><a href="${pagePath}../${passId}">[edit]</a>&nbsp;|&nbsp;<a href="delete/${passId}">[x]</a>
 			</datatables:columnHead>
-			<c:out value="${item[passId]}" />
+			<c:out value="${item[passId+1]}" />
 		</datatables:column>
 	</c:forEach>
 </datatables:table>
