@@ -12,14 +12,19 @@ import javax.persistence.MappedSuperclass;
 @Access(AccessType.FIELD)
 public abstract class EntityWithId implements Serializable {
 	@Id
-	//@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(nullable=false, insertable=false, updatable=false)
+	// @GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(nullable = false, insertable = false, updatable = false)
 	Integer id;
-	
+
 	public Integer getId() {
 		return id;
 	}
+
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public boolean isNew() {
+		return (id == null);
 	}
 }

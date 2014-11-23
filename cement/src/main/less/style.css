@@ -1,99 +1,59 @@
-body {
-	font-family: Arial;
-	background-color: #a1a160;
+.btn {
+	min-width: 150px;
 }
 
-#header {
-	background-color: navy;
+.icon-edit {
+	display: inline-block;
+	background-image: url('../edit.png');
+	background-size: 30px 30px;
+	margin-right: 5px;
+	width: 30px;
+	height: 30px;
 }
 
-#title {
-	color: white;
-	font-size: 18px;
-	font-weight: bolder;
+.icon-new {
+	display: inline-block;
+	background-image: url('../new.png');
+	background-size: 30px 30px;
+	margin-right: 5px;
+	width: 30px;
+	height: 30px;
 }
 
-div#main {
-	display: block;
-	margin-left: auto;
-	margin-right: auto;
-	width: 800px;
-	background-color: #e1e1e1;
-	padding: 10px;
+.icon-delete {
+	display: inline-block;
+	background-image: url('../delete.png');
+	background-size: 30px 30px;
+	margin-right: 5px;
+	width: 30px;
+	height: 30px;
 }
 
-div#menu {
-	display: block;
-	float: left;
-	width: 100px;
-}
-	
-div#container {
-	margin-left: auto;
-	margin-right: auto;
-	width: 100%;
-	padding-top: 1em;
+.icon-view {
+	display: inline-block;
+	background-image: url('../view.png');
+	background-size: 30px 30px;
+	margin-right: 5px;
+	width: 30px;
+	height: 30px;
 }
 
-h3.title {
-	margin-top: 0em;
-	margin-bottom: 1em;
+.label-div {
+	display: inline-block;
+	border-radius: 6px;
+	background-image: linear-gradient(to bottom, #CCC 0px, #B0B0B0 100%);
+	background-repeat: repeat-x;
+	border-color: #CCC;
+	margin: 2px 2px 2px 2px;
+	padding: 2px 2px 2px 2px;
 }
 
-table.form {
-	width: 100%;
-}
-
-table.fields {
-	width: 100%;
-	td.fields {
-		width: 200px;
-	}
-	td {
-		width: 100%;
-	}
-}
-
-table.simple {
-	thead {
-		th.ascending, th.descending {
-			background-color: #a1a160;
-		}
-		th {
-			background-color: #a0a0a0;
-		}
-	} 
-	tbody {
-		tr.even {
-			background-color: #c0c0c0;
-		}
-		tr.odd {
-			background-color: #fff;
-		}
-	}
-	
-	a.view, a.edit, a.delete {
-		display: inline-block;
-		color: transparent;
-		background-size: 20px 20px;
-		width: 20px;
-		height: 20px;
-	}
-	
-	td.actions { 
-		white-space: nowrap;
-		vertical-align: middle;
-		text-align: right;
-	}
-	a.view { background-image: url('resource/view.png'); }
-	a.edit { background-image: url('resource/edit.png'); }
-	a.delete { background-image: url('resource/delete.png'); }
-}
-
-table#passesTable {
-	width: auto;
-}
-
-form {
-	width: 100%;
+.label-div .label-value {
+	display: inline-block;
+	border-radius: 6px;
+	background-image: linear-gradient(to bottom, #FFF 0px, #E0E0E0 100%);
+	background-repeat: repeat-x;
+	border-color: #CCC;
+	margin: 2px 2px 2px 2px;
+	padding: 2px 2px 2px 2px;
 }

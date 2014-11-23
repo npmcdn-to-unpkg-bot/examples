@@ -1,6 +1,6 @@
 <%@include file="fragments/bodyHeader.jsp" %>
 
-<a href="${pagePath}..">back to material</a><br/>
+<a class="btn btn-warning" href="${pagePath}..">back to material</a><br/>
 
 <table style="border-width:0px;">
 <app:labelField label="Location"		name="${material.location.name}" />
@@ -12,14 +12,13 @@
 </table>
 <hr/>
 
-<a href="new/">Add new</a>
+<a class="btn btn-success" href="new/">Add new</a>
 <hr />
 
-<datatables:table id="itemListTable" data="${material.samples}" row="item" theme="bootstrap2" filterable="false" >
+<datatables:table id="itemListTable" data="${material.samples}" row="item" theme="bootstrap3" filterable="false" >
 	<datatables:column title="edit" cssStyle="width: 150px;" display="html">
-		<a href="${pagePath}../${item.id}"><c:out value="edit" /></a>&nbsp;|&nbsp;
-		<a href="${pagePath}../${item.id}/passes"><c:out value="view" /></a>&nbsp;|&nbsp;
-		<a href="${pagePath}../delete/${item.id}"><c:out value="delete" /></a>
+		<a class="icon-edit" href="${pagePath}../${item.id}" title="Edit"></a>
+		<a class="icon-view" href="${pagePath}../${item.id}/passes" title="View"></a>
 	</datatables:column>
 	<datatables:column title="Id" property="id" />
 	<datatables:column title="Place" property="samplePlace" />

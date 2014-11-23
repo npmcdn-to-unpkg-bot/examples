@@ -1,6 +1,6 @@
 <%@include file="fragments/bodyHeader.jsp" %>
 
-<a href="${pagePath}../passes">back to List</a><br/>
+<a class="btn btn-warning" href="${pagePath}../passes">back to List</a><br/>
 
 <table style="border-width:0px;">
 <app:labelField label="Location"		name="${material.location.name}" />
@@ -32,7 +32,8 @@
 	</c:forEach>
 	</table>
 
-	<button type="submit">Save</button>
+	<button class="btn btn-primary" type="submit">Save</button>
+	<c:if test="${!isNew}"><a class="btn btn-danger" href="${pagePath}delete">Delete</a></c:if>
 </form:form>
 
 <%@include file="fragments/bodyFooter.jsp" %>

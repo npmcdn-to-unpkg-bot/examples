@@ -223,7 +223,7 @@
 	</bean>
  -->
 
-	<mvc:resources mapping="/resources/**" location="/WEB-INF/public-resources/, classpath:/META-INF/public-resources/"/>
+	<mvc:resources mapping="/resources/**" location="/WEB-INF/resources/, classpath:/WEB-INF/resources/"/>
 
 	<mvc:annotation-driven>
 		<mvc:path-matching

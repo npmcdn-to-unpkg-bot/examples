@@ -1,7 +1,6 @@
 <%@include file="fragments/bodyHeader.jsp" %>
 
-<a class="btn btn-warning" href="${pagePath}..">back to List</a>
-<hr/>
+<a class="btn btn-warning" href="${pagePath}..">back to List</a><br/>
 <form:form modelAttribute="model" method="POST">
 	<form:errors path="*" cssClass="errorBox" />
 	<app:inputField label="Name" name="name"/>

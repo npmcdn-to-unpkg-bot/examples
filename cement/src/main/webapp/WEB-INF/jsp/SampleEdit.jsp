@@ -1,6 +1,6 @@
 <%@include file="fragments/bodyHeader.jsp" %>
 
-<a href="${pagePath}../samples">back to List</a><br/>
+<a class="btn btn-warning" href="${pagePath}../samples">back to List</a><br/>
 
 <table style="border-width:0px;">
 <app:labelField label="Location"		name="${material.location.name}" />
@@ -29,7 +29,8 @@
 	<app:inputField label="Density" name="density" />
 	<app:inputField label="Weight" name="weight" />
 	<app:inputField label="Comment" name="comment"/>
-	<button type="submit">Save</button>
+	<button class="btn btn-primary" type="submit">Save</button>
+	<c:if test="${!model['new']}"><a class="btn btn-danger" href="${pagePath}delete">Delete</a></c:if>
 </form:form>
 
 <%@include file="fragments/bodyFooter.jsp" %>

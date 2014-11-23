@@ -39,7 +39,7 @@ public abstract class EntityWithIdControllerBase<T extends EntityWithId> {
 		return getViewItemList();
 	}
 
-	@RequestMapping(value="/delete/{id}")
+	@RequestMapping(value="/{id}/delete")
 	protected String deleteItem(ModelMap model, RedirectAttributes redir,
 			@PathVariable("id") int id) throws Exception {
 		jpa.delete(id);

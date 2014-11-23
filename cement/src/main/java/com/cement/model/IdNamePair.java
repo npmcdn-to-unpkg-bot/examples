@@ -4,6 +4,7 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.OrderBy;
 
 @MappedSuperclass
 @Access(AccessType.FIELD)

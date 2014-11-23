@@ -6,4 +6,8 @@ public abstract class IdNamePairJpaBase<T extends IdNamePair> extends EntityWith
 	public IdNamePairJpaBase(Class<T> entityClass) {
 		super(entityClass);
 	}
+	
+	public String getOrderBy() {
+		return "name";
+	}
 }

@@ -52,7 +52,7 @@ public class SampleController {
 		return getViewItemList();
 	}
 
-	@RequestMapping(value="/delete/{id}")
+	@RequestMapping(value="/{id}/delete")
 	protected String deleteItem(ModelMap model, RedirectAttributes redir,
 			@PathVariable("materialId") int materialId,
 			@PathVariable("id") int id) throws Exception {

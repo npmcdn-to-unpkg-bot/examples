@@ -4,7 +4,9 @@ import java.util.Collection;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,10 +26,16 @@ public abstract class EntityWithIdJpa<T extends EntityWithId> {
 		return entityClass.newInstance();
 	}
 	
+	public String getOrderBy() {
+		return "id";
+	}
+	
 	@Transactional(readOnly=true)
 	public Collection<T> list() throws Exception {
-		CriteriaQuery query = em.getCriteriaBuilder().createQuery(entityClass);
-		query = query.select(query.from(entityClass));
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery query = builder.createQuery(entityClass);
+		Root<T> from = query.from(entityClass);
+		query.orderBy(builder.asc(from.get(getOrderBy())));
 		return em.createQuery(query).getResultList();
 	}
 

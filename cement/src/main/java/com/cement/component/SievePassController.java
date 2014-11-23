@@ -76,7 +76,7 @@ public class SievePassController {
 		return getViewItemList();
 	}
 
-	@RequestMapping(value="/delete/{id}")
+	@RequestMapping(value="/{id}/delete")
 	protected String deleteItem(ModelMap model, RedirectAttributes redir,
 			@PathVariable("materialId") int materialId,
 			@PathVariable("sampleId") int sampleId,
@@ -133,6 +133,7 @@ public class SievePassController {
 	protected String loadNewItem(Model model) throws Exception {
 		model.addAttribute("sieves", jpa.listSieves());
 		model.addAttribute("model", jpa.makeNew());
+		model.addAttribute("isNew", "true");
 		return getViewItemEdit();
 	}
 
