@@ -13,6 +13,12 @@ public class ReceiptMaterial implements Serializable {
 	double volume;
 	double price;
 	
+	public ReceiptMaterial() {}
+	
+	public ReceiptMaterial(Material m) {
+		this.material = m;
+	}
+	
 	public Material getMaterial() {
 		return material;
 	}

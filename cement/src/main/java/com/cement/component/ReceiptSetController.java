@@ -1,7 +1,9 @@
 package com.cement.component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import com.cement.model.CurveSieve;
 import com.cement.model.Material;
 import com.cement.model.ReceiptMaterial;
 import com.cement.model.ReceiptSet;
@@ -20,11 +23,14 @@ import com.slavi.math.matrix.Matrix;
 @RequestMapping("/wizard")
 public class ReceiptSetController extends IdNamePairControllerBase<ReceiptSet> {
 	@Autowired
-	ChartJpa charJpa;
+	ChartJpa chartJpa;
 
+	ReceiptSetJpa jpa;
+	
 	@Autowired
 	public ReceiptSetController(ReceiptSetJpa jpa) {
 		super(jpa);
+		this.jpa = jpa;
 	}
 
 	protected String getViewItemEdit() {
@@ -35,14 +41,6 @@ public class ReceiptSetController extends IdNamePairControllerBase<ReceiptSet> {
 		return "ReceiptSetList";
 	}
 
-	private void calc(List<ReceiptMaterial> materials) {
-		LeastSquaresAdjust lsa = new LeastSquaresAdjust(materials.size());
-		Matrix coefs = new Matrix(materials.size(), 1);
-		double L = 0.0;
-		
-		lsa.addMeasurement(coefs, 1.0, L, 0);
-	}
-	
 	@RequestMapping(value="/{wizardId}/new", method=RequestMethod.GET)
 	public String show(Model model, @PathVariable("wizardId") int wizardId) throws Exception {
 		ReceiptSet wizard = jpa.load(wizardId);
@@ -55,7 +53,7 @@ public class ReceiptSetController extends IdNamePairControllerBase<ReceiptSet> {
 		}
 		
 		model.addAttribute("wizard", wizard);
-		model.addAttribute("labels", charJpa.loadSieveLabels());
+		model.addAttribute("labels", chartJpa.loadSieveLabels());
 		return "ChartShow";
 	}
 }

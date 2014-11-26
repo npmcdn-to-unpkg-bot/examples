@@ -1,12 +1,18 @@
 package com.cement.component;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.Query;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.cement.model.CurveSieve;
+import com.cement.model.Material;
+import com.cement.model.ReceiptMaterial;
 import com.cement.model.ReceiptSet;
 import com.cement.model.Sieve;
 
@@ -45,5 +51,39 @@ public class ReceiptSetJpa extends IdNamePairJpaBase<ReceiptSet> {
 			prefix = ",";
 		}
 		return r.toString();
+	}
+
+	@Transactional(readOnly=true)
+	public Map<Integer, Double> loadMaterialSieveData(int materialId) {
+		Query q = em.createQuery("select p.sieve sieve, sum(p.value)/count(p) val from SievePass p join Sample s on p.sample=s.id where s.material.id=:materialId and s.status=2 and p.sieve > 0 group by p.sieve");
+		q.setParameter("materialId", materialId);
+		List<Object[]> items = q.getResultList();
+		Map<Integer, Double> r = new HashMap<>();
+		for (Object[] item : items) {
+			r.put((Integer) item[0], (Double) item[1]);
+		}
+		return r;
+	}
+
+	@Transactional(readOnly=true)
+	public List<CurveSieve> loadCurveData(int curveId) {
+		Query q = em.createQuery("select cs from CurveSieve cs where cs.curve=:curveId order by cs.sieve");
+		q.setParameter("curveId", curveId);
+		List<CurveSieve> items = q.getResultList();
+		return items;
+	}
+	
+	@Transactional(readOnly=true)
+	public List<ReceiptMaterial> loadReceiptSet(int receiptSetId) {
+		Query q = em.createQuery("select r.materials from ReceiptSet r where r.id=:receiptSetId");
+		q.setParameter("receiptSetId", receiptSetId);
+		List<Material> items = q.getResultList();
+		List<ReceiptMaterial> r = new ArrayList<>();
+		for (Material m : items) {
+			ReceiptMaterial rm = new ReceiptMaterial();
+			rm.setMaterial(m);
+			r.add(rm);
+		}
+		return r;
 	}
 }
