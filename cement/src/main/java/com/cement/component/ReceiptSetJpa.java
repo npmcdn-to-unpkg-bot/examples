@@ -67,7 +67,7 @@ public class ReceiptSetJpa extends IdNamePairJpaBase<ReceiptSet> {
 
 	@Transactional(readOnly=true)
 	public List<CurveSieve> loadCurveData(int curveId) {
-		Query q = em.createQuery("select cs from CurveSieve cs where cs.curve=:curveId order by cs.sieve");
+		Query q = em.createQuery("select cs from CurveSieve cs join Sieve s on cs.sieve=s.id where cs.curve=:curveId order by s.name"); // TODO: order by sieve_d !!!
 		q.setParameter("curveId", curveId);
 		List<CurveSieve> items = q.getResultList();
 		return items;
