@@ -20,38 +20,11 @@ public class Adjust {
 		this.jpa = jpa;
 	}
 	
-	public static double sumPow2(Matrix m) {
-		double D = 0;
-		for (int i = m.getSizeX() - 1; i >= 0; i--)
-			for (int j = m.getSizeY() - 1; j >= 0; j--) {
-				double v = m.getItem(i, j);
-				D += v*v;
-			}
-		return D;
-	}
-	
-	public static boolean normalizePow2(Matrix m) {
-		double D = sumPow2(m);
-		if (D == 0) {
-			m.make0();
-			return false;
-		}
-		D = 1 / Math.sqrt(D);
-		m.rMul(D);
-		return true;
-	}
-	
 	public void calc(List<ReceiptMaterial> materials, int curveId, double totalQuantity) {
 		List<CurveSieve> curve = jpa.loadCurveData(curveId);
 		LeastSquaresAdjust lsa = new LeastSquaresAdjust(materials.size());
 		Matrix coefs = new Matrix(materials.size(), 1);
-/*
-		System.out.println("Curve ID:" + curveId);
-		for (int curveIndex = 0; curveIndex < curve.size(); curveIndex++) {
-			CurveSieve cs = curve.get(curveIndex);
-			System.out.println("sieveId:" + cs.getSieve() + ", v:" + MathUtil.d4(cs.getValue()));
-		}
-*/
+
 		Map<Integer, Map<Integer, Double>> mmap = new HashMap<>();
 		for (ReceiptMaterial rm : materials) {
 			Material m = rm.getMaterial();
@@ -68,20 +41,31 @@ public class Adjust {
 			}
 			double D = 100 / sum;
 			
-//			System.out.println("Material ID:" + materialId);
 			for (int curveIndex = 0; curveIndex < curve.size(); curveIndex++) {
 				CurveSieve cs = curve.get(curveIndex);
 				Double Value = mdata.get(cs.getSieve());
 				double v = Value == null ? 0 : Value;
 				v = v * D;
 				mdata.put(cs.getSieve(), v);
-//				System.out.println("sieveId:" + cs.getSieve() + ", v:" + MathUtil.d4(v));
 			}
 			
 			mmap.put(materialId, mdata);
 		}
 
-		Matrix unknown = new Matrix(materials.size(), 1);
+		for (int curveIndex = 0; curveIndex < curve.size(); curveIndex++) {
+			CurveSieve cs = curve.get(curveIndex);
+			System.out.print("sieveId:" + MathUtil.l10(cs.getSieve()) + ", v:" + MathUtil.d4(cs.getValue()) + ", M:");
+			for (ReceiptMaterial rm : materials) {
+				Material m = rm.getMaterial();
+				Integer materialId = m.getId();
+				Map<Integer, Double> mdata = mmap.get(materialId);
+				System.out.print(MathUtil.d4(mdata.get(cs.getSieve())) + " ");
+			}
+			System.out.println();
+		}
+		
+		
+		Matrix unknown = new Matrix(1, materials.size());
 		for (int rmIndex = 0; rmIndex < materials.size(); rmIndex++) { 
 			ReceiptMaterial rm = materials.get(rmIndex);
 			if (rm.getMaxQuantity() > totalQuantity)
@@ -99,12 +83,11 @@ public class Adjust {
 			v = Math.max(v, rm.getMinQuantity());
 			if (v == 0.0)
 				v = 1.0;
-			unknown.setItem(rmIndex, 0, v);
+			unknown.setItem(0, rmIndex, v);
 		}
-		//normalizePow2(unknown);
-		unknown.normalize();
+		unknown.normalizePow2();
 		
-		System.out.println(sumPow2(unknown));
+		System.out.println(unknown.sumPow2());
 		unknown.printM("UNKNOWN");
 		
 		for (int i = 0; i < 5; i++) {
@@ -119,12 +102,12 @@ public class Adjust {
 					Double v = mdata.get(cs.getSieve());
 					if (v == null)
 						throw new RuntimeException("null??? materialId=" + materialId);
-					double k = unknown.getItem(rmIndex, 0);
-//					double f = k * k * v;
-//					double dF_dk = 2 * k * v;
+					double k = unknown.getItem(0, rmIndex);
+					double f = k * k * v;
+					double dF_dk = 2 * k * v;
 
-					double f = k * v;
-					double dF_dk = v;
+//					double f = k * v;
+//					double dF_dk = v;
 					L += f;
 					coefs.setItem(rmIndex, 0, dF_dk);
 				}
@@ -133,7 +116,7 @@ public class Adjust {
 
 			double L = -1.0;
 			for (int rmIndex = 0; rmIndex < materials.size(); rmIndex++) { 
-				double k = unknown.getItem(rmIndex, 0);
+				double k = unknown.getItem(0, rmIndex);
 				double f = k * k;
 				L += f;
 				double dF_dk = 2 * k;
@@ -143,14 +126,14 @@ public class Adjust {
 
 			if (!lsa.calculate())
 				throw new RuntimeException();
-			unknown = lsa.getUnknown();
-			double sum = sumPow2(unknown);
+			lsa.getUnknown().copyTo(unknown);
+			double sum = unknown.sumPow2();
 			System.out.println("SUM POW2 " + sum);
-			//unknown.normalize();
+			//unknown.normalizePow2();
 			
 			for (int rmIndex = 0; rmIndex < materials.size(); rmIndex++) { 
 				ReceiptMaterial rm = materials.get(rmIndex);
-				rm.setQuantity(totalQuantity * unknown.getItem(rmIndex, 0));
+				rm.setQuantity(totalQuantity * unknown.getItem(0, rmIndex));
 			}
 		}
 	}
