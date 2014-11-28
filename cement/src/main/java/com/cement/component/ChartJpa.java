@@ -32,11 +32,17 @@ public class ChartJpa extends IdNamePairJpaBase<Chart> {
 		List<Object[]> list = q.getResultList();
 		return list;
 	}
+	
+	@Transactional(readOnly=true)
+	public List<Sieve> loadSieves() {
+		Query q = em.createQuery("select s from Sieve s order by s.name");
+		List<Sieve> sieves = q.getResultList();
+		return sieves;
+	}
 
 	@Transactional(readOnly=true)
 	public String loadSieveLabels() {
-		Query q = em.createQuery("select s from Sieve s order by s.name");
-		List<Sieve> sieves = q.getResultList();
+		List<Sieve> sieves = loadSieves();
 		String prefix = "";
 		StringBuilder r = new StringBuilder();
 		for (Sieve s : sieves) {

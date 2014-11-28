@@ -14,6 +14,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import com.cement.component.ReceiptSetJpa;
 import com.cement.misc.Adjust;
+import com.cement.model.CurveSieve;
 import com.cement.model.Material;
 import com.cement.model.ReceiptMaterial;
 
@@ -36,7 +37,8 @@ public class QuickTest {
 		rm.add(new ReceiptMaterial(em.find(Material.class, 36)));
 		
 		Adjust adj = new Adjust(jpa);
-		adj.calc(rm, 1, 1000.0);
+		List<CurveSieve> curve = jpa.loadCurveData(1);
+		adj.calc(curve, rm, 1, 1000.0);
 		
 		em.close();
 	}	
