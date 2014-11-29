@@ -1,7 +1,6 @@
 package com.cement.component;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,9 +16,7 @@ import com.cement.model.CurveSieve;
 import com.cement.model.Material;
 import com.cement.model.ReceiptMaterial;
 import com.cement.model.ReceiptSet;
-import com.cement.model.Sieve;
-import com.slavi.math.adjust.LeastSquaresAdjust;
-import com.slavi.math.matrix.Matrix;
+import com.slavi.math.MathUtil;
 
 @Controller
 @RequestMapping("/wizard")
@@ -43,6 +40,32 @@ public class ReceiptSetController extends IdNamePairControllerBase<ReceiptSet> {
 		return "ReceiptSetList";
 	}
 
+	String colors[] = {
+		"#6495ed",
+		"#ff6347",
+		"#ffd700",
+		"#00ced1",
+		"#b03060",
+		"#00ff7f",
+		"#ffa07a",
+		"#ffdead",
+		"#ff3030",
+		"#8b3626",
+		"#ab82ff",
+		"#8b7b8b",
+		"#8b008b",
+		"#ff7256",
+		"#008b45",
+		"#5cacee",
+		"#eecbad",
+		"#6495ed",
+		"#a0522d",
+		"#ffdab9",
+		"#556b2f",
+		"#ffec8b",
+		"#2e8b57",
+	};
+	
 	@RequestMapping(value="/{wizardId}/new", method=RequestMethod.GET)
 	public String show(Model model, @PathVariable("wizardId") int wizardId) throws Exception {
 		ReceiptSet wizard = jpa.load(wizardId);
@@ -78,7 +101,7 @@ public class ReceiptSetController extends IdNamePairControllerBase<ReceiptSet> {
 			minVal.append(cs.getLowValue());
 			maxVal.append(cs.getUpperValue());
 			refVal.append(cs.getValue());
-			curVal.append(r.get(index));
+			curVal.append(MathUtil.d2(r.get(index)));
 			
 			prefix = ",";
 		}
@@ -87,6 +110,26 @@ public class ReceiptSetController extends IdNamePairControllerBase<ReceiptSet> {
 		datasets.add(new Object[] { "max",  "#ff0000", maxVal.toString() });
 		datasets.add(new Object[] { "ref",  "#0000ff", refVal.toString() });
 		datasets.add(new Object[] { "calc", "#00ffff", curVal.toString() });
+		
+		int dataCounter = 0;
+		for (Material m : wizard.getMaterials()) {
+			StringBuilder data = new StringBuilder();
+			prefix = "";
+			Map<Integer, Double> mdata = jpa.loadMaterialSieveData(m.getId());
+			adj.processMaterialData(curve, mdata);
+			for (int index = 0; index < curve.size(); index++) {
+				CurveSieve cs = curve.get(index);
+				Double v = mdata.get(cs.getSieve());
+				double d = (v == null) ? 0.0 : v * 100;
+				data.append(prefix);
+				data.append(MathUtil.d2(d));
+				prefix = ",";
+			}
+			datasets.add(new Object[] { 
+				m.getMaterialType().getName() + " " + m.getMaterialSize().getName() + "; " + m.getLocation().getName() + "; " + m.getSupplier().getName(),
+				colors[dataCounter], data.toString() });
+			dataCounter++;
+		}
 		
 		model.addAttribute("wizard", wizard);
 		model.addAttribute("labels", chartJpa.loadSieveLabels());

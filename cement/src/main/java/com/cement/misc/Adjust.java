@@ -21,7 +21,27 @@ public class Adjust {
 		this.jpa = jpa;
 	}
 	
-	boolean pow2 = true;
+	boolean pow2 = false;
+	
+	public void processMaterialData(List<CurveSieve> curve, Map<Integer, Double> mdata) {
+		double sum = 0.0;
+		for (int curveIndex = 0; curveIndex < curve.size(); curveIndex++) {
+			CurveSieve cs = curve.get(curveIndex);
+			Double Value = mdata.get(cs.getSieve());
+			double v = Value == null ? 0 : Value;
+			sum += v;
+			mdata.put(cs.getSieve(), sum);
+		}
+		double D = 1 / sum;
+		
+		for (int curveIndex = 0; curveIndex < curve.size(); curveIndex++) {
+			CurveSieve cs = curve.get(curveIndex);
+			Double Value = mdata.get(cs.getSieve());
+			double v = Value == null ? 0 : Value;
+			v = v * D;
+			mdata.put(cs.getSieve(), v);
+		}
+	}
 	
 	public List<Double> calc(List<CurveSieve> curve, List<ReceiptMaterial> materials, int curveId, double totalQuantity) {
 		LeastSquaresAdjust lsa = new LeastSquaresAdjust(materials.size());
@@ -32,25 +52,7 @@ public class Adjust {
 			Material m = rm.getMaterial();
 			Integer materialId = m.getId();
 			Map<Integer, Double> mdata = jpa.loadMaterialSieveData(materialId);
-			
-			double sum = 0.0;
-			for (int curveIndex = 0; curveIndex < curve.size(); curveIndex++) {
-				CurveSieve cs = curve.get(curveIndex);
-				Double Value = mdata.get(cs.getSieve());
-				double v = Value == null ? 0 : Value;
-				sum += v;
-				mdata.put(cs.getSieve(), sum);
-			}
-			double D = 1 / sum;
-			
-			for (int curveIndex = 0; curveIndex < curve.size(); curveIndex++) {
-				CurveSieve cs = curve.get(curveIndex);
-				Double Value = mdata.get(cs.getSieve());
-				double v = Value == null ? 0 : Value;
-				v = v * D;
-				mdata.put(cs.getSieve(), v);
-			}
-			
+			processMaterialData(curve, mdata);
 			mmap.put(materialId, mdata);
 		}
 
@@ -87,7 +89,7 @@ public class Adjust {
 				v = 1.0;
 			K.setItem(0, rmIndex, v);
 		}
-		
+
 		if (pow2) 
 			K.normalizePow2();
 		else
@@ -156,13 +158,16 @@ public class Adjust {
 				rm.setQuantity(totalQuantity * K.getItem(0, rmIndex));
 			}
 		}
-		
+
+		K.termAbs(K);
 		if (pow2) 
 			K.normalizePow2();
 		else
 			K.normalize();
-		K.termAbs(K);
 
+		K.printM("Final K");
+		System.out.println("SUM K: " + (pow2 ? K.sumPow2() : K.sumAll()));
+		
 		List<Double> r = new ArrayList<>();
 		for (int curveIndex = 0; curveIndex < curve.size(); curveIndex++) {
 			CurveSieve cs = curve.get(curveIndex);
@@ -183,6 +188,8 @@ public class Adjust {
 			}
 			r.add(curV * 100);
 		}
+		System.out.println("Result material:");
+		System.out.println(r);
 		return r;
 	}
 }
