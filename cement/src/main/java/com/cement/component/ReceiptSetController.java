@@ -40,7 +40,7 @@ public class ReceiptSetController extends IdNamePairControllerBase<ReceiptSet> {
 		return "ReceiptSetList";
 	}
 
-	String colors[] = {
+	public static String colors[] = {
 		"#6495ed",
 		"#ff6347",
 		"#ffd700",
@@ -110,7 +110,7 @@ public class ReceiptSetController extends IdNamePairControllerBase<ReceiptSet> {
 		datasets.add(new Object[] { "max",  "#ff0000", maxVal.toString() });
 		datasets.add(new Object[] { "ref",  "#0000ff", refVal.toString() });
 		datasets.add(new Object[] { "calc", "#00ffff", curVal.toString() });
-		
+/*		
 		int dataCounter = 0;
 		for (Material m : wizard.getMaterials()) {
 			StringBuilder data = new StringBuilder();
@@ -126,11 +126,11 @@ public class ReceiptSetController extends IdNamePairControllerBase<ReceiptSet> {
 				prefix = ",";
 			}
 			datasets.add(new Object[] { 
-				m.getMaterialType().getName() + " " + m.getMaterialSize().getName() + "; " + m.getLocation().getName() + "; " + m.getSupplier().getName(),
+				m.toString(),
 				colors[dataCounter], data.toString() });
 			dataCounter++;
 		}
-		
+*/
 		model.addAttribute("wizard", wizard);
 		model.addAttribute("labels", chartJpa.loadSieveLabels());
 		model.addAttribute("datasets", datasets);

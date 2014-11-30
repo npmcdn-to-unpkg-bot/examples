@@ -1,3 +1,35 @@
+(select m.mate_id, t.type_name || ' ' || ms.size_name || '; ' || g.geo_name || '; ' || msup.supp_name name
+from material m
+join mate_type t on m.type_id=t.type_id
+join mate_size ms on m.size_id=ms.size_id
+join mate_geo g on g.geo_id=m.geo_id
+join mate_supplier msup on msup.supp_id=m.supp_id) m
+
+------------------------------------------------------------
+
+select t.mate_id, ss.sieve_d, t.val, m.name
+from
+
+(select s.mate_id, p.sieve_id, sum(p.value)/count(p.value) val
+from recpwiz_set_mate s 
+join material_sample sam on sam.mate_id=s.mate_id
+join material_sample_sieve_pass p on p.sample_id=sam.sample_id
+where s.set_id=8 and sam.sample_status=2
+group by s.mate_id, p.sieve_id) t
+
+join sieve ss on ss.sieve_id=t.sieve_id
+
+join (select m.mate_id, t.type_name || ' ' || ms.size_name || '; ' || g.geo_name || '; ' || msup.supp_name name
+from material m
+join mate_type t on m.type_id=t.type_id
+join mate_size ms on m.size_id=ms.size_id
+join mate_geo g on g.geo_id=m.geo_id
+join mate_supplier msup on msup.supp_id=m.supp_id) m on m.mate_id=t.mate_id
+
+order by m.name, ss.sieve_d;
+
+------------------------------------------------------------
+
 select name, sql from sqlite_master where type='view'
 
 CREATE VIEW material_sample_sieve as 
@@ -17,3 +49,6 @@ CREATE VIEW sample_sieve_share as
 select sieve_id, material_sample_sieve.sample_id as sample_id, cast(value as real)/cast(weight as real) as share 
 from material_sample_sieve, sample_weight 
 where material_sample_sieve.sample_id=sample_weight.sample_id and sieve_id > 0
+
+------------------------------------------------------------
+

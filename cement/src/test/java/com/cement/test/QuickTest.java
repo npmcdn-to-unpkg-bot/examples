@@ -2,7 +2,9 @@ package com.cement.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -17,29 +19,90 @@ import com.cement.misc.Adjust;
 import com.cement.model.CurveSieve;
 import com.cement.model.Material;
 import com.cement.model.ReceiptMaterial;
+import com.cement.model.ReceiptSet;
+import com.slavi.math.MathUtil;
 
 public class QuickTest {
 
-	public void adjust(ApplicationContext appContext) {
+	public void adjust(ApplicationContext appContext) throws Exception {
 		EntityManagerFactory emf = appContext.getBean("entityManagerFactory", EntityManagerFactory.class);
 		EntityManager em = emf.createEntityManager();
 
 		ReceiptSetJpa jpa = appContext.getBean(ReceiptSetJpa.class);
-		//List<ReceiptMaterial> rm = jpa.loadReceiptSet(1);
-		List<ReceiptMaterial> rm = new ArrayList<>();
-		rm.add(new ReceiptMaterial(em.find(Material.class, 3)));
-		rm.add(new ReceiptMaterial(em.find(Material.class, 5)));
-		rm.add(new ReceiptMaterial(em.find(Material.class, 13)));
-		rm.add(new ReceiptMaterial(em.find(Material.class, 14)));
-		rm.add(new ReceiptMaterial(em.find(Material.class, 23)));
-		rm.add(new ReceiptMaterial(em.find(Material.class, 33)));
-		rm.add(new ReceiptMaterial(em.find(Material.class, 34)));
-		rm.add(new ReceiptMaterial(em.find(Material.class, 36)));
+		int wizardId = 8;
 		
-		Adjust adj = new Adjust(jpa);
+		ReceiptSet wizard = jpa.load(wizardId);
 		List<CurveSieve> curve = jpa.loadCurveData(1);
-		adj.calc(curve, rm, 1, 1000.0);
 		
+		List<ReceiptMaterial> materials = new ArrayList<>();
+		for (Material m : wizard.getMaterials()) {
+			ReceiptMaterial rm = new ReceiptMaterial();
+			rm.setMaterial(m);
+			materials.add(rm);
+		}
+
+		Adjust adj = new Adjust(jpa);
+
+		Map<Integer, Map<Integer, Double>> mmap = new HashMap<>();
+		for (ReceiptMaterial rm : materials) {
+			Material m = rm.getMaterial();
+			Integer materialId = m.getId();
+			Map<Integer, Double> mdata = jpa.loadMaterialSieveData(materialId);
+			adj.processMaterialData(curve, mdata);
+			mmap.put(materialId, mdata);
+		}
+
+		List<Double> extResult = new ArrayList<>();
+		for (ReceiptMaterial m : materials) {
+			int materialId = m.getMaterial().getId();
+			double k = 0;
+			switch (materialId) {
+			case 5: // естествен пясък 0 - 5; Садово; Ескана
+				k = 4.6;
+				break;
+			case 6: // речен пясък 0 - 5; Силистра; Поларис 8
+				k = 0;
+				break;
+			case 7: // речен пясък фракциониран 0 - 5; Пожарево; Инерт ООД
+				k = 9.4;
+				break;
+			case 166: // трошен камък 4 - 20; Сини вир; Ескана
+				k = 49.1;
+				break;
+			case 196: // трошен пясък 0 - 5; Ветрино; Ескана
+				k = 36.8;
+				break;
+			default:
+				throw new Error();
+			}
+			extResult.add(k);
+		}
+		
+		List<Double> r = adj.calc(curve, materials, 1, 1.0);
+		
+		for (int index = 0; index < curve.size(); index++) {
+			CurveSieve cs = curve.get(index);
+			
+			double sum = 0;
+			for (int indexM = 0; indexM < materials.size(); indexM++) {
+				ReceiptMaterial m = materials.get(indexM);
+				int materialId = m.getMaterial().getId();
+				Map<Integer, Double> mdata = mmap.get(materialId);
+				double k = extResult.get(indexM);
+				double v = mdata.get(cs.getSieve());
+				sum += k*v;
+			}
+			System.out.println("Sieve ID:" + cs.getSieve() + " = " + MathUtil.d4(sum) + ", " + MathUtil.d4(r.get(index)));
+		}
+
+		for (int indexM = 0; indexM < materials.size(); indexM++) {
+			ReceiptMaterial m = materials.get(indexM);
+			double k1 = extResult.get(indexM) / 100;
+			double k2 = m.getQuantity();
+			System.out.println("mateId:" + MathUtil.l10(m.getMaterial().getId()) + " = " + 
+					MathUtil.d4(k1) + " | " + 
+					MathUtil.d4(k2) + "    | " + m.getMaterial().toString());
+		}
 		em.close();
 	}	
 	

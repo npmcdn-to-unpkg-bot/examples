@@ -47,6 +47,10 @@ public class Material extends EntityWithId {
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="material")
 	Collection<Sample> samples = new ArrayList<Sample>();
 	
+	public String toString() {
+		return getMaterialType().getName() + " " + getMaterialSize().getName() + "; " + getLocation().getName() + "; " + getSupplier().getName();
+	}
+	
 	public MaterialType getMaterialType() {
 		return materialType;
 	}

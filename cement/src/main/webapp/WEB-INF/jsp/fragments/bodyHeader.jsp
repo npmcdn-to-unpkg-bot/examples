@@ -10,6 +10,7 @@
 	<div class="navbar-inner">
 		<ul class="nav navbar-nav">
 			<li><a href="<spring:url value='/material/'/>">Materials</a></li>
+			<li><a href="<spring:url value='/curve/'/>">Curve</a></li>
 			<li><a href="<spring:url value='/chart/'/>">Chart</a></li>
 			<li><a href="<spring:url value='/wizard'/>">Wizard</a></li>
 			<li><a href="<spring:url value='/nom/supplier/'/>">Suppliers</a></li>
