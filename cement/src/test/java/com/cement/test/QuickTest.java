@@ -92,7 +92,11 @@ public class QuickTest {
 				double v = mdata.get(cs.getSieve());
 				sum += k*v;
 			}
-			System.out.println("Sieve ID:" + cs.getSieve() + " = " + MathUtil.d4(sum) + ", " + MathUtil.d4(r.get(index)));
+			System.out.println("Sieve ID:" + 
+					MathUtil.l10(cs.getSieve()) + " = " + 
+					MathUtil.d4(sum) + ", " + 
+					MathUtil.d4(r.get(index)) + ", " + 
+					MathUtil.d4(cs.getValue()));
 		}
 
 		for (int indexM = 0; indexM < materials.size(); indexM++) {
