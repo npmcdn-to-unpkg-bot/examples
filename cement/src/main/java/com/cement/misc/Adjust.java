@@ -21,7 +21,7 @@ public class Adjust {
 		this.jpa = jpa;
 	}
 	
-	boolean pow2 = true;
+	boolean pow2 = false;
 
 	public void processMaterialData(List<CurveSieve> curve, Map<Integer, Double> mdata) {
 		double sum = 0.0;
@@ -94,6 +94,26 @@ public class Adjust {
 			K.setItem(0, rmIndex, v);
 		}
 
+		Matrix A = new Matrix(materials.size(), curve.size());
+		for (int rmIndex = 0; rmIndex < materials.size(); rmIndex++) { 
+			ReceiptMaterial rm = materials.get(rmIndex);
+			Integer materialId = rm.getMaterial().getId();
+			Map<Integer, Double> mdata = mmap.get(materialId);
+
+			for (int curveIndex = 0; curveIndex < curve.size(); curveIndex++) {
+				CurveSieve cs = curve.get(curveIndex);
+				Double v = mdata.get(cs.getSieve());
+				A.setItem(rmIndex, curveIndex, v);
+			}
+		}
+		Matrix R = new Matrix(1, curve.size());
+		for (int curveIndex = 0; curveIndex < curve.size(); curveIndex++) {
+			CurveSieve cs = curve.get(curveIndex);
+			R.setItem(0, curveIndex, cs.getValue());
+		}
+		System.out.println(A.toMatlabString("A"));
+		System.out.println(R.toMatlabString("L"));
+		
 		for (int i = 0; i < 5; i++) {
 			K.printM("K");
 			System.out.println("SUM K: " + (pow2 ? K.sumPow2() : K.sumAll()));
