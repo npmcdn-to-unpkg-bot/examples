@@ -12,6 +12,7 @@ import com.cement.model.ReceiptMaterial;
 import com.slavi.math.MathUtil;
 import com.slavi.math.adjust.LeastSquaresAdjust;
 import com.slavi.math.matrix.Matrix;
+import com.slavi.math.matrix.SymmetricMatrix;
 
 public class Adjust {
 
@@ -114,7 +115,7 @@ public class Adjust {
 		System.out.println(A.toMatlabString("A"));
 		System.out.println(R.toMatlabString("L"));
 		
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; ; i++) {
 			K.printM("K");
 			System.out.println("SUM K: " + (pow2 ? K.sumPow2() : K.sumAll()));
 
@@ -173,23 +174,19 @@ public class Adjust {
 			}
 			lsa.addMeasurement(coefs, 1.0, -L, 0);
 */
+			SymmetricMatrix nmCopy = lsa.getNm().makeCopy();
+			double det = nmCopy.makeSquareMatrix().det();
+			System.out.println("DET(NM) = " + MathUtil.d4(det));
+			
 			if (!lsa.calculate())
 				throw new RuntimeException();
+
+			if (i >= 3)
+				break;
+			
 			Matrix unknown = lsa.getUnknown();
 			K.mSum(unknown, K);
 		}
-
-		K.printM("K");
-		System.out.println("SUM K: " + (pow2 ? K.sumPow2() : K.sumAll()));
-
-		K.termAbs(K);
-		if (pow2) 
-			K.normalizePow2();
-		else
-			K.normalize();
-
-		K.printM("Final K");
-		System.out.println("SUM K final: " + (pow2 ? K.sumPow2() : K.sumAll()));
 
 		for (int rmIndex = 0; rmIndex < materials.size(); rmIndex++) { 
 			ReceiptMaterial rm = materials.get(rmIndex);
