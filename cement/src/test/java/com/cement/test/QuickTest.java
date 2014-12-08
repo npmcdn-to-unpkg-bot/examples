@@ -21,6 +21,7 @@ import com.cement.model.Material;
 import com.cement.model.ReceiptMaterial;
 import com.cement.model.ReceiptSet;
 import com.slavi.math.MathUtil;
+import com.slavi.math.matrix.Matrix;
 
 public class QuickTest {
 
@@ -53,8 +54,10 @@ public class QuickTest {
 		}
 
 		List<Double> extResult = new ArrayList<>();
-		for (ReceiptMaterial m : materials) {
-			int materialId = m.getMaterial().getId();
+		Matrix mm = new Matrix(1, materials.size());
+		for (int rmIndex = 0; rmIndex < materials.size(); rmIndex++) { 
+			ReceiptMaterial rm = materials.get(rmIndex);
+			int materialId = rm.getMaterial().getId();
 			double k = 0;
 			switch (materialId) {
 			case 5: // естествен пясък 0 - 5; Садово; Ескана
@@ -76,7 +79,9 @@ public class QuickTest {
 				throw new Error();
 			}
 			extResult.add(k);
+			mm.setItem(0, rmIndex, k);
 		}
+		System.out.println(mm.toMatlabString("MM"));
 		
 		List<Double> r = adj.calc(curve, materials, 1, 1.0);
 		

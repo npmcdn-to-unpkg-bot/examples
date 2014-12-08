@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.cement.NNLS;
 import com.cement.component.ReceiptSetJpa;
 import com.cement.model.CurveSieve;
 import com.cement.model.Material;
@@ -61,21 +62,9 @@ public class Adjust {
 			mmap.put(materialId, mdata);
 		}
 
-		Matrix mat = new Matrix(materials.size(), curve.size());
+		Matrix curve_mat = new Matrix(3, curve.size());
 		for (int curveIndex = 0; curveIndex < curve.size(); curveIndex++) {
 			CurveSieve cs = curve.get(curveIndex);
-			for (int rmIndex = 0; rmIndex < materials.size(); rmIndex++) { 
-				ReceiptMaterial rm = materials.get(rmIndex);
-				Integer materialId = rm.getMaterial().getId();
-				Map<Integer, Double> mdata = mmap.get(materialId);
-				double v = mdata.get(cs.getSieve());
-				mat.setItem(rmIndex, curveIndex, v);
-			}
-		}
-		System.out.println("Dump materials:");
-		System.out.println(mat.toMatlabString("MATERIAL"));
-		
-		for (CurveSieve cs : curve) {
 			System.out.print("sieveId:" + MathUtil.l10(cs.getSieve()) + ", v:" + MathUtil.d4(cs.getValue() / 100) + ", M:");
 			for (ReceiptMaterial rm : materials) {
 				Material m = rm.getMaterial();
@@ -84,7 +73,11 @@ public class Adjust {
 				System.out.print(MathUtil.d4(mdata.get(cs.getSieve())) + " ");
 			}
 			System.out.println();
+			curve_mat.setItem(0, curveIndex, cs.getLowValue());
+			curve_mat.setItem(1, curveIndex, cs.getUpperValue());
+			curve_mat.setItem(2, curveIndex, cs.getValue());
 		}
+		System.out.println(curve_mat.toMatlabString("C"));
 		
 		Matrix K = new Matrix(1, materials.size());
 		for (int rmIndex = 0; rmIndex < materials.size(); rmIndex++) { 
@@ -99,7 +92,7 @@ public class Adjust {
 			if (rm.getMinQuantity() < 0)
 				rm.setMinQuantity(0);
 			
-			double v = rm.getMinQuantity();
+			double v = rm.getQuantity();
 			v = Math.min(v, rm.getMaxQuantity());
 			v = Math.max(v, rm.getMinQuantity());
 			if (v == 0.0)
@@ -109,8 +102,9 @@ public class Adjust {
 			K.setItem(0, rmIndex, v);
 		}
 		System.out.println(K.toMatlabString("X"));
-
+		
 		Matrix A = new Matrix(materials.size(), curve.size());
+		NNLS nnls = new NNLS(curve.size(), materials.size());
 		for (int rmIndex = 0; rmIndex < materials.size(); rmIndex++) { 
 			ReceiptMaterial rm = materials.get(rmIndex);
 			Integer materialId = rm.getMaterial().getId();
@@ -120,15 +114,31 @@ public class Adjust {
 				CurveSieve cs = curve.get(curveIndex);
 				Double v = mdata.get(cs.getSieve());
 				A.setItem(rmIndex, curveIndex, v);
+				nnls.a[curveIndex][rmIndex] = v;
 			}
 		}
 		Matrix R = new Matrix(1, curve.size());
 		for (int curveIndex = 0; curveIndex < curve.size(); curveIndex++) {
 			CurveSieve cs = curve.get(curveIndex);
 			R.setItem(0, curveIndex, cs.getValue());
+			nnls.b[curveIndex] = cs.getValue();
 		}
 		System.out.println(A.toMatlabString("A"));
 		System.out.println(R.toMatlabString("L"));
+
+		nnls.solve();
+		Matrix nnlsX = new Matrix(1, materials.size());
+		for (int rmIndex = 0; rmIndex < materials.size(); rmIndex++) {
+			nnlsX.setItem(0, rmIndex, nnls.x[rmIndex]);
+		}
+		System.out.println(nnlsX.toMatlabString("NNLS_X"));
+		
+		//////////////////////////////////////////////////////////
+		
+		
+
+		
+		//////////////////////////////////////////////////////////
 		
 		for (int i = 0; ; i++) {
 			K.printM("K");
