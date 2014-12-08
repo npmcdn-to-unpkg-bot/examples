@@ -61,6 +61,20 @@ public class Adjust {
 			mmap.put(materialId, mdata);
 		}
 
+		Matrix mat = new Matrix(materials.size(), curve.size());
+		for (int curveIndex = 0; curveIndex < curve.size(); curveIndex++) {
+			CurveSieve cs = curve.get(curveIndex);
+			for (int rmIndex = 0; rmIndex < materials.size(); rmIndex++) { 
+				ReceiptMaterial rm = materials.get(rmIndex);
+				Integer materialId = rm.getMaterial().getId();
+				Map<Integer, Double> mdata = mmap.get(materialId);
+				double v = mdata.get(cs.getSieve());
+				mat.setItem(rmIndex, curveIndex, v);
+			}
+		}
+		System.out.println("Dump materials:");
+		System.out.println(mat.toMatlabString("MATERIAL"));
+		
 		for (CurveSieve cs : curve) {
 			System.out.print("sieveId:" + MathUtil.l10(cs.getSieve()) + ", v:" + MathUtil.d4(cs.getValue() / 100) + ", M:");
 			for (ReceiptMaterial rm : materials) {
@@ -94,6 +108,7 @@ public class Adjust {
 				v /= totalQuantity;
 			K.setItem(0, rmIndex, v);
 		}
+		System.out.println(K.toMatlabString("X"));
 
 		for (int i = 0; ; i++) {
 			K.printM("K");
