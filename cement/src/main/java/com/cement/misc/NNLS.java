@@ -131,7 +131,7 @@ public class NNLS {
 	 *                3<I>N</I> iterations).
 	 */
 	public void solve() {
-		int i, iz, j, l, izmax, jz, jj, ip, ii;
+		int iz, j, l, izmax, jz, jj, ip, ii;
 		double sm, wmax, asave, unorm, ztest, up, alpha, t, cc, ss, temp;
 
 		// Keep count of iterations.
@@ -140,7 +140,7 @@ public class NNLS {
 		// Initialize the arrays index and x.
 		// index[0] through index[nsetp-1] = set P.
 		// index[nsetp] through index[N-1] = set Z.
-		for (i = 0; i < N; ++i) {
+		for (int i = 0; i < N; ++i) {
 			x[i] = 0.0;
 			index[i] = i;
 		}
@@ -151,7 +151,7 @@ public class NNLS {
 			// Quit if all coefficients are already in the solution, or if M
 			// columns of A have been triangularized.
 			if (nsetp >= N || nsetp >= M)
-				break mainloop;
+				break;
 
 			// Compute components of the dual (negative gradient) vector W.
 			for (iz = nsetp; iz < N; ++iz) {
@@ -164,7 +164,7 @@ public class NNLS {
 			}
 
 			// Find a candidate j to be moved from set Z to set P.
-			candidateloop: for (;;) {
+			while (true) {
 				// Find largest positive W[j].
 				wmax = 0.0;
 				izmax = -1;
@@ -190,10 +190,10 @@ public class NNLS {
 				up = constructHouseholderTransform(nsetp, nsetp + 1, a, j);
 				unorm = 0.0;
 				for (l = 0; l < nsetp; ++l) {
-					unorm += sqr(a[l][j]);
+					unorm += a[l][j] * a[l][j];
 				}
 				unorm = Math.sqrt(unorm);
-				if (diff(unorm + Math.abs(a[nsetp][j]) * factor, unorm) > 0.0) {
+				if ((unorm + Math.abs(a[nsetp][j]) * factor) - unorm > 0.0) {
 					// Column j is sufficiently independent. Copy B into ZZ,
 					// update ZZ, and solve for ztest = proposed new value for
 					// X[j].
@@ -203,7 +203,7 @@ public class NNLS {
 
 					// If ztest is positive, we've found our candidate.
 					if (ztest > 0.0)
-						break candidateloop;
+						break;
 				}
 
 				// Reject j as a candidate to be moved from set Z to set P.
@@ -249,7 +249,7 @@ public class NNLS {
 			}
 
 			// Secondary loop begins here.
-			secondaryloop: for (;;) {
+			for (;;) {
 				// Increment iteration counter.
 				++iter;
 				if (iter > itmax) {
@@ -274,7 +274,7 @@ public class NNLS {
 				// will still be 2. If so, exit from secondary loop to main
 				// loop.
 				if (alpha == 2.0)
-					break secondaryloop;
+					break;
 
 				// Otherwise, use alpha (which will be between 0 and 1) to
 				// interpolate between the old x and the new zz.
@@ -285,9 +285,9 @@ public class NNLS {
 
 				// Modify A and B and the index arrays to move coefficient i
 				// from set P to set Z.
-				i = index[jj];
+				int indexJJ = index[jj];
 				tertiaryloop: for (;;) {
-					x[i] = 0.0;
+					x[indexJJ] = 0.0;
 					if (jj != nsetp - 1) {
 						++jj;
 						for (j = jj; j < nsetp; ++j) {
@@ -312,7 +312,7 @@ public class NNLS {
 						}
 					}
 					--nsetp;
-					index[nsetp] = i;
+					index[nsetp] = indexJJ;
 
 					// See if the remaining coefficients in set P are feasible.
 					// They should be because of the way alpha was determined.
@@ -320,11 +320,11 @@ public class NNLS {
 					// that are nonpositive will be set to 0 and moved from set
 					// P to set Z.
 					for (jj = 0; jj < nsetp; ++jj) {
-						i = index[jj];
-						if (x[i] <= 0.0)
+						indexJJ = index[jj];
+						if (x[indexJJ] <= 0.0)
 							continue tertiaryloop;
 					}
-					break tertiaryloop;
+					break;
 				}
 
 				// Copy b into zz, then solve the tridiagonal system again and
@@ -345,7 +345,7 @@ public class NNLS {
 
 			// Update x from zz.
 			for (ip = 0; ip < nsetp; ++ip) {
-				i = index[ip];
+				int i = index[ip];
 				x[i] = zz[ip];
 			}
 
@@ -354,8 +354,8 @@ public class NNLS {
 
 		// Compute the squared Euclidean norm of the final residual vector.
 		normsqr = 0.0;
-		for (i = nsetp; i < M; ++i) {
-			normsqr += sqr(b[i]);
+		for (int i = nsetp; i < M; ++i) {
+			normsqr += b[i] * b[i];
 		}
 	}
 
@@ -382,28 +382,27 @@ public class NNLS {
 	 */
 	private static double constructHouseholderTransform(int ipivot, int i1, double[][] u, int pivotcol) {
 		int M = u.length;
-		int j;
-		double cl, clinv, sm, up;
-
-		cl = Math.abs(u[ipivot][pivotcol]);
+		double cl = Math.abs(u[ipivot][pivotcol]);
 
 		// Construct the transformation.
-		for (j = i1; j < M; ++j) {
+		for (int j = i1; j < M; ++j) {
 			cl = Math.max(Math.abs(u[j][pivotcol]), cl);
 		}
 		if (cl <= 0.0) {
 			throw new IllegalArgumentException(
 					"NonNegativeLeastSquares.constructHouseholderTransform(): Illegal pivot vector");
 		}
-		clinv = 1.0 / cl;
-		sm = sqr(u[ipivot][pivotcol] * clinv);
-		for (j = i1; j < M; ++j) {
-			sm += sqr(u[j][pivotcol] * clinv);
+		double clinv = 1.0 / cl;
+		double tmp = u[ipivot][pivotcol] * clinv;
+		double sm = tmp * tmp;
+		for (int j = i1; j < M; ++j) {
+			tmp = u[j][pivotcol] * clinv;
+			sm += tmp * tmp;
 		}
 		cl = cl * Math.sqrt(sm);
 		if (u[ipivot][pivotcol] > 0.0)
 			cl = -cl;
-		up = u[ipivot][pivotcol] - cl;
+		double up = u[ipivot][pivotcol] - cl;
 		u[ipivot][pivotcol] = cl;
 		return up;
 	}
@@ -438,16 +437,13 @@ public class NNLS {
 	private static void applyHouseholderTransform(int ipivot, int i1, double[][] u, int pivotcol, double up,
 			double[][] c, int applycol) {
 		int M = u.length;
-		int i;
-		double cl, b, sm;
-
-		cl = Math.abs(u[ipivot][pivotcol]);
+		double cl = Math.abs(u[ipivot][pivotcol]);
 		if (cl <= 0.0) {
 			throw new IllegalArgumentException(
 					"NonNegativeLeastSquares.applyHouseholderTransform(): Illegal pivot vector");
 		}
 
-		b = up * u[ipivot][pivotcol];
+		double b = up * u[ipivot][pivotcol];
 		// b must be nonpositive here. If b = 0, return.
 		if (b == 0.0) {
 			return;
@@ -457,14 +453,14 @@ public class NNLS {
 		}
 		b = 1.0 / b;
 
-		sm = c[ipivot][applycol] * up;
-		for (i = i1; i < M; ++i) {
+		double sm = c[ipivot][applycol] * up;
+		for (int i = i1; i < M; ++i) {
 			sm += c[i][applycol] * u[i][pivotcol];
 		}
 		if (sm != 0.0) {
 			sm = sm * b;
 			c[ipivot][applycol] += sm * up;
-			for (i = i1; i < M; ++i) {
+			for (int i = i1; i < M; ++i) {
 				c[i][applycol] += sm * u[i][pivotcol];
 			}
 		}
@@ -496,16 +492,13 @@ public class NNLS {
 	 */
 	private static void applyHouseholderTransform(int ipivot, int i1, double[][] u, int pivotcol, double up, double[] c) {
 		int M = u.length;
-		int i;
-		double cl, b, sm;
-
-		cl = Math.abs(u[ipivot][pivotcol]);
+		double cl = Math.abs(u[ipivot][pivotcol]);
 		if (cl <= 0.0) {
 			throw new IllegalArgumentException(
 					"NonNegativeLeastSquares.applyHouseholderTransform(): Illegal pivot vector");
 		}
 
-		b = up * u[ipivot][pivotcol];
+		double b = up * u[ipivot][pivotcol];
 		// b must be nonpositive here. If b = 0, return.
 		if (b == 0.0) {
 			return;
@@ -515,14 +508,14 @@ public class NNLS {
 		}
 		b = 1.0 / b;
 
-		sm = c[ipivot] * up;
-		for (i = i1; i < M; ++i) {
+		double sm = c[ipivot] * up;
+		for (int i = i1; i < M; ++i) {
 			sm += c[i] * u[i][pivotcol];
 		}
 		if (sm != 0.0) {
 			sm = sm * b;
 			c[ipivot] += sm * up;
-			for (i = i1; i < M; ++i) {
+			for (int i = i1; i < M; ++i) {
 				c[i] += sm * u[i][pivotcol];
 			}
 		}
@@ -548,17 +541,15 @@ public class NNLS {
 	 * @return sqrt(<TT>a</TT><SUP>2</SUP>+<TT>b</TT><SUP>2</SUP>).
 	 */
 	private static double computeGivensRotation(double a, double b, double[] terms) {
-		double xr, yr;
-
 		if (Math.abs(a) > Math.abs(b)) {
-			xr = b / a;
-			yr = Math.sqrt(1.0 + sqr(xr));
+			double xr = b / a;
+			double yr = Math.sqrt(1.0 + xr*xr);
 			terms[0] = sign(1.0 / yr, a);
 			terms[1] = terms[0] * xr;
 			return Math.abs(a) * yr;
 		} else if (b != 0.0) {
-			xr = a / b;
-			yr = Math.sqrt(1.0 + sqr(xr));
+			double xr = a / b;
+			double yr = Math.sqrt(1.0 + xr*xr);
 			terms[1] = sign(1.0 / yr, b);
 			terms[0] = terms[1] * xr;
 			return Math.abs(b) * yr;
@@ -567,22 +558,6 @@ public class NNLS {
 			terms[1] = 1.0;
 			return 0.0;
 		}
-	}
-
-	/**
-	 * Determine if x differs from y, to machine precision.
-	 *
-	 * @return 0.0, if x is the same as y to machine precision; x-y (nonzero), if x differs from y to machine precision.
-	 */
-	private static double diff(double x, double y) {
-		return x - y;
-	}
-
-	/**
-	 * Returns x^2.
-	 */
-	private static double sqr(double x) {
-		return x * x;
 	}
 
 	/**
