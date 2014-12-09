@@ -131,7 +131,7 @@ public class NNLS {
 	 *                3<I>N</I> iterations).
 	 */
 	public void solve() {
-		int iz, j, l, izmax, jz, jj, ip, ii;
+		int iz, l, izmax, jz, jj, ip, ii;
 		double sm, wmax, asave, unorm, ztest, up, alpha, t, cc, ss, temp;
 
 		// Keep count of iterations.
@@ -155,23 +155,24 @@ public class NNLS {
 
 			// Compute components of the dual (negative gradient) vector W.
 			for (iz = nsetp; iz < N; ++iz) {
-				j = index[iz];
+				int indexI = index[iz];
 				sm = 0.0;
 				for (l = nsetp; l < M; ++l) {
-					sm += a[l][j] * b[l];
+					sm += a[l][indexI] * b[l];
 				}
-				w[j] = sm;
+				w[indexI] = sm;
 			}
 
 			// Find a candidate j to be moved from set Z to set P.
+			int indexIZ = -1;
 			while (true) {
 				// Find largest positive W[j].
 				wmax = 0.0;
 				izmax = -1;
 				for (iz = nsetp; iz < N; ++iz) {
-					j = index[iz];
-					if (w[j] > wmax) {
-						wmax = w[j];
+					int indexI = index[iz];
+					if (w[indexI] > wmax) {
+						wmax = w[indexI];
 						izmax = iz;
 					}
 				}
@@ -181,25 +182,25 @@ public class NNLS {
 				if (wmax <= 0.0)
 					break mainloop;
 				iz = izmax;
-				j = index[iz];
+				indexIZ = index[iz];
 
 				// The sign of W[j] is okay for j to be moved to set P. Begin
 				// the transformation and check new diagonal element to avoid
 				// near linear independence.
-				asave = a[nsetp][j];
-				up = constructHouseholderTransform(nsetp, nsetp + 1, a, j);
+				asave = a[nsetp][indexIZ];
+				up = constructHouseholderTransform(nsetp, nsetp + 1, a, indexIZ);
 				unorm = 0.0;
 				for (l = 0; l < nsetp; ++l) {
-					unorm += a[l][j] * a[l][j];
+					unorm += a[l][indexIZ] * a[l][indexIZ];
 				}
 				unorm = Math.sqrt(unorm);
-				if ((unorm + Math.abs(a[nsetp][j]) * factor) - unorm > 0.0) {
+				if ((unorm + Math.abs(a[nsetp][indexIZ]) * factor) - unorm > 0.0) {
 					// Column j is sufficiently independent. Copy B into ZZ,
 					// update ZZ, and solve for ztest = proposed new value for
 					// X[j].
 					System.arraycopy(b, 0, zz, 0, M);
-					applyHouseholderTransform(nsetp, nsetp + 1, a, j, up, zz);
-					ztest = zz[nsetp] / a[nsetp][j];
+					applyHouseholderTransform(nsetp, nsetp + 1, a, indexIZ, up, zz);
+					ztest = zz[nsetp] / a[nsetp][indexIZ];
 
 					// If ztest is positive, we've found our candidate.
 					if (ztest > 0.0)
@@ -208,8 +209,8 @@ public class NNLS {
 
 				// Reject j as a candidate to be moved from set Z to set P.
 				// Restore a[nsetp][j], set w[j] = 0, and try again.
-				a[nsetp][j] = asave;
-				w[j] = 0.0;
+				a[nsetp][indexIZ] = asave;
+				w[indexIZ] = 0.0;
 			}
 
 			// The index j = index[iz] has been selected to be moved from set Z
@@ -219,20 +220,20 @@ public class NNLS {
 			System.arraycopy(zz, 0, b, 0, M);
 
 			index[iz] = index[nsetp];
-			index[nsetp] = j;
+			index[nsetp] = indexIZ;
 			++nsetp;
 
 			jj = -1;
 			for (jz = nsetp; jz < N; ++jz) {
 				jj = index[jz];
-				applyHouseholderTransform(nsetp - 1, nsetp, a, j, up, a, jj);
+				applyHouseholderTransform(nsetp - 1, nsetp, a, indexIZ, up, a, jj);
 			}
 
 			for (l = nsetp; l < M; ++l) {
-				a[l][j] = 0.0;
+				a[l][indexIZ] = 0.0;
 			}
 
-			w[j] = 0.0;
+			w[indexIZ] = 0.0;
 
 			// Solve the triangular system. Store the solution temporarily in
 			// zz.
@@ -290,7 +291,7 @@ public class NNLS {
 					x[indexJJ] = 0.0;
 					if (jj != nsetp - 1) {
 						++jj;
-						for (j = jj; j < nsetp; ++j) {
+						for (int j = jj; j < nsetp; ++j) {
 							ii = index[j];
 							index[j - 1] = ii;
 							a[j - 1][ii] = computeGivensRotation(a[j - 1][ii], a[j][ii], terms);
@@ -333,8 +334,8 @@ public class NNLS {
 				for (l = 0; l < nsetp; ++l) {
 					ip = nsetp - l;
 					if (l != 0) {
-						for (ii = 0; ii < ip; ++ii) {
-							zz[ii] -= a[ii][jj] * zz[ip];
+						for (int i = 0; i < ip; ++i) {
+							zz[i] -= a[i][jj] * zz[ip];
 						}
 					}
 					--ip;
@@ -344,9 +345,9 @@ public class NNLS {
 			}
 
 			// Update x from zz.
-			for (ip = 0; ip < nsetp; ++ip) {
-				int i = index[ip];
-				x[i] = zz[ip];
+			for (int i = 0; i < nsetp; ++i) {
+				int indexI = index[i];
+				x[indexI] = zz[i];
 			}
 
 			// All new coefficients are positive. Continue the main loop.
