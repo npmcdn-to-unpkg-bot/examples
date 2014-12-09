@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.cement.NNLS;
 import com.cement.component.ReceiptSetJpa;
 import com.cement.model.CurveSieve;
 import com.cement.model.Material;

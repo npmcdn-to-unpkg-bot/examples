@@ -1,4 +1,4 @@
-package com.cement;
+package com.cement.misc;
 
 /**
  * Class NonNegativeLeastSquares provides a method for solving a least squares minimization problem with nonnegativity
@@ -13,7 +13,7 @@ package com.cement;
  * @author Alan Kaminsky
  * @version 22-Apr-2005
  */
-public class NNLS {
+public class NNLS_NO {
 
 	// Exported data members.
 
@@ -95,7 +95,7 @@ public class NNLS {
 	 * @exception IllegalArgumentException
 	 *                (unchecked exception) Thrown if <TT>M</TT> &lt;= 0 or <TT>N</TT> &lt;= 0.
 	 */
-	public NNLS(int M, int N) {
+	public NNLS_NO(int M, int N) {
 		if (M <= 0) {
 			throw new IllegalArgumentException("NonNegativeLeastSquares(): M = " + M + " illegal");
 		}
