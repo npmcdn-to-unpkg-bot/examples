@@ -108,7 +108,7 @@ public class NNLS {
 
 		this.measurementCount = measurementCount;
 		this.numUnknown = numUnknown;
-		this.a = new Matrix(measurementCount, numUnknown);
+		this.a = new Matrix(numUnknown, measurementCount);
 		this.b = new Matrix(1, measurementCount);
 		this.x = new Matrix(1, numUnknown);
 		this.index = new int[numUnknown];
@@ -158,7 +158,7 @@ public class NNLS {
 				int indexI = index[i];
 				double sm = 0.0;
 				for (int l = nsetp; l < measurementCount; ++l) {
-					sm += a.getItem(l, indexI) * b.getItem(0, l);
+					sm += a.getItem(indexI, l) * b.getItem(0, l);
 				}
 				w[indexI] = sm;
 			}
@@ -189,20 +189,20 @@ public class NNLS {
 				// The sign of W[j] is okay for j to be moved to set P. Begin
 				// the transformation and check new diagonal element to avoid
 				// near linear independence.
-				double asave = a.getItem(nsetp, indexIZ);
+				double asave = a.getItem(indexIZ, nsetp);
 				up = constructHouseholderTransform(nsetp, nsetp + 1, a, indexIZ);
 				double unorm = 0.0;
 				for (int l = 0; l < nsetp; ++l) {
-					unorm += a.getItem(l, indexIZ) * a.getItem(l, indexIZ);
+					unorm += a.getItem(indexIZ, l) * a.getItem(indexIZ, l);
 				}
 				unorm = Math.sqrt(unorm);
-				if (unorm + Math.abs(a.getItem(nsetp, indexIZ) * factor) - unorm > 0.0) {
+				if (unorm + Math.abs(a.getItem(indexIZ, nsetp) * factor) - unorm > 0.0) {
 					// Column j is sufficiently independent. Copy B into ZZ,
 					// update ZZ, and solve for ztest = proposed new value for
 					// X[j].
 					b.copyTo(zz);
-					applyHouseholderTransform(nsetp, nsetp + 1, a, indexIZ, up, zz);
-					double ztest = zz.getItem(0, nsetp) / a.getItem(nsetp, indexIZ);
+					applyHouseholderTransform(nsetp, nsetp + 1, a, indexIZ, up, zz, 0);
+					double ztest = zz.getItem(0, nsetp) / a.getItem(indexIZ, nsetp);
 
 					// If ztest is positive, we've found our candidate.
 					if (ztest > 0.0)
@@ -211,7 +211,7 @@ public class NNLS {
 
 				// Reject j as a candidate to be moved from set Z to set P.
 				// Restore a[nsetp][j], set w[j] = 0, and try again.
-				a.setItem(nsetp, indexIZ, asave);
+				a.setItem(indexIZ, nsetp, asave);
 				w[indexIZ] = 0.0;
 			}
 
@@ -232,7 +232,7 @@ public class NNLS {
 			}
 
 			for (int l = nsetp; l < measurementCount; ++l) {
-				a.setItem(l, indexIZ, 0.0);
+				a.setItem(indexIZ, l, 0.0);
 			}
 
 			w[indexIZ] = 0.0;
@@ -243,12 +243,12 @@ public class NNLS {
 				int ip = nsetp - l;
 				if (l != 0) {
 					for (int i = 0; i < ip; ++i) {
-						zz.setItem(0, i, zz.getItem(0, i) - a.getItem(i, indexJZ) * zz.getItem(0, ip));
+						zz.setItem(0, i, zz.getItem(0, i) - a.getItem(indexJZ, i) * zz.getItem(0, ip));
 					}
 				}
 				--ip;
 				indexJZ = index[ip];
-				zz.setItem(0, ip, zz.getItem(0, ip) / a.getItem(ip, indexJZ));
+				zz.setItem(0, ip, zz.getItem(0, ip) / a.getItem(indexJZ, ip));
 			}
 
 			// Secondary loop begins here.
@@ -298,16 +298,16 @@ public class NNLS {
 						for (int j = indexJZ; j < nsetp; ++j) {
 							int indexJ = index[j];
 							index[j - 1] = indexJ;
-							a.setItem(j - 1, indexJ, computeGivensRotation(a.getItem(j - 1, indexJ), a.getItem(j, indexJ), terms));
-							a.setItem(j, indexJ, 0.0);
+							a.setItem(indexJ, j - 1, computeGivensRotation(a.getItem(indexJ, j - 1), a.getItem(indexJ, j), terms));
+							a.setItem(indexJ, j, 0.0);
 							double cc = terms[0];
 							double ss = terms[1];
 							for (int l = 0; l < numUnknown; ++l) {
 								if (l != indexJ) {
 									// Apply Givens rotation to column l of A.
-									double temp = a.getItem(j - 1, l);
-									a.setItem(j - 1, l, cc * temp + ss * a.getItem(j, l));
-									a.setItem(j, l, -ss * temp + cc * a.getItem(j, l));
+									double temp = a.getItem(l, j - 1);
+									a.setItem(l, j - 1, cc * temp + ss * a.getItem(l, j));
+									a.setItem(l, j, -ss * temp + cc * a.getItem(l, j));
 								}
 							}
 							// Apply Givens rotation to B.
@@ -339,12 +339,12 @@ public class NNLS {
 					int ip = nsetp - l;
 					if (l != 0) {
 						for (int i = 0; i < ip; ++i) {
-							zz.setItem(0, i, zz.getItem(0, i) - a.getItem(i, indexJZ) * zz.getItem(0, ip));
+							zz.setItem(0, i, zz.getItem(0, i) - a.getItem(indexJZ, i) * zz.getItem(0, ip));
 						}
 					}
 					--ip;
 					indexJZ = index[ip];
-					zz.setItem(0, ip, zz.getItem(0, ip) / a.getItem(ip, indexJZ));
+					zz.setItem(0, ip, zz.getItem(0, ip) / a.getItem(indexJZ, ip));
 				}
 			}
 
@@ -387,29 +387,29 @@ public class NNLS {
 	 * @return The quantity <TT>up</TT> which is part of the Householder transformation.
 	 */
 	private static double constructHouseholderTransform(int ipivot, int i1, Matrix u, int pivotcol) {
-		int M = u.getSizeX();
-		double cl = Math.abs(u.getItem(ipivot, pivotcol));
+		int M = u.getSizeY();
+		double cl = Math.abs(u.getItem(pivotcol, ipivot));
 
 		// Construct the transformation.
 		for (int j = i1; j < M; ++j) {
-			cl = Math.max(Math.abs(u.getItem(j, pivotcol)), cl);
+			cl = Math.max(Math.abs(u.getItem(pivotcol, j)), cl);
 		}
 		if (cl <= 0.0) {
 			throw new IllegalArgumentException(
 					"NonNegativeLeastSquares.constructHouseholderTransform(): Illegal pivot vector");
 		}
 		double clinv = 1.0 / cl;
-		double tmp = u.getItem(ipivot, pivotcol) * clinv;
+		double tmp = u.getItem(pivotcol, ipivot) * clinv;
 		double sm = tmp * tmp;
 		for (int j = i1; j < M; ++j) {
-			tmp = u.getItem(j, pivotcol) * clinv;
+			tmp = u.getItem(pivotcol, j) * clinv;
 			sm += tmp * tmp;
 		}
 		cl = cl * Math.sqrt(sm);
-		if (u.getItem(ipivot, pivotcol) > 0.0)
+		if (u.getItem(pivotcol, ipivot) > 0.0)
 			cl = -cl;
-		double up = u.getItem(ipivot, pivotcol) - cl;
-		u.setItem(ipivot, pivotcol, cl);
+		double up = u.getItem(pivotcol, ipivot) - cl;
+		u.setItem(pivotcol, ipivot, cl);
 		return up;
 	}
 
@@ -440,16 +440,15 @@ public class NNLS {
 	 * @param applycol
 	 *            Index of the column of <TT>c</TT> to which the Householder transformation is to be applied.
 	 */
-	private static void applyHouseholderTransform(int ipivot, int i1, Matrix u, int pivotcol, double up,
-			Matrix c, int applycol) {
-		int M = u.getSizeX();
-		double cl = Math.abs(u.getItem(ipivot, pivotcol));
+	private static void applyHouseholderTransform(int ipivot, int i1, Matrix u, int pivotcol, double up, Matrix c, int applycol) {
+		int M = u.getSizeY();
+		double cl = Math.abs(u.getItem(pivotcol, ipivot));
 		if (cl <= 0.0) {
 			throw new IllegalArgumentException(
 					"NonNegativeLeastSquares.applyHouseholderTransform(): Illegal pivot vector");
 		}
 
-		double b = up * u.getItem(ipivot, pivotcol);
+		double b = up * u.getItem(pivotcol, ipivot);
 		// b must be nonpositive here. If b = 0, return.
 		if (b == 0.0) {
 			return;
@@ -459,70 +458,15 @@ public class NNLS {
 		}
 		b = 1.0 / b;
 
-		double sm = c.getItem(ipivot, applycol) * up;
+		double sm = c.getItem(applycol, ipivot) * up;
 		for (int i = i1; i < M; ++i) {
-			sm += c.getItem(i, applycol) * u.getItem(i, pivotcol);
+			sm += c.getItem(applycol, i) * u.getItem(pivotcol, i);
 		}
 		if (sm != 0.0) {
 			sm = sm * b;
-			c.setItem(ipivot, applycol, c.getItem(ipivot, applycol) + sm * up);
+			c.setItem(applycol, ipivot, c.getItem(applycol, ipivot) + sm * up);
 			for (int i = i1; i < M; ++i) {
-				c.setItem(i, applycol, c.getItem(i, applycol) + sm * u.getItem(i, pivotcol));
-			}
-		}
-	}
-
-	/**
-	 * Apply a Householder transformation to a vector. <TT>u</TT> is an <I>M</I>x<I>N</I>-element matrix used as an
-	 * input of this method. <TT>c</TT> is an <I>M</I>-element array used as an input and output of this method.
-	 * <TT>ipivot</TT>, <TT>i1</TT>, <TT>u</TT>, and <TT>pivotcol</TT> must be the same as in a previous call of
-	 * <TT>constructHouseholderTransform()</TT>, and <TT>up</TT> must be the value returned by that method call.
-	 *
-	 * @param ipivot
-	 *            Index of the pivot element within the pivot vector.
-	 * @param i1
-	 *            If <TT>i1</TT> &lt; <I>M,</I> the transformation will zero elements indexed from <TT>i1</TT> through
-	 *            <I>M</I>-1. If <TT>i1</TT> &gt;= <I>M,</I> the transformation is an identity transformation.
-	 * @param u
-	 *            An <I>M</I>x<I>N</I>-element matrix. On input, column <TT>pivotcol</TT> of <TT>u</TT>, along with
-	 *            <TT>up</TT>, contains the Householder transformation. This must be the output of a previous call of
-	 *            <TT>constructHouseholderTransform()</TT>.
-	 * @param pivotcol
-	 *            Index of the column of <TT>u</TT> that contains the Householder transformation.
-	 * @param up
-	 *            The rest of the Householder transformation. This must be the return value of the same previous call of
-	 *            <TT>constructHouseholderTransform()</TT>.
-	 * @param c
-	 *            An <I>M</I>-element array. On input, <TT>c</TT> contains the vector to which the Householder
-	 *            transformation is to be applied. On output, <TT>c</TT> contains the transformed vector.
-	 */
-	private static void applyHouseholderTransform(int ipivot, int i1, Matrix u, int pivotcol, double up, Matrix c) {
-		int M = u.getSizeX();
-		double cl = Math.abs(u.getItem(ipivot, pivotcol));
-		if (cl <= 0.0) {
-			throw new IllegalArgumentException(
-					"NonNegativeLeastSquares.applyHouseholderTransform(): Illegal pivot vector");
-		}
-
-		double b = up * u.getItem(ipivot, pivotcol);
-		// b must be nonpositive here. If b = 0, return.
-		if (b == 0.0) {
-			return;
-		} else if (b > 0.0) {
-			throw new IllegalArgumentException(
-					"NonNegativeLeastSquares.applyHouseholderTransform(): Illegal pivot element");
-		}
-		b = 1.0 / b;
-
-		double sm = c.getItem(0, ipivot) * up;
-		for (int i = i1; i < M; ++i) {
-			sm += c.getItem(0, i) * u.getItem(i, pivotcol);
-		}
-		if (sm != 0.0) {
-			sm = sm * b;
-			c.setItem(0, ipivot, c.getItem(0, ipivot) + sm * up);
-			for (int i = i1; i < M; ++i) {
-				c.setItem(0, i, c.getItem(0, i) + sm * u.getItem(i, pivotcol));
+				c.setItem(applycol, i, c.getItem(applycol, i) + sm * u.getItem(pivotcol, i));
 			}
 		}
 	}

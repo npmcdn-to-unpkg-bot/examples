@@ -2,6 +2,7 @@ package com.cement.test.nnls;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 import com.cement.misc.NNLS;
 import com.slavi.math.matrix.Matrix;
@@ -27,7 +28,7 @@ public class TestNNLS {
 		L.copyTo(nnls.b);
 		for (int i = 0; i < equationsCount; i++) {
 			for (int j = 0; j < unknownsCount; j++) {
-				nnls.a.setItem(i, j, A.getItem(j, i));
+				nnls.a.setItem(j, i, A.getItem(j, i));
 			}
 		}
 		nnls.solve();
@@ -41,6 +42,8 @@ public class TestNNLS {
 				throw new Error();
 			}
 		}
+		
+		System.out.println(Arrays.toString(nnls.index));
 	}
 
 	public static void main(String[] args) throws Exception {
