@@ -1,5 +1,8 @@
 package com.cement.misc;
 
+import com.slavi.math.MathUtil;
+import com.slavi.math.matrix.Matrix;
+
 /**
  * Class NonNegativeLeastSquares provides a method for solving a least squares minimization problem with nonnegativity
  * constraints. The <TT>solve()</TT> method finds an approximate solution to the linear system of equations <B>Ax</B> =
@@ -20,12 +23,12 @@ public class NNLS {
 	/**
 	 * The number of rows, typically the number of input data points, in the least squares problem.
 	 */
-	public final int M;
+	public final int measurementCount;
 
 	/**
 	 * The number of columns, typically the number of output parameters, in the least squares problem.
 	 */
-	public final int N;
+	public final int numUnknown;
 
 	/**
 	 * The <I>M</I>x<I>N</I>-element <B>A</B> matrix for the least squares problem. On input to the <TT>solve()</TT>
@@ -33,20 +36,20 @@ public class NNLS {
 	 * <B>Q</B> is an <I>M</I>x<I>M</I>-element orthogonal matrix generated during the <TT>solve()</TT> method's
 	 * execution.
 	 */
-	public final double[][] a;
+	public final Matrix a;
 
 	/**
 	 * The <I>M</I>-element <B>b</B> vector for the least squares problem. On input to the <TT>solve()</TT> method,
 	 * <TT>b</TT> contains the vector <B>b</B>. On output, <TT>b</TT> has been replaced with <B>Qb</B>, where <B>Q</B>
 	 * is an <I>M</I>x<I>M</I>-element orthogonal matrix generated during the <TT>solve()</TT> method's execution.
 	 */
-	public final double[] b;
+	public final Matrix b;
 
 	/**
 	 * The <I>N</I>-element <B>x</B> vector for the least squares problem. On output from the <TT>solve()</TT> method,
 	 * <TT>x</TT> contains the solution vector <B>x</B>.
 	 */
-	public final double[] x;
+	public final Matrix x;
 
 	/**
 	 * The <I>N</I>-element index vector. On output from the <TT>solve()</TT> method: <TT>index[0]</TT> through
@@ -71,7 +74,7 @@ public class NNLS {
 
 	// Working storage.
 	private final double[] w;
-	private final double[] zz;
+	private final Matrix zz;
 	private final double[] terms;
 
 	// Maximum number of iterations.
@@ -95,25 +98,25 @@ public class NNLS {
 	 * @exception IllegalArgumentException
 	 *                (unchecked exception) Thrown if <TT>M</TT> &lt;= 0 or <TT>N</TT> &lt;= 0.
 	 */
-	public NNLS(int M, int N) {
-		if (M <= 0) {
-			throw new IllegalArgumentException("NonNegativeLeastSquares(): M = " + M + " illegal");
+	public NNLS(int measurementCount, int numUnknown) {
+		if (measurementCount <= 0) {
+			throw new IllegalArgumentException("NonNegativeLeastSquares(): M = " + measurementCount + " illegal");
 		}
-		if (N <= 0) {
-			throw new IllegalArgumentException("NonNegativeLeastSquares(): N = " + N + " illegal");
+		if (numUnknown <= 0) {
+			throw new IllegalArgumentException("NonNegativeLeastSquares(): N = " + numUnknown + " illegal");
 		}
 
-		this.M = M;
-		this.N = N;
-		this.a = new double[M][N];
-		this.b = new double[M];
-		this.x = new double[N];
-		this.index = new int[N];
+		this.measurementCount = measurementCount;
+		this.numUnknown = numUnknown;
+		this.a = new Matrix(measurementCount, numUnknown);
+		this.b = new Matrix(1, measurementCount);
+		this.x = new Matrix(1, numUnknown);
+		this.index = new int[numUnknown];
 
-		this.w = new double[N];
-		this.zz = new double[M];
+		this.w = new double[numUnknown];
+		this.zz = new Matrix(1, measurementCount);
 		this.terms = new double[2];
-		this.itmax = 3 * N;
+		this.itmax = 3 * numUnknown;
 	}
 
 	// Exported operations.
@@ -131,17 +134,14 @@ public class NNLS {
 	 *                3<I>N</I> iterations).
 	 */
 	public void solve() {
-		int iz, l, izmax, jz, jj, ip, ii;
-		double sm, wmax, asave, unorm, ztest, up, alpha, t, cc, ss, temp;
-
 		// Keep count of iterations.
 		int iter = 0;
 
 		// Initialize the arrays index and x.
 		// index[0] through index[nsetp-1] = set P.
 		// index[nsetp] through index[N-1] = set Z.
-		for (int i = 0; i < N; ++i) {
-			x[i] = 0.0;
+		x.make0();
+		for (int i = 0; i < numUnknown; ++i) {
 			index[i] = i;
 		}
 		nsetp = 0;
@@ -150,30 +150,32 @@ public class NNLS {
 		mainloop: for (;;) {
 			// Quit if all coefficients are already in the solution, or if M
 			// columns of A have been triangularized.
-			if (nsetp >= N || nsetp >= M)
+			if (nsetp >= numUnknown || nsetp >= measurementCount)
 				break;
 
 			// Compute components of the dual (negative gradient) vector W.
-			for (iz = nsetp; iz < N; ++iz) {
-				int indexI = index[iz];
-				sm = 0.0;
-				for (l = nsetp; l < M; ++l) {
-					sm += a[l][indexI] * b[l];
+			for (int i = nsetp; i < numUnknown; ++i) {
+				int indexI = index[i];
+				double sm = 0.0;
+				for (int l = nsetp; l < measurementCount; ++l) {
+					sm += a.getItem(l, indexI) * b.getItem(0, l);
 				}
 				w[indexI] = sm;
 			}
 
 			// Find a candidate j to be moved from set Z to set P.
 			int indexIZ = -1;
+			int izmaxLast = -1;
+			double up = 0.0;
 			while (true) {
 				// Find largest positive W[j].
-				wmax = 0.0;
-				izmax = -1;
-				for (iz = nsetp; iz < N; ++iz) {
-					int indexI = index[iz];
+				double wmax = 0.0;
+				int izmax = -1;
+				for (int i = nsetp; i < numUnknown; ++i) {
+					int indexI = index[i];
 					if (w[indexI] > wmax) {
 						wmax = w[indexI];
-						izmax = iz;
+						izmax = i;
 					}
 				}
 
@@ -181,26 +183,26 @@ public class NNLS {
 				// Kuhn-Tucker conditions.
 				if (wmax <= 0.0)
 					break mainloop;
-				iz = izmax;
-				indexIZ = index[iz];
+				izmaxLast = izmax;
+				indexIZ = index[izmaxLast];
 
 				// The sign of W[j] is okay for j to be moved to set P. Begin
 				// the transformation and check new diagonal element to avoid
 				// near linear independence.
-				asave = a[nsetp][indexIZ];
+				double asave = a.getItem(nsetp, indexIZ);
 				up = constructHouseholderTransform(nsetp, nsetp + 1, a, indexIZ);
-				unorm = 0.0;
-				for (l = 0; l < nsetp; ++l) {
-					unorm += a[l][indexIZ] * a[l][indexIZ];
+				double unorm = 0.0;
+				for (int l = 0; l < nsetp; ++l) {
+					unorm += a.getItem(l, indexIZ) * a.getItem(l, indexIZ);
 				}
 				unorm = Math.sqrt(unorm);
-				if ((unorm + Math.abs(a[nsetp][indexIZ]) * factor) - unorm > 0.0) {
+				if (unorm + Math.abs(a.getItem(nsetp, indexIZ) * factor) - unorm > 0.0) {
 					// Column j is sufficiently independent. Copy B into ZZ,
 					// update ZZ, and solve for ztest = proposed new value for
 					// X[j].
-					System.arraycopy(b, 0, zz, 0, M);
+					b.copyTo(zz);
 					applyHouseholderTransform(nsetp, nsetp + 1, a, indexIZ, up, zz);
-					ztest = zz[nsetp] / a[nsetp][indexIZ];
+					double ztest = zz.getItem(0, nsetp) / a.getItem(nsetp, indexIZ);
 
 					// If ztest is positive, we've found our candidate.
 					if (ztest > 0.0)
@@ -209,7 +211,7 @@ public class NNLS {
 
 				// Reject j as a candidate to be moved from set Z to set P.
 				// Restore a[nsetp][j], set w[j] = 0, and try again.
-				a[nsetp][indexIZ] = asave;
+				a.setItem(nsetp, indexIZ, asave);
 				w[indexIZ] = 0.0;
 			}
 
@@ -217,36 +219,36 @@ public class NNLS {
 			// to set P. Update B, update indexes, apply Householder
 			// transformations to columns in new set Z, zero subdiagonal
 			// elements in column j, set w[j] = 0.
-			System.arraycopy(zz, 0, b, 0, M);
+			zz.copyTo(b);
 
-			index[iz] = index[nsetp];
+			index[izmaxLast] = index[nsetp];
 			index[nsetp] = indexIZ;
 			++nsetp;
 
-			jj = -1;
-			for (jz = nsetp; jz < N; ++jz) {
-				jj = index[jz];
-				applyHouseholderTransform(nsetp - 1, nsetp, a, indexIZ, up, a, jj);
+			int indexJZ = -1;
+			for (int jz = nsetp; jz < numUnknown; ++jz) {
+				indexJZ = index[jz];
+				applyHouseholderTransform(nsetp - 1, nsetp, a, indexIZ, up, a, indexJZ);
 			}
 
-			for (l = nsetp; l < M; ++l) {
-				a[l][indexIZ] = 0.0;
+			for (int l = nsetp; l < measurementCount; ++l) {
+				a.setItem(l, indexIZ, 0.0);
 			}
 
 			w[indexIZ] = 0.0;
 
 			// Solve the triangular system. Store the solution temporarily in
 			// zz.
-			for (l = 0; l < nsetp; ++l) {
-				ip = nsetp - l;
+			for (int l = 0; l < nsetp; ++l) {
+				int ip = nsetp - l;
 				if (l != 0) {
-					for (ii = 0; ii < ip; ++ii) {
-						zz[ii] -= a[ii][jj] * zz[ip];
+					for (int i = 0; i < ip; ++i) {
+						zz.setItem(0, i, zz.getItem(0, i) - a.getItem(i, indexJZ) * zz.getItem(0, ip));
 					}
 				}
 				--ip;
-				jj = index[ip];
-				zz[ip] /= a[ip][jj];
+				indexJZ = index[ip];
+				zz.setItem(0, ip, zz.getItem(0, ip) / a.getItem(ip, indexJZ));
 			}
 
 			// Secondary loop begins here.
@@ -259,14 +261,15 @@ public class NNLS {
 
 				// See if all new constrained coefficients are feasible. If not,
 				// compute alpha.
-				alpha = 2.0;
-				for (ip = 0; ip < nsetp; ++ip) {
-					l = index[ip];
-					if (zz[ip] <= 0.0) {
-						t = -x[l] / (zz[ip] - x[l]);
+				double alpha = 2.0;
+				for (int i = 0; i < nsetp; ++i) {
+					int indexI = index[i];
+					if (zz.getItem(0, i) <= 0.0) {
+						double tmpX = x.getItem(0, indexI);
+						double t = -tmpX / (zz.getItem(0, i) - tmpX);
 						if (alpha > t) {
 							alpha = t;
-							jj = ip;
+							indexJZ = i;
 						}
 					}
 				}
@@ -279,37 +282,38 @@ public class NNLS {
 
 				// Otherwise, use alpha (which will be between 0 and 1) to
 				// interpolate between the old x and the new zz.
-				for (ip = 0; ip < nsetp; ++ip) {
-					l = index[ip];
-					x[l] += alpha * (zz[ip] - x[l]);
+				for (int i = 0; i < nsetp; ++i) {
+					int indexI = index[i];
+					double tmpX = x.getItem(0, indexI);
+					x.setItem(0, indexI, tmpX + alpha * (zz.getItem(0, i) - tmpX));
 				}
 
 				// Modify A and B and the index arrays to move coefficient i
 				// from set P to set Z.
-				int indexJJ = index[jj];
+				int indexJJ = index[indexJZ];
 				tertiaryloop: for (;;) {
-					x[indexJJ] = 0.0;
-					if (jj != nsetp - 1) {
-						++jj;
-						for (int j = jj; j < nsetp; ++j) {
-							ii = index[j];
-							index[j - 1] = ii;
-							a[j - 1][ii] = computeGivensRotation(a[j - 1][ii], a[j][ii], terms);
-							a[j][ii] = 0.0;
-							cc = terms[0];
-							ss = terms[1];
-							for (l = 0; l < N; ++l) {
-								if (l != ii) {
+					x.setItem(0, indexJJ, 0.0);
+					if (indexJZ != nsetp - 1) {
+						++indexJZ;
+						for (int j = indexJZ; j < nsetp; ++j) {
+							int indexJ = index[j];
+							index[j - 1] = indexJ;
+							a.setItem(j - 1, indexJ, computeGivensRotation(a.getItem(j - 1, indexJ), a.getItem(j, indexJ), terms));
+							a.setItem(j, indexJ, 0.0);
+							double cc = terms[0];
+							double ss = terms[1];
+							for (int l = 0; l < numUnknown; ++l) {
+								if (l != indexJ) {
 									// Apply Givens rotation to column l of A.
-									temp = a[j - 1][l];
-									a[j - 1][l] = cc * temp + ss * a[j][l];
-									a[j][l] = -ss * temp + cc * a[j][l];
+									double temp = a.getItem(j - 1, l);
+									a.setItem(j - 1, l, cc * temp + ss * a.getItem(j, l));
+									a.setItem(j, l, -ss * temp + cc * a.getItem(j, l));
 								}
 							}
 							// Apply Givens rotation to B.
-							temp = b[j - 1];
-							b[j - 1] = cc * temp + ss * b[j];
-							b[j] = -ss * temp + cc * b[j];
+							double temp = b.getItem(0, j - 1);
+							b.setItem(0, j - 1, cc * temp + ss * b.getItem(0, j));
+							b.setItem(0, j, -ss * temp + cc * b.getItem(0, j));
 						}
 					}
 					--nsetp;
@@ -320,9 +324,9 @@ public class NNLS {
 					// If any are infeasible it is due to roundoff error. Any
 					// that are nonpositive will be set to 0 and moved from set
 					// P to set Z.
-					for (jj = 0; jj < nsetp; ++jj) {
-						indexJJ = index[jj];
-						if (x[indexJJ] <= 0.0)
+					for (indexJZ = 0; indexJZ < nsetp; ++indexJZ) {
+						indexJJ = index[indexJZ];
+						if (x.getItem(0, indexJJ) <= 0.0)
 							continue tertiaryloop;
 					}
 					break;
@@ -330,24 +334,24 @@ public class NNLS {
 
 				// Copy b into zz, then solve the tridiagonal system again and
 				// continue the secondary loop.
-				System.arraycopy(b, 0, zz, 0, M);
-				for (l = 0; l < nsetp; ++l) {
-					ip = nsetp - l;
+				b.copyTo(zz);
+				for (int l = 0; l < nsetp; ++l) {
+					int ip = nsetp - l;
 					if (l != 0) {
 						for (int i = 0; i < ip; ++i) {
-							zz[i] -= a[i][jj] * zz[ip];
+							zz.setItem(0, i, zz.getItem(0, i) - a.getItem(i, indexJZ) * zz.getItem(0, ip));
 						}
 					}
 					--ip;
-					jj = index[ip];
-					zz[ip] /= a[ip][jj];
+					indexJZ = index[ip];
+					zz.setItem(0, ip, zz.getItem(0, ip) / a.getItem(ip, indexJZ));
 				}
 			}
 
 			// Update x from zz.
 			for (int i = 0; i < nsetp; ++i) {
 				int indexI = index[i];
-				x[indexI] = zz[i];
+				x.setItem(0, indexI, zz.getItem(0, i));
 			}
 
 			// All new coefficients are positive. Continue the main loop.
@@ -355,8 +359,9 @@ public class NNLS {
 
 		// Compute the squared Euclidean norm of the final residual vector.
 		normsqr = 0.0;
-		for (int i = nsetp; i < M; ++i) {
-			normsqr += b[i] * b[i];
+		for (int i = nsetp; i < measurementCount; ++i) {
+			double tmpB = b.getItem(0, i);
+			normsqr += tmpB * tmpB;
 		}
 	}
 
@@ -381,30 +386,30 @@ public class NNLS {
 	 *
 	 * @return The quantity <TT>up</TT> which is part of the Householder transformation.
 	 */
-	private static double constructHouseholderTransform(int ipivot, int i1, double[][] u, int pivotcol) {
-		int M = u.length;
-		double cl = Math.abs(u[ipivot][pivotcol]);
+	private static double constructHouseholderTransform(int ipivot, int i1, Matrix u, int pivotcol) {
+		int M = u.getSizeX();
+		double cl = Math.abs(u.getItem(ipivot, pivotcol));
 
 		// Construct the transformation.
 		for (int j = i1; j < M; ++j) {
-			cl = Math.max(Math.abs(u[j][pivotcol]), cl);
+			cl = Math.max(Math.abs(u.getItem(j, pivotcol)), cl);
 		}
 		if (cl <= 0.0) {
 			throw new IllegalArgumentException(
 					"NonNegativeLeastSquares.constructHouseholderTransform(): Illegal pivot vector");
 		}
 		double clinv = 1.0 / cl;
-		double tmp = u[ipivot][pivotcol] * clinv;
+		double tmp = u.getItem(ipivot, pivotcol) * clinv;
 		double sm = tmp * tmp;
 		for (int j = i1; j < M; ++j) {
-			tmp = u[j][pivotcol] * clinv;
+			tmp = u.getItem(j, pivotcol) * clinv;
 			sm += tmp * tmp;
 		}
 		cl = cl * Math.sqrt(sm);
-		if (u[ipivot][pivotcol] > 0.0)
+		if (u.getItem(ipivot, pivotcol) > 0.0)
 			cl = -cl;
-		double up = u[ipivot][pivotcol] - cl;
-		u[ipivot][pivotcol] = cl;
+		double up = u.getItem(ipivot, pivotcol) - cl;
+		u.setItem(ipivot, pivotcol, cl);
 		return up;
 	}
 
@@ -435,16 +440,16 @@ public class NNLS {
 	 * @param applycol
 	 *            Index of the column of <TT>c</TT> to which the Householder transformation is to be applied.
 	 */
-	private static void applyHouseholderTransform(int ipivot, int i1, double[][] u, int pivotcol, double up,
-			double[][] c, int applycol) {
-		int M = u.length;
-		double cl = Math.abs(u[ipivot][pivotcol]);
+	private static void applyHouseholderTransform(int ipivot, int i1, Matrix u, int pivotcol, double up,
+			Matrix c, int applycol) {
+		int M = u.getSizeX();
+		double cl = Math.abs(u.getItem(ipivot, pivotcol));
 		if (cl <= 0.0) {
 			throw new IllegalArgumentException(
 					"NonNegativeLeastSquares.applyHouseholderTransform(): Illegal pivot vector");
 		}
 
-		double b = up * u[ipivot][pivotcol];
+		double b = up * u.getItem(ipivot, pivotcol);
 		// b must be nonpositive here. If b = 0, return.
 		if (b == 0.0) {
 			return;
@@ -454,15 +459,15 @@ public class NNLS {
 		}
 		b = 1.0 / b;
 
-		double sm = c[ipivot][applycol] * up;
+		double sm = c.getItem(ipivot, applycol) * up;
 		for (int i = i1; i < M; ++i) {
-			sm += c[i][applycol] * u[i][pivotcol];
+			sm += c.getItem(i, applycol) * u.getItem(i, pivotcol);
 		}
 		if (sm != 0.0) {
 			sm = sm * b;
-			c[ipivot][applycol] += sm * up;
+			c.setItem(ipivot, applycol, c.getItem(ipivot, applycol) + sm * up);
 			for (int i = i1; i < M; ++i) {
-				c[i][applycol] += sm * u[i][pivotcol];
+				c.setItem(i, applycol, c.getItem(i, applycol) + sm * u.getItem(i, pivotcol));
 			}
 		}
 	}
@@ -491,15 +496,15 @@ public class NNLS {
 	 *            An <I>M</I>-element array. On input, <TT>c</TT> contains the vector to which the Householder
 	 *            transformation is to be applied. On output, <TT>c</TT> contains the transformed vector.
 	 */
-	private static void applyHouseholderTransform(int ipivot, int i1, double[][] u, int pivotcol, double up, double[] c) {
-		int M = u.length;
-		double cl = Math.abs(u[ipivot][pivotcol]);
+	private static void applyHouseholderTransform(int ipivot, int i1, Matrix u, int pivotcol, double up, Matrix c) {
+		int M = u.getSizeX();
+		double cl = Math.abs(u.getItem(ipivot, pivotcol));
 		if (cl <= 0.0) {
 			throw new IllegalArgumentException(
 					"NonNegativeLeastSquares.applyHouseholderTransform(): Illegal pivot vector");
 		}
 
-		double b = up * u[ipivot][pivotcol];
+		double b = up * u.getItem(ipivot, pivotcol);
 		// b must be nonpositive here. If b = 0, return.
 		if (b == 0.0) {
 			return;
@@ -509,15 +514,15 @@ public class NNLS {
 		}
 		b = 1.0 / b;
 
-		double sm = c[ipivot] * up;
+		double sm = c.getItem(0, ipivot) * up;
 		for (int i = i1; i < M; ++i) {
-			sm += c[i] * u[i][pivotcol];
+			sm += c.getItem(0, i) * u.getItem(i, pivotcol);
 		}
 		if (sm != 0.0) {
 			sm = sm * b;
-			c[ipivot] += sm * up;
+			c.setItem(0, ipivot, c.getItem(0, ipivot) + sm * up);
 			for (int i = i1; i < M; ++i) {
-				c[i] += sm * u[i][pivotcol];
+				c.setItem(0, i, c.getItem(0, i) + sm * u.getItem(i, pivotcol));
 			}
 		}
 	}
@@ -545,13 +550,13 @@ public class NNLS {
 		if (Math.abs(a) > Math.abs(b)) {
 			double xr = b / a;
 			double yr = Math.sqrt(1.0 + xr*xr);
-			terms[0] = sign(1.0 / yr, a);
+			terms[0] = MathUtil.SIGN(1.0 / yr, a);
 			terms[1] = terms[0] * xr;
 			return Math.abs(a) * yr;
 		} else if (b != 0.0) {
 			double xr = a / b;
 			double yr = Math.sqrt(1.0 + xr*xr);
-			terms[1] = sign(1.0 / yr, b);
+			terms[1] = MathUtil.SIGN(1.0 / yr, b);
 			terms[0] = terms[1] * xr;
 			return Math.abs(b) * yr;
 		} else {
@@ -560,13 +565,4 @@ public class NNLS {
 			return 0.0;
 		}
 	}
-
-	/**
-	 * Returns the number whose absolute value is x and whose sign is the same as that of y. x is assumed to be
-	 * nonnegative.
-	 */
-	private static double sign(double x, double y) {
-		return y >= 0.0 ? x : -x;
-	}
-
 }

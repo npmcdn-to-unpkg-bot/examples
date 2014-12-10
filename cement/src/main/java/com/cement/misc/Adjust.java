@@ -113,23 +113,21 @@ public class Adjust {
 				CurveSieve cs = curve.get(curveIndex);
 				Double v = mdata.get(cs.getSieve());
 				A.setItem(rmIndex, curveIndex, v);
-				nnls.a[curveIndex][rmIndex] = v;
+				nnls.a.setItem(curveIndex, rmIndex, v);
 			}
 		}
 		Matrix R = new Matrix(1, curve.size());
+		Matrix B = nnls.b;
 		for (int curveIndex = 0; curveIndex < curve.size(); curveIndex++) {
 			CurveSieve cs = curve.get(curveIndex);
 			R.setItem(0, curveIndex, cs.getValue());
-			nnls.b[curveIndex] = cs.getValue();
+			B.setItem(0, curveIndex, cs.getValue());
 		}
 		System.out.println(A.toMatlabString("A"));
 		System.out.println(R.toMatlabString("L"));
 
 		nnls.solve();
-		Matrix nnlsX = new Matrix(1, materials.size());
-		for (int rmIndex = 0; rmIndex < materials.size(); rmIndex++) {
-			nnlsX.setItem(0, rmIndex, nnls.x[rmIndex]);
-		}
+		Matrix nnlsX = nnls.x;
 		System.out.println(nnlsX.toMatlabString("NNLS_X"));
 		
 		//////////////////////////////////////////////////////////

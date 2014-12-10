@@ -2,7 +2,6 @@ package com.cement.test.nnls;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 
 import com.cement.misc.NNLS;
 import com.slavi.math.matrix.Matrix;
@@ -25,21 +24,20 @@ public class TestNNLS {
 		
 //		NonNegativeLeastSquares nnls = new NonNegativeLeastSquares(equationsCount, unknownsCount);
 		NNLS nnls = new NNLS(equationsCount, unknownsCount);
+		L.copyTo(nnls.b);
 		for (int i = 0; i < equationsCount; i++) {
 			for (int j = 0; j < unknownsCount; j++) {
-				nnls.a[i][j] = A.getItem(j, i);
+				nnls.a.setItem(i, j, A.getItem(j, i));
 			}
-			nnls.b[i] = L.getItem(0, i);
 		}
 		nnls.solve();
 		
 		for (int j = 0; j < unknownsCount; j++) {
-			double d = nnls.x[j] - expected.getItem(0, j);
+			double d = nnls.x.getItem(0, j) - expected.getItem(0, j);
 			if (Math.abs(d) > 0.0001) {
 				System.out.println("Difference at index " + j);
 				expected.printM("Expected");
-				System.out.println("Computed");
-				System.out.println(Arrays.toString(nnls.x));
+				nnls.x.printM("Computed");
 				throw new Error();
 			}
 		}
