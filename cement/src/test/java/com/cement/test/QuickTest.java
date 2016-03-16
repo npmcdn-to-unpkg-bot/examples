@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
-import javax.sql.DataSource;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -151,8 +150,8 @@ public class QuickTest {
 	
 	void doIt() throws Exception {
 		ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext("QuickTest.xml", getClass());
-		DataSource dataSource = appContext.getBean("dataSource", DataSource.class);
 /*
+		DataSource dataSource = appContext.getBean("dataSource", DataSource.class);
 		Connection conn = dataSource.getConnection();
 		PreparedStatement st = conn.prepareStatement("select recp_data from recp where recp_id = 10");
 		ResultSet rs = st.executeQuery();

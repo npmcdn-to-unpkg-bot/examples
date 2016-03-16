@@ -7,9 +7,16 @@ import java.io.Writer;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.sql.DataSource;
 
 import org.apache.commons.dbutils.DbUtils;
@@ -18,10 +25,12 @@ import org.apache.ddlutils.Platform;
 import org.apache.ddlutils.PlatformFactory;
 import org.apache.ddlutils.io.DatabaseIO;
 import org.apache.ddlutils.model.Database;
+import org.eclipse.persistence.expressions.ExpressionOperator;
 import org.flywaydb.core.Flyway;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import com.cement.model.Region;
 import com.slavi.util.StringPrintStream;
 
 public class JpaCreate {
@@ -67,6 +76,49 @@ public class JpaCreate {
 		EntityManagerFactory emf = appContext.getBean("entityManagerFactory", EntityManagerFactory.class);
 		EntityManager em = emf.createEntityManager();
 		// ... more
+		em.getTransaction().begin();
+		Region r = new Region();
+		r.setName("R1");
+		em.persist(r);
+		System.out.println(r);
+		
+		r = new Region();
+		r.setName("R2");
+		em.persist(r);
+		System.out.println(r);
+
+		r = new Region();
+		r.setName("R3");
+		em.persist(r);
+		System.out.println(r);
+		em.getTransaction().commit();
+
+		
+		Query q = em.createQuery("select r from Region r where cast(r.id as char) like '%2%'");
+		List items = q.getResultList();
+		for (Object item : items)
+			System.out.println(item);
+		
+/*		Class entityClass = Region.class;
+		CriteriaBuilder builder = em.getCriteriaBuilder();
+		CriteriaQuery cq = builder.createQuery(entityClass);
+		Root from = cq.from(entityClass);
+		Expression exp = from.get("id").as(String.class);
+		
+		//exp = builder.function("CAST", String.class, exp, builder.);
+		exp = builder.like(exp, "%3%");
+		cq.where(exp);
+		Query q = em.createQuery(cq);
+		List items = q.getResultList();
+		for (Object item : items)
+			System.out.println(item);
+		//ExpressionOperator.cast().expressionFor(exp, "");
+		
+*/
+		
+		q = em.createNativeQuery("select count(*) from mate_reg");
+		System.out.println("ITEMS COUNT: " + q.getSingleResult());
+		
 		em.close();
 	}
 	
