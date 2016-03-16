@@ -94,7 +94,8 @@ public class MyDataController {
 
 	@RequestMapping(value="new", method=RequestMethod.POST)
 	protected String setNewMyData(Model model,
-			@ModelAttribute("myData") MyData myData) {
+			@ModelAttribute("myData") MyData myData,
+			BindingResult result) {
 		return "forward:" + myData.getId();
 	}
 }
