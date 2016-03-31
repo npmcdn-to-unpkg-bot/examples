@@ -1,6 +1,7 @@
-if (a === undefined) {
-	a = {};
-}
-a.log = function(x) {
-	alert(x);
-}
+define("a", [], function() {
+	return {
+		log: function(x) {
+			console.log(x);
+		}
+	};
+});
