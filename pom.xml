@@ -16,8 +16,10 @@
 	</properties>
 
 	<modules>
+		<module>../../image-process/example/example.logging</module>
 		<module>cement</module>
 		<module>examples.spring</module>
+		<module>grunt</module>
 	</modules>
 
 	<dependencies>

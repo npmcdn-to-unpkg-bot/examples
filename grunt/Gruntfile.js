@@ -6,21 +6,21 @@ module.exports = function( grunt ) {
 	grunt.initConfig( {
 		pkg: grunt.file.readJSON('package.json'),
 		dirs: {
-			src: "src/js",
-			dest: "target",
+			src: "src/main/js",
+			dest: "target/js",
 			
 		},
 		requirejs: {
 			compile: {
 				options: {
-					baseUrl: "src/js",
+					baseUrl: "<%= dirs.src %>",
 					name: "b",
 					optimize: "none",
 					include: [ "requireLib" ],
 					paths: {
-						requireLib: "../../node_modules/requirejs/require"
+						requireLib: "../../../node_modules/requirejs/require"
 					},
-					out: "target/js/main.js",
+					out: "<%= dirs.dest %>/main.js",
 				}
 			}
 		}
