@@ -1,4 +1,4 @@
-package com.cement.model;
+package examples.grunt.model;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
@@ -34,6 +34,6 @@ public class IdNamePair extends EntityWithId {
 	}
 	
 	public String toString() {
-		return "[id:" + getId() + ", name:" + getName() + "]";
+		return getClass().getSimpleName() + " [id:" + getId() + ", name:" + getName() + "]";
 	}
 }

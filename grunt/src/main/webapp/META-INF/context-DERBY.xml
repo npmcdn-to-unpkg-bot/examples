@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context
+	path="/examples.grunt"
+	reloadable="true"
+	antiJARLocking="true">
+
+	<Resource
+		name="jdbc/example"
+		type="javax.sql.DataSource"  auth="Container"
+		maxActive="100" maxIdle="30" maxWait="10000"
+		username="" password="" 
+		driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
+		url="jdbc:derby:memory:example;create=true"/>
+</Context>
