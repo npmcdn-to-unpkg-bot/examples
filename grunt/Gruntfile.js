@@ -6,21 +6,49 @@ module.exports = function( grunt ) {
 	grunt.initConfig( {
 		pkg: grunt.file.readJSON('package.json'),
 		dirs: {
-			src: "src/main/js",
-			dest: "target/js",
+			src: "src/main",
+			dest: "target/",
+
+			srcjs: "<%= dirs.src %>/js",
+			destjs: "<%= dirs.dest %>/js",
 			
+			srcless: "<%= dirs.src %>/less",
+			destless: "<%= dirs.dest %>/less",
+			
+			nodemodules: "../../../node_modules/"
 		},
+/*		bowerRequirejs: {
+			all: {
+				rjsConfig: '<%= dirs.dest %>/app_config.js',
+				options: {
+					baseUrl: "./",
+					transitive: true,
+					excludeDev: true
+				}
+			}
+		},*/
 		requirejs: {
 			compile: {
 				options: {
-					baseUrl: "<%= dirs.src %>",
+					baseUrl: "<%= dirs.srcjs %>",
 					name: "b",
 					optimize: "none",
-					include: [ "requireLib" ],
+					include: [ "requirejs" ],
 					paths: {
-						requireLib: "../../../node_modules/requirejs/require"
+						requirejs:		"<%= dirs.nodemodules %>/requirejs/require",
+						moment: 		"<%= dirs.nodemodules %>/moment/moment",
 					},
-					out: "<%= dirs.dest %>/main.js",
+					out: "<%= dirs.destjs %>/main.js",
+				}
+			}
+		},
+		less: {
+			all: {
+				paths: "<%= dirs.srcless %>",
+				compress: false,
+				banner: "// Built on <%= now %>\n",
+				files: {
+					"<%= dirs.destless %>/style.css": "<%= dirs.srcless %>/style.less"
 				}
 			}
 		}
@@ -34,8 +62,8 @@ module.exports = function( grunt ) {
 				},
 			},
 			all: {
-				src: ["<%= dirs.src %>/**.js"],
-				dest: "<%= dirs.dest %>/all.js"
+				src: ["<%= dirs.srcjs %>/**.js"],
+				dest: "<%= dirs.destjs %>/all.js"
 			}
 		},
 		
@@ -49,9 +77,9 @@ module.exports = function( grunt ) {
 			all: {
 				files: [{
 					expand: true,
-					cwd: "<%= dirs.dest %>",
+					cwd: "<%= dirs.destjs %>",
 					src: ["**    /*.js", "!**    /*.min.js"],
-					dest: "<%= dirs.dest %>/",
+					dest: "<%= dirs.destjs %>/",
 					ext: ".min.js",
 					extDot: "last"
 				}]
@@ -64,6 +92,6 @@ module.exports = function( grunt ) {
 
 	grunt.config.set("now", moment().format("YYYY-MM-DD hh:mm:ss"));
 //	grunt.registerTask("all", ["concat", "uglify"]);
-	grunt.registerTask("all", ["concat", "uglify"]);
-	grunt.registerTask("default", ["requirejs"]);
+	grunt.registerTask("all", ["requirejs", "less"]);
+	grunt.registerTask("default", ["all"]);
 };

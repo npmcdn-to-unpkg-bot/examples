@@ -132,18 +132,35 @@
 						</goals>
 					</execution>
 					<execution>
-						<id>grunt</id>
+						<id>grunt requirejs</id>
 						<phase>generate-resources</phase>
 						<goals>
 							<goal>grunt</goal>
 						</goals>
 						<configuration>
 							<srcdir>src/main/js</srcdir>
+							<arguments>requirejs</arguments>
 							<triggerfiles>
 								<triggerfile>package.json</triggerfile>
 								<triggerfile>Gruntfile.js</triggerfile>
 							</triggerfiles>
 							<outputdir>${project.build.directory}/js</outputdir>
+						</configuration>
+					</execution>
+					<execution>
+						<id>grunt less</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>grunt</goal>
+						</goals>
+						<configuration>
+							<srcdir>src/main/less</srcdir>
+							<arguments>less</arguments>
+							<triggerfiles>
+								<triggerfile>package.json</triggerfile>
+								<triggerfile>Gruntfile.js</triggerfile>
+							</triggerfiles>
+							<outputdir>${project.build.directory}/less</outputdir>
 						</configuration>
 					</execution>
 				</executions>
