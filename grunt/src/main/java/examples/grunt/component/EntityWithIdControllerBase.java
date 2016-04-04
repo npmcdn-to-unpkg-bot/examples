@@ -1,5 +1,7 @@
 package examples.grunt.component;
 
+import java.util.List;
+
 import javax.validation.Valid;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -25,69 +27,44 @@ public abstract class EntityWithIdControllerBase<T extends EntityWithId> {
 		this.jpa = jpa;
 	}
 
-	@ModelAttribute("title")
-	String getTitle() {
-		return jpa.getEntityClass().getSimpleName();
-	}
-	
-	protected abstract String getViewItemEdit();
-	protected abstract String getViewItemList();
-
-	@RequestMapping(value="", method=RequestMethod.GET, produces={"text/html", "application/xml", "application/json"})
-	protected String list(Model model) throws Exception {
-		model.addAttribute("model", jpa.list());
-		return getViewItemList();
+	@RequestMapping(value="", method=RequestMethod.GET, produces={"application/xml", "application/json"})
+	protected List<T> list() throws Exception {
+		return jpa.list();
 	}
 
-	@RequestMapping(value="/{id}/delete")
-	protected String deleteItem(ModelMap model, RedirectAttributes redir,
-			@PathVariable("id") int id) throws Exception {
+	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)
+	protected void deleteItem(@PathVariable("id") int id) throws Exception {
 		jpa.delete(id);
-		return "redirect:..";
 	}
 	
 	@RequestMapping(value="/{id}", method=RequestMethod.POST)
-	protected String saveItem(Model model, RedirectAttributes redir,
-			@PathVariable("id") int id,
+	protected Integer saveItem(@PathVariable("id") int id,
 			@Valid T item, BindingResult result) throws Exception {
 		if (result.hasErrors() || (item == null) || (item.getId() == null) || (id != item.getId())) {
-			model.addAttribute(messageName, "Oooops");
-			return getViewItemEdit();
+			return 0;
+		} else {
+			item = jpa.save(item);
+			return item.getId();
 		}
-		jpa.save(item);
-		redir.addFlashAttribute(messageName, "Data saved.");
-		return "redirect:.";
 	}
 	
-	@RequestMapping(value="/{id}", method=RequestMethod.GET, produces={"text/html", "application/xml", "application/json"})
-	protected String loadItem(Model model, RedirectAttributes redir,
-			@PathVariable("id") int id) throws Exception {
-		Object item = jpa.load(id);
-		if (item == null) {
-			redir.addFlashAttribute(messageName, "Item not found. Creating new.");
-			return "redirect:new";
-		}
-		model.addAttribute("model", item);
-		return getViewItemEdit();
+	@RequestMapping(value="/{id}", method=RequestMethod.GET, produces={"application/xml", "application/json"})
+	protected T loadItem(@PathVariable("id") int id) throws Exception {
+		return jpa.load(id);
 	}
 
-	@RequestMapping(value="/new", method=RequestMethod.GET)
-	protected String loadNewItem(Model model) throws Exception {
-		Object item = jpa.makeNew();
-		model.addAttribute("model", item);
-		return getViewItemEdit();
+	@RequestMapping(value="/new", method=RequestMethod.GET, produces={"application/xml", "application/json"})
+	protected T loadNewItem(Model model) throws Exception {
+		return jpa.makeNew();
 	}
 
 	@Transactional
 	@RequestMapping(value="/new", method=RequestMethod.POST)
-	protected String setNewItem(Model model, RedirectAttributes redir,
-			@Valid T item, BindingResult result) throws Exception {
+	protected Integer setNewItem(@Valid T item, BindingResult result) throws Exception {
 		if (result.hasErrors() || (item == null)) {
-			model.addAttribute(messageName, "Oooops");
-			return getViewItemEdit();
+			return 0;
 		}
-		jpa.save(item);
-		redir.addFlashAttribute(messageName, "Data saved.");
-		return "redirect:.";
+		item = jpa.save(item);
+		return item.getId();
 	}
 }

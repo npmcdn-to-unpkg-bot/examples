@@ -1,6 +1,6 @@
 package examples.grunt.component;
 
-import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -31,7 +31,7 @@ public abstract class EntityWithIdJpa<T extends EntityWithId> {
 	}
 	
 	@Transactional(readOnly=true)
-	public Collection<T> list() throws Exception {
+	public List<T> list() throws Exception {
 		CriteriaBuilder builder = em.getCriteriaBuilder();
 		CriteriaQuery query = builder.createQuery(entityClass);
 		Root<T> from = query.from(entityClass);
@@ -45,11 +45,12 @@ public abstract class EntityWithIdJpa<T extends EntityWithId> {
 	}
 
 	@Transactional
-	public void save(T item) throws Exception {
+	public T save(T item) throws Exception {
 		if (item.getId() == null) {
 			em.persist(item);
+			return item;
 		} else {
-			em.merge(item);
+			return em.merge(item);
 		}
 	}
 	
