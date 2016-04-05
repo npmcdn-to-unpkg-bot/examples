@@ -1,0 +1,8 @@
+
+
+Add JS library
+==============
+1. npm install jquery --save
+2. add the library to Gruntfile.js under requirejs.compile.options.paths
+3. add the library to the define section of the js files that will use it.
+

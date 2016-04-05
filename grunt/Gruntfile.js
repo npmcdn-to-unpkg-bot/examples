@@ -7,13 +7,13 @@ module.exports = function( grunt ) {
 		pkg: grunt.file.readJSON('package.json'),
 		dirs: {
 			src: "src/main",
-			dest: "target/",
+			dest: "target/webapp",
 
 			srcjs: "<%= dirs.src %>/js",
 			destjs: "<%= dirs.dest %>/js",
 			
 			srcless: "<%= dirs.src %>/less",
-			destless: "<%= dirs.dest %>/less",
+			destless: "<%= dirs.dest %>/css",
 			
 			nodemodules: "../../../node_modules/"
 		},
@@ -37,6 +37,7 @@ module.exports = function( grunt ) {
 					paths: {
 						requirejs:		"<%= dirs.nodemodules %>/requirejs/require",
 						moment: 		"<%= dirs.nodemodules %>/moment/moment",
+						jquery: 		"<%= dirs.nodemodules %>/jquery/dist/jquery",
 					},
 					out: "<%= dirs.destjs %>/main.js",
 				}
