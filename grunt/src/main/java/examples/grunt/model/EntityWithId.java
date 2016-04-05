@@ -9,6 +9,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
+import javax.xml.bind.annotation.XmlTransient;
 
 @MappedSuperclass
 @Access(AccessType.FIELD)
@@ -26,6 +27,7 @@ public abstract class EntityWithId implements Serializable {
 		this.id = id;
 	}
 
+	@XmlTransient
 	public boolean isNew() {
 		return (id == null);
 	}

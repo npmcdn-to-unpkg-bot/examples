@@ -1,20 +1,19 @@
 package examples.grunt.component;
 
+import java.util.Collection;
 import java.util.List;
 
 import javax.validation.Valid;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import examples.grunt.model.EntityWithId;
+import examples.grunt.model.Items;
 
 // @Controller
 // @RequestMapping("/someItem")
@@ -28,8 +27,8 @@ public abstract class EntityWithIdControllerBase<T extends EntityWithId> {
 	}
 
 	@RequestMapping(value="", method=RequestMethod.GET, produces={"application/xml", "application/json"})
-	protected List<T> list() throws Exception {
-		return jpa.list();
+	protected Items<T> list() throws Exception {
+		return new Items(jpa.list());
 	}
 
 	@RequestMapping(value="/{id}", method=RequestMethod.DELETE)

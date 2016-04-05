@@ -93,7 +93,13 @@
 			value=".jsp" />
 	</bean>
 
-	<bean id="MappingJackson2JsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView" />
+	<bean id="MappingJackson2JsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+		<property name="objectMapper" ref="jsonObjectMapper" />
+		<property name="extractValueFromSingleKeyModel" value="true" />
+	</bean>
+	<bean id="MappingJackson2XmlView" class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView">
+		<property name="objectMapper" ref="xmlObjectMapper" />
+	</bean>
 	
 <!-- 	<mvc:view-resolvers>
 		<mvc:content-negotiation>
@@ -130,8 +136,8 @@
 		</property>
 		<property name="defaultViews">
 			<list>
+				<ref bean="MappingJackson2XmlView" />
 				<ref bean="MappingJackson2JsonView" />
-				<bean class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView" p:modelKey="model"/>
 				<bean class="org.springframework.web.servlet.view.InternalResourceView" p:url="/WEN-INF/jsp"/>
 			<!-- <bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
 					p:url="/WEB-INF/jasper/dummy.jrxml" /> -->
@@ -206,7 +212,7 @@
 	</bean>
  -->
 
-	<mvc:resources mapping="/resources/**" location="/WEB-INF/resources/, classpath:/WEB-INF/resources/"/>
+	<mvc:resources mapping="/resources/**" location="/WEB-INF/resources/, classpath:/WEB-INF/resources/" />
 
 	<mvc:annotation-driven>
 		<mvc:path-matching
