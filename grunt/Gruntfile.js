@@ -7,7 +7,7 @@ module.exports = function( grunt ) {
 		pkg: grunt.file.readJSON('package.json'),
 		dirs: {
 			src: "src/main",
-			dest: "target/webapp",
+			dest: "target/m2e-wtp/web-resources",
 
 			srcjs: "<%= dirs.src %>/js",
 			destjs: "<%= dirs.dest %>/js",
@@ -31,13 +31,15 @@ module.exports = function( grunt ) {
 			compile: {
 				options: {
 					baseUrl: "<%= dirs.srcjs %>",
-					name: "b",
+					name: "main",
 					optimize: "none",
 					include: [ "requirejs" ],
 					paths: {
-						requirejs:		"<%= dirs.nodemodules %>/requirejs/require",
-						moment: 		"<%= dirs.nodemodules %>/moment/moment",
-						jquery: 		"<%= dirs.nodemodules %>/jquery/dist/jquery",
+						"requirejs":			"<%= dirs.nodemodules %>/requirejs/require",
+						"moment":				"<%= dirs.nodemodules %>/moment/moment",
+						"jquery":				"<%= dirs.nodemodules %>/jquery/dist/jquery",
+						"datatables.net":		"<%= dirs.nodemodules %>/datatables.net/js/jquery.dataTables",
+						"datatables.net-dt":	"<%= dirs.nodemodules %>/datatables.net-dt",
 					},
 					out: "<%= dirs.destjs %>/main.js",
 				}
@@ -46,7 +48,9 @@ module.exports = function( grunt ) {
 		less: {
 			all: {
 				paths: "<%= dirs.srcless %>",
-				compress: false,
+				compress: true,
+				strictImports: true,
+				syncImport: true,
 				banner: "// Built on <%= now %>\n",
 				files: {
 					"<%= dirs.destless %>/style.css": "<%= dirs.srcless %>/style.less"

@@ -148,12 +148,12 @@
 					<recompressZippedFiles>false</recompressZippedFiles>
 					<webResources>
 						<webResource>
-							<directory>target/webapp</directory>
+							<directory>${project.build.directory}/m2e-wtp/web-resources</directory>
 							<filtering>false</filtering>
 						</webResource>
 					</webResources>
 				</configuration>
-			</plugin>
+			</plugin> 
 		
 			<plugin>
 				<groupId>com.github.eirslett</groupId>
@@ -191,7 +191,7 @@
 								<triggerfile>package.json</triggerfile>
 								<triggerfile>Gruntfile.js</triggerfile>
 							</triggerfiles>
-							<outputdir>${project.build.directory}/webapp</outputdir>
+							<outputdir>${project.build.directory}/m2e-wtp/web-resources</outputdir>
 						</configuration>
 					</execution>
 					<execution>
@@ -204,10 +204,11 @@
 							<srcdir>src/main/less</srcdir>
 							<arguments>less</arguments>
 							<triggerfiles>
+								<triggerfile>**</triggerfile>
 								<triggerfile>package.json</triggerfile>
 								<triggerfile>Gruntfile.js</triggerfile>
 							</triggerfiles>
-							<outputdir>${project.build.directory}/webapp</outputdir>
+							<outputdir>${project.build.directory}/m2e-wtp/web-resources</outputdir>
 						</configuration>
 					</execution>
 				</executions>

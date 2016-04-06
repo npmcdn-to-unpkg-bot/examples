@@ -9,6 +9,8 @@
     "requirejs": "^2.2.0"
   },
   "dependencies": {
+    "datatables.net": "^1.10.11",
+    "datatables.net-dt": "^1.10.11",
     "jquery": "^2.2.3",
     "moment": "^2.12.0"
   }

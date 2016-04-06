@@ -4,11 +4,11 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 	<c:url value="/" var="baseUrl" />
-	<script src="js/main.js" type="text/javascript"></script>
+	<script data-main="main" src="js/main.js" type="text/javascript"></script>
 	<link href="css/style.css" rel="stylesheet"/>
 </head>
 <body>
-<div class="container">
+<div id="container">
 <p>Hi!</p>
 </div>
 </body>
