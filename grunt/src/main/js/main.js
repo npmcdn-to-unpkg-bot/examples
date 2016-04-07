@@ -1,4 +1,4 @@
-define("main", ["slavi_util"], function(su) {
+define("main", ["ang"], function(angular) {
 	$(document).ready(function() {
 		$("<pre>").text("Done.").appendTo($("#container"));
 	});

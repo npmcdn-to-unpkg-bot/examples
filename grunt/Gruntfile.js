@@ -40,6 +40,14 @@ module.exports = function( grunt ) {
 						"jquery":				"<%= dirs.nodemodules %>/jquery/dist/jquery",
 						"datatables.net":		"<%= dirs.nodemodules %>/datatables.net/js/jquery.dataTables",
 						"datatables.net-dt":	"<%= dirs.nodemodules %>/datatables.net-dt",
+
+						"es6-shim":				"<%= dirs.nodemodules %>/es6-shim/es6-shim",
+						"system-polyfills":		"<%= dirs.nodemodules %>/systemjs/dist/system-polyfills",
+						"shims_for_IE":			"<%= dirs.nodemodules %>/angular2/es6/dev/src/testing/shims_for_IE",
+						"angular2-polyfills":	"<%= dirs.nodemodules %>/angular2/bundles/angular2-polyfills",
+						"system.src":			"<%= dirs.nodemodules %>/systemjs/dist/system.src",
+						"Rx":					"<%= dirs.nodemodules %>/rxjs/bundles/Rx",
+						"angular2":				"<%= dirs.nodemodules %>/angular2/bundles/angular2.dev",
 					},
 					out: "<%= dirs.destjs %>/main.js",
 				}
