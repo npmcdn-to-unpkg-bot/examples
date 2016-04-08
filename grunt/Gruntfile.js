@@ -46,8 +46,13 @@ module.exports = function( grunt ) {
 						"shims_for_IE":			"<%= dirs.nodemodules %>/angular2/es6/dev/src/testing/shims_for_IE",
 						"angular2-polyfills":	"<%= dirs.nodemodules %>/angular2/bundles/angular2-polyfills",
 						"system.src":			"<%= dirs.nodemodules %>/systemjs/dist/system.src",
-						"Rx":					"<%= dirs.nodemodules %>/rxjs/bundles/Rx",
-						"angular2":				"<%= dirs.nodemodules %>/angular2/bundles/angular2.dev",
+						"Rx":					"<%= dirs.nodemodules %>/rxjs/bundles/Rx.umd",
+						"angular2":				"<%= dirs.nodemodules %>/angular2/bundles/angular2-all.umd",
+
+						"angular":				"<%= dirs.nodemodules %>/angular/angular",
+						"angular-route":		"<%= dirs.nodemodules %>/angular-route/angular-route",
+						"angular-resource":		"<%= dirs.nodemodules %>/angular-resource/angular-resource",
+						"ng-grid":				"<%= dirs.nodemodules %>/ng-grid/build/ng-grid",
 					},
 					out: "<%= dirs.destjs %>/main.js",
 				}

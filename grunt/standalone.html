@@ -1,0 +1,56 @@
+<!doctype html>
+<html ng-app="store">
+<head>
+	<meta charset="utf-8" />
+
+	<title>Angular JS
+	</title>
+</head>
+<body>
+
+<div ng-controller="StoreController as store">
+	<h1>{{store.product.name}}</h1>
+	<h2>{{store.product.price}}</h2>
+	<p>{{store.product.description}}</p>
+</div>
+
+<!-- Load demo scripts. -->
+<script type="text/javascript" src="./node_modules/angular/angular.js"></script>
+<script type="text/javascript" src="./node_modules/almond/almond.js"></script>
+<script type="text/javascript">
+define("mymodule", function() {
+	function log(message) {
+		if (typeof message !== "string")
+			message = JSON.stringify(message);
+		console.log(message);
+	}
+	
+	//var angular = ang["angular"];
+	//log(ang);
+	
+	var gem = {
+		name: "My precious",
+		price: 1.23,
+		description: "No other like that"
+	};
+	
+	log("before");
+	var app = angular.module("store", []);
+	app.controller('StoreController', function() {
+		this.product = gem;
+	});
+	log("after");
+	
+	return {
+		app: app,
+		log: log,
+		
+	};
+});
+
+//var mymodule = require("mymodule");
+require(["mymodule"], function(m) { m.log(m.app); m.log("DONE!"); });
+</script>
+
+</body>
+</html>

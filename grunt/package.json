@@ -9,6 +9,9 @@
     "requirejs": "^2.2.0"
   },
   "dependencies": {
+    "angular": "^1.5.3",
+    "angular-resource": "^1.5.3",
+    "angular-route": "^1.5.3",
     "angular2": "^2.0.0-beta.13",
     "datatables.net": "^1.10.11",
     "datatables.net-dt": "^1.10.11",
@@ -16,6 +19,7 @@
     "jquery": "^2.2.3",
     "log4js": "^0.6.33",
     "moment": "^2.12.0",
+    "ng-grid": "^2.0.1",
     "reflect-metadata": "^0.1.2",
     "rxjs": "^5.0.0-beta.2",
     "zone.js": "^0.6.9"

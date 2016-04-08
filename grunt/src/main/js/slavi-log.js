@@ -1,19 +1,21 @@
 define("slavi-log", ["jquery"], function($) {
-	return {
+	var settings = {
 		uiLogItemsMax: 10,
-		uiLogEnabled: true,
 		uiLogSelector: "#output",
 		uiLogTag: "<pre>",
+		uiLogEnabled: true,
 		consoleLogEnabled: true,
-
+	};
+	
+	return {
 		log: function(message) {
-			var uilog = $(uiLogSelector);
+			var uilog = $(settings.uiLogSelector);
 			if (!((settings.uiLogEnabled && !uilog.empty()) || settings.consoleLogEnabled))
 				return;
 			if (typeof message !== "string")
 				message = JSON.stringify(message);
 			if (settings.uiLogEnabled && !uilog.empty()) {
-				$(uiLogTag).text(message).prependTo(uilog);
+				$(settings.uiLogTag).text(message).prependTo(uilog);
 				var count = uilog.children().length;
 				while (count-- > settings.uiLogItemsMax) {
 					uilog.children().remove(":last-child");
@@ -26,7 +28,7 @@ define("slavi-log", ["jquery"], function($) {
 		},
 		
 		logClear: function() {
-			$(uiLogSelector).children().remove();
+			$(settings.uiLogSelector).children().remove();
 		},
 		
 	};
