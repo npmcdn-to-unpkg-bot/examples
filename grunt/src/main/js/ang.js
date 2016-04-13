@@ -26,7 +26,7 @@ define("ang", ["jquery", "dummy_ang_7"], function($, dummy) {
 
 // Angular 1
 define("dummy_ang_1", ["slavi-log", "requirejs"], 				function(dummy, a) { dummy["requirejs"] = a; return dummy; });
-define("dummy_ang_2", ["dummy_ang_1", "jQuery"],				function(dummy, a) { dummy["jQuery"] = a; return dummy; });
+define("dummy_ang_2", ["dummy_ang_1", "jquery"],				function(dummy, a) { dummy["jquery"] = a; return dummy; });
 define("dummy_ang_3", ["dummy_ang_2", "angular"],				function(dummy, a) { dummy["angular"] = a; return dummy; });
 define("dummy_ang_4", ["dummy_ang_3", "angular-route"], 		function(dummy, a) { dummy["angular-route"] = a; return dummy; });
 define("dummy_ang_5", ["dummy_ang_4", "angular-resource"], 		function(dummy, a) { dummy["angular-resource"] = a; return dummy; });
