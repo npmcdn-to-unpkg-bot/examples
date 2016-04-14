@@ -30,10 +30,10 @@ define("main", ["slavi-log", "ang"], function(sl) {
 			scope: {
 				product: "="
 			},
-			template: "<div ng-transclude>Product name {{product.name}} has price <b>{{product.price|currency}}</b></div>",
-			link: function(scope) {
-				scope.product.name = "Kuku";
-				//sl.log(scope);
+			template: "Product name {{product.name}} has price <b>{{product.price|currency}}</b><div ng-transclude></div><span>Seem like working</span>",
+			link: function($scope) {
+				//$scope.product.name = "Kuku";
+				//sl.log($scope);
 			}
 		}
 	}]);
