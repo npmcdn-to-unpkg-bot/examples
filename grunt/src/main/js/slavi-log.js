@@ -8,12 +8,25 @@ define("slavi-log", ["jquery"], function($) {
 	};
 	
 	return {
+		stringify: function(obj) {
+			seen = [];
+			return JSON.stringify(obj, function(key, val) {
+				if (val != null && typeof val === "object") {
+					if (seen.indexOf(val) >= 0) {
+						return "... cyclic ref ...";
+					}
+					seen.push(val);
+				}
+				return val;
+			});
+		},
+		
 		log: function(message) {
 			var uilog = $(settings.uiLogSelector);
 			if (!((settings.uiLogEnabled && !uilog.empty()) || settings.consoleLogEnabled))
 				return;
 			if (typeof message !== "string")
-				message = JSON.stringify(message);
+				message = this.stringify(message);
 			if (settings.uiLogEnabled && !uilog.empty()) {
 				$(settings.uiLogTag).text(message).prependTo(uilog);
 				var count = uilog.children().length;

@@ -1,10 +1,11 @@
 <!doctype html>
-<html ng-app="store">
+<html>
 <head>
 	<meta charset="utf-8" />
-
-	<title>Angular JS
-	</title>
+	<title>TEST Angular JS</title>
+	<script type="text/javascript" src="./target/m2e-wtp/web-resources/js/main.js"></script>
+	<script type="text/javascript">
+	</script>
 </head>
 <body>
 
@@ -12,45 +13,9 @@
 	<h1>{{store.product.name}}</h1>
 	<h2>{{store.product.price}}</h2>
 	<p>{{store.product.description}}</p>
+	<my-directive data-product="store.product"><p>This will not be shown</p></my-directive>
+	<pre my-current-timee="format" />
 </div>
-
-<!-- Load demo scripts. -->
-<script type="text/javascript" src="./node_modules/angular/angular.js"></script>
-<script type="text/javascript" src="./node_modules/almond/almond.js"></script>
-<script type="text/javascript">
-define("mymodule", function() {
-	function log(message) {
-		if (typeof message !== "string")
-			message = JSON.stringify(message);
-		console.log(message);
-	}
-	
-	//var angular = ang["angular"];
-	//log(ang);
-	
-	var gem = {
-		name: "My precious",
-		price: 1.23,
-		description: "No other like that"
-	};
-	
-	log("before");
-	var app = angular.module("store", []);
-	app.controller('StoreController', function() {
-		this.product = gem;
-	});
-	log("after");
-	
-	return {
-		app: app,
-		log: log,
-		
-	};
-});
-
-//var mymodule = require("mymodule");
-require(["mymodule"], function(m) { m.log(m.app); m.log("DONE!"); });
-</script>
 
 </body>
 </html>
