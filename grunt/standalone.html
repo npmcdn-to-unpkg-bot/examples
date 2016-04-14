@@ -2,8 +2,7 @@
 <html>
 <head>
 	<meta charset="utf-8" />
-	<link href="./target/m2e-wtp/web-resources/css/style.css" rel="stylesheet"/>
-	<title>Angular JS</title>
+	<title>TEST Angular JS</title>
 	<script type="text/javascript" src="./target/m2e-wtp/web-resources/js/main.js"></script>
 	<script type="text/javascript">
 	</script>
@@ -14,7 +13,8 @@
 	<h1>{{store.product.name}}</h1>
 	<h2>{{store.product.price}}</h2>
 	<p>{{store.product.description}}</p>
-	<div data-my-directive="" data-my-data="store.product"><big>Some text.</big></div>
+	<my-directive data-product="store.product"><p>This will not be shown</p></my-directive>
+	<pre my-current-timee="format" />
 </div>
 
 </body>

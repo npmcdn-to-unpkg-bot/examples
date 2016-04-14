@@ -1,5 +1,5 @@
 // http://www.sitepoint.com/using-requirejs-angularjs-applications/
-define("main", ["jquery", "slavi-log", "ang"], function($, sl) {
+define("main", ["slavi-log", "ang"], function(sl) {
 	log("enter");
 
 	$(document).ready(function() {
@@ -11,7 +11,7 @@ define("main", ["jquery", "slavi-log", "ang"], function($, sl) {
 			message = JSON.stringify(message);
 		console.log(message);
 	}
-
+	
 	var gem = {
 		name: "My precious",
 		price: 1.23,
@@ -19,43 +19,75 @@ define("main", ["jquery", "slavi-log", "ang"], function($, sl) {
 	};
 	
 	var app = angular.module("store", []);
-	app.controller("StoreController", ["$scope", function($scope) {
+	app.controller('StoreController', ["$scope", function($scope) {
+		$scope.format = 'M/d/yy h:mm:ss a';
 		this.product = gem;
-		$scope.bla = gem;
 	}]);
-	app.directive("myDirective", function() {
+	app.directive("myDirective", [function() {
 		return {
-			restrict: "A",
+			restrict: "AEC",
+			transclude: true,
 			scope: {
-				myData: "=",
+				product: "="
 			},
-			template: "Bla bla <b>tra la la</b>!!!... {{myData.name}}",
+			template: "<div ng-transclude>Product name {{product.name}} has price <b>{{product.price|currency}}</b></div>",
+			link: function(scope) {
+				scope.product.name = "Kuku";
+				//sl.log(scope);
+			}
+		}
+	}]);
+	app.directive('myCurrentTime', ['$interval', 'dateFilter', function($interval, dateFilter) {
+
+		function link(scope, element, attrs) {
+			// start the UI update process; save the timeoutId for canceling
+			var timeoutId = $interval(function() {
+				updateTime(); // update DOM
+			}, 1000);
+
+			element.on('$destroy', function() {
+				$interval.cancel(timeoutId);
+			});
+
+			var format;
+			function updateTime() {
+				element.text(dateFilter(new Date(), format));
+			}
+
+			scope.$watch(attrs.myCurrentTime, function(value) {
+				format = value;
+				updateTime();
+			});
+		}
+
+		return {
+			link: link
 		};
+	}]);
+	
+	angular.bootstrap(document, ['store'], {
+		strictDi: true,
 	});
 	
-	angular.bootstrap(document, ["store"]);
-
 	return {
 		log: log
 	};
 });
 
-var mainApp;
-require(["main"], function(m) {
-	mainApp = m;
+var m = require(["main"], function(m) {
 	m.log("DONE!");
 });
 
 /*
 define([],function(){
 	function config($routeProvider) {
-		$routeProvider.when("/home", {templateUrl: "templates/home.html", controller: "ideasHomeController"})
-			.when("/details/:id",{templateUrl:"templates/ideaDetails.html", controller:"ideaDetailsController"})
-			.otherwise({redirectTo: "/home"});
+		$routeProvider.when('/home', {templateUrl: 'templates/home.html', controller: 'ideasHomeController'})
+			.when('/details/:id',{templateUrl:'templates/ideaDetails.html', controller:'ideaDetailsController'})
+			.otherwise({redirectTo: '/home'});
 	}
-	config.$inject=["$routeProvider"];
+	config.$inject=['$routeProvider'];
 
 	return config;
 });
-*/
 
+*/
