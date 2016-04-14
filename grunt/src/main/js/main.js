@@ -1,5 +1,5 @@
 // http://www.sitepoint.com/using-requirejs-angularjs-applications/
-define("main", ["slavi-log", "ang"], function(sl) {
+define("main", ["jquery", "slavi-log", "ang"], function($, sl) {
 	log("enter");
 
 	$(document).ready(function() {
@@ -11,7 +11,7 @@ define("main", ["slavi-log", "ang"], function(sl) {
 			message = JSON.stringify(message);
 		console.log(message);
 	}
-	
+
 	var gem = {
 		name: "My precious",
 		price: 1.23,
@@ -19,32 +19,43 @@ define("main", ["slavi-log", "ang"], function(sl) {
 	};
 	
 	var app = angular.module("store", []);
-	app.controller('StoreController', function() {
+	app.controller("StoreController", ["$scope", function($scope) {
 		this.product = gem;
+		$scope.bla = gem;
+	}]);
+	app.directive("myDirective", function() {
+		return {
+			restrict: "A",
+			scope: {
+				myData: "=",
+			},
+			template: "Bla bla <b>tra la la</b>!!!... {{myData.name}}",
+		};
 	});
 	
-	angular.bootstrap(document, ['store']);
-	
+	angular.bootstrap(document, ["store"]);
+
 	return {
 		log: log
 	};
 });
 
-(function () {
-	require(["main"], function(m) {
-		m.log("DONE!");
-	});
-})();
+var mainApp;
+require(["main"], function(m) {
+	mainApp = m;
+	m.log("DONE!");
+});
 
+/*
 define([],function(){
 	function config($routeProvider) {
-		$routeProvider.when('/home', {templateUrl: 'templates/home.html', controller: 'ideasHomeController'})
-			.when('/details/:id',{templateUrl:'templates/ideaDetails.html', controller:'ideaDetailsController'})
-			.otherwise({redirectTo: '/home'});
+		$routeProvider.when("/home", {templateUrl: "templates/home.html", controller: "ideasHomeController"})
+			.when("/details/:id",{templateUrl:"templates/ideaDetails.html", controller:"ideaDetailsController"})
+			.otherwise({redirectTo: "/home"});
 	}
-	config.$inject=['$routeProvider'];
+	config.$inject=["$routeProvider"];
 
 	return config;
 });
-
+*/
 
