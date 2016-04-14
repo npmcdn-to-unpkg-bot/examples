@@ -23,19 +23,20 @@ define("main", ["slavi-log", "ang"], function(sl) {
 		this.product = gem;
 	});
 	
-	angular.bootstrap(document, ['store']);
+	angular.bootstrap(document, ['store'], {
+		strictDi: true,
+	});
 	
 	return {
 		log: log
 	};
 });
 
-(function () {
-	require(["main"], function(m) {
-		m.log("DONE!");
-	});
-})();
+var m = require(["main"], function(m) {
+	m.log("DONE!");
+});
 
+/*
 define([],function(){
 	function config($routeProvider) {
 		$routeProvider.when('/home', {templateUrl: 'templates/home.html', controller: 'ideasHomeController'})
@@ -47,4 +48,4 @@ define([],function(){
 	return config;
 });
 
-
+*/
