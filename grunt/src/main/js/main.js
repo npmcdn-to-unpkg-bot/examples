@@ -1,5 +1,5 @@
 // http://www.sitepoint.com/using-requirejs-angularjs-applications/
-define("main", ["slavi-log", "ang"], function(sl) {
+define("main", ["ang"], function(sl) {
 	log("enter");
 
 	$(document).ready(function() {
@@ -65,18 +65,15 @@ define("main", ["slavi-log", "ang"], function(sl) {
 		};
 	}]);
 	
-	angular.bootstrap(document, ['store'], {
+/*	angular.bootstrap(document, ['store'], {
 		strictDi: true,
 	});
-	
+*/	
 	return {
 		log: log
 	};
 });
 
-var m = require(["main"], function(m) {
-	m.log("DONE!");
-});
 
 /*
 define([],function(){

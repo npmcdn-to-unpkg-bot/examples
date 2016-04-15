@@ -32,7 +32,7 @@ define("dummy_ang_4", ["dummy_ang_3", "angular-route"], 		function(dummy, a) { d
 define("dummy_ang_5", ["dummy_ang_4", "angular-resource"], 		function(dummy, a) { dummy["angular-resource"] = a; return dummy; });
 define("dummy_ang_6", ["dummy_ang_5", "ng-grid"], 				function(dummy, a) { dummy["ng-grid"] = a; return dummy; });
 
-define("ang", ["jquery", "dummy_ang_6"], function($, dummy) {
+define("ang", ["dummy_ang_6"], function(dummy) {
 /*	System.config({
 		packages: {
 			app: {
@@ -42,5 +42,5 @@ define("ang", ["jquery", "dummy_ang_6"], function($, dummy) {
 		}
 	});*/
 	// System.import('app/main').then(null, console.error.bind(console));
-	return {};
+	return dummy;
 });

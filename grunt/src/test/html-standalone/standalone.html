@@ -3,12 +3,20 @@
 <head>
 	<meta charset="utf-8" />
 	<title>TEST Angular JS</title>
-	<link href="./target/m2e-wtp/web-resources/css/style.css" rel="stylesheet"/>
-	<script type="text/javascript" src="./target/m2e-wtp/web-resources/js/main.js"></script>
+	<link href="../../../target/m2e-wtp/web-resources/css/style.css" rel="stylesheet"/>
+	<script type="text/javascript" src="../../../target/m2e-wtp/web-resources/js/main.js"></script>
 	<script type="text/javascript">
+
+	var m = require(["main"], function(m) {
+		angular.bootstrap(document, ['store'], {
+			strictDi: true,
+		});
+		m.log("DONE!");
+	});
+
 	</script>
 </head>
-<body>
+<body nd-app="store">
 
 <div ng-controller="StoreController as store">
 	<h1>{{store.product.name}}</h1>

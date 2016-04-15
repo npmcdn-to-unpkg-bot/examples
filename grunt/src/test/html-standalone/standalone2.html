@@ -14,19 +14,19 @@
 	</my-app>
 
 	<!-- Load demo scripts. -->
-	<script type="text/javascript" src="./node_modules/es6-shim/es6-shim.min.js"></script>
-	<script type="text/javascript" src="./node_modules/rxjs/bundles/Rx.umd.min.js"></script>
-	<script type="text/javascript" src="./node_modules/angular2/bundles/angular2-polyfills.min.js"></script>
-	<script type="text/javascript" src="./node_modules/angular2/bundles/angular2-all.umd.min.js"></script>
+	<script type="text/javascript" src="../../../node_modules/es6-shim/es6-shim.min.js"></script>
+	<script type="text/javascript" src="../../../node_modules/rxjs/bundles/Rx.umd.min.js"></script>
+	<script type="text/javascript" src="../../../node_modules/angular2/bundles/angular2-polyfills.min.js"></script>
+	<script type="text/javascript" src="../../../node_modules/angular2/bundles/angular2-all.umd.min.js"></script>
 	<!-- 
 		Putting Almond.js after the external libraries since I am not managing their 
 		loading through Almond. If I move this library up, AngularJS attempts to use 
 		define() (I think) which I am not configured for in this demo.
 		--
 		NOTE: AlmondJS is just a simplified version of RequireJS.
-	<script type="text/javascript" src="./node_modules/jquery/dist/jquery.js"></script>
+	<script type="text/javascript" src="../../../node_modules/jquery/dist/jquery.js"></script>
 	-->
-	<script type="text/javascript" src="./node_modules/almond/almond.js"></script>
+	<script type="text/javascript" src="../../../node_modules/almond/almond.js"></script>
 	<script type="text/javascript">
 
 		// In order to have all my code in one page and to not have to care about the
