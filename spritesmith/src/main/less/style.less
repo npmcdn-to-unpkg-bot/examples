@@ -1,0 +1,44 @@
+@import "jquery.dataTables.less";
+@import "sprite.less";
+
+div#output {
+	background-color: white;
+	line-height: 0;
+	
+	pre {
+		display: inline-block;
+		width: 100%;
+		margin: 0px;
+		padding: 1px 4px;
+		color: gray;
+		border-style: none;
+
+		background-color: white;
+		font-family: "monospace";
+		font-size: 11px;
+		font-stretch: normal;
+		font-style: normal;
+		font-variant: normal;
+		font-weight: normal;
+		white-space: pre-wrap;
+
+		&:hover {
+			display: inline-block;
+			width: 100%;
+			margin: 0px;
+			padding: 0px 3px;
+			border: 1px solid gray;
+			border-radius: 3px;
+			color: black;
+			background-color: lightYellow;
+		}
+	}
+}
+
+.btnDelete {
+	.sprite(@delete);
+}
+
+.btnDeleteSmall {
+	.sprite(@16x16-delete);
+}
