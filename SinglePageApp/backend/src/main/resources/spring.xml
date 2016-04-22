@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans
+	xmlns=			"http://www.springframework.org/schema/beans"
+	xmlns:aop=		"http://www.springframework.org/schema/aop"
+	xmlns:c=		"http://www.springframework.org/schema/c"
+	xmlns:context=	"http://www.springframework.org/schema/context" 
+	xmlns:jee=		"http://www.springframework.org/schema/jee"
+	xmlns:jpa=		"http://www.springframework.org/schema/data/jpa"
+	xmlns:mvc=		"http://www.springframework.org/schema/mvc"
+	xmlns:oxm=		"http://www.springframework.org/schema/oxm"
+	xmlns:p=		"http://www.springframework.org/schema/p"
+	xmlns:tx=		"http://www.springframework.org/schema/tx"
+	xmlns:util=		"http://www.springframework.org/schema/util"
+	xmlns:xsi=		"http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/aop		http://www.springframework.org/schema/aop/spring-aop.xsd
+		http://www.springframework.org/schema/beans		http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context	http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/data/jpa 	http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+		http://www.springframework.org/schema/jee		http://www.springframework.org/schema/jee/spring-jee.xsd
+		http://www.springframework.org/schema/mvc		http://www.springframework.org/schema/mvc/spring-mvc.xsd
+		http://www.springframework.org/schema/oxm		http://www.springframework.org/schema/oxm/spring-oxm.xsd
+		http://www.springframework.org/schema/tx		http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/util		http://www.springframework.org/schema/util/spring-util.xsd
+">
+
+	<!-- <jee:jndi-lookup id="dataSource" jndi-name="java:comp/env/jdbc/example" /> -->
+	<bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+		p:driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
+		p:url="jdbc:derby:memory:db;create=true"
+		p:username=""
+		p:password=""
+	/>
+
+	<bean
+		id="entityManagerFactory"
+		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+		p:dataSource-ref="dataSource"
+		p:packagesToScan="examples.spa.backend.model">
+		
+		<property name="persistenceUnitName" value="example"/>
+		<property name="jpaVendorAdapter">
+			<!-- <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter" p:database="DERBY" p:showSql="true" /> -->
+			<bean class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter" p:database="DERBY" p:showSql="true" />
+		</property>
+	
+		<property name="jpaProperties">
+			<props>
+				<!-- <prop key="hibernate.hbm2ddl.auto">create-drop</prop> -->
+				<prop key="eclipselink.ddl-generation">create-or-extend-tables</prop>
+				<prop key="eclipselink.weaving">false</prop>
+
+				<prop key="eclipselink.logging.logger">examples.spa.backend.misc.Slf4jSessionLogger</prop>
+				<prop key="eclipselink.logging.level">FINEST</prop>
+				<prop key="eclipselink.logging.sql">FINEST</prop>
+				<prop key="eclipselink.logging.level.sql">FINEST</prop>
+				<prop key="eclipselink.logging.parameters">true</prop>
+				<prop key="eclipselink.allow-zero-id">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" p:dataSource-ref="dataSource" /> -->
+	<!-- <bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager" /> -->
+	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager" p:entityManagerFactory-ref="entityManagerFactory"/>
+<!-- 	<bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager" p:sessionFactory-ref="sessionFactory"/>
+	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean" p:dataSource-ref="dataSource" />
+ -->
+	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+	
+	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
+	<!-- <jpa:repositories base-package="example.grunt.jpa"/> -->
+
+	<context:annotation-config />
+	<context:component-scan base-package="examples.spa.backend.component" />
+	
+	<!-- Tells Spring to use persistence context annotation -->
+	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+	
+<!-- <tx:annotation-driven/> -->
+
+	<bean
+		id="viewResolver"
+		class="org.springframework.web.servlet.view.UrlBasedViewResolver">
+		<property
+			name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property
+			name="prefix"
+			value="/WEB-INF/jsp/" />
+		<property
+			name="suffix"
+			value=".jsp" />
+	</bean>
+
+	<bean id="MappingJackson2JsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
+		<property name="objectMapper" ref="jsonObjectMapper" />
+		<property name="extractValueFromSingleKeyModel" value="true" />
+	</bean>
+	<bean id="MappingJackson2XmlView" class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView">
+		<property name="objectMapper" ref="xmlObjectMapper" />
+	</bean>
+	
+<!-- 	<mvc:view-resolvers>
+		<mvc:content-negotiation>
+			<mvc:default-views>
+				<ref bean="MappingJackson2JsonView" />
+			</mvc:default-views>
+		</mvc:content-negotiation>
+	</mvc:view-resolvers>
+ -->
+
+	<!-- Setup a default JSON view resolver that handles object mapping 
+	-->
+	<bean
+		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+		<property name="order" value="1" />
+		<property name="mediaTypes">
+			<map>
+				<entry key="json" value="application/json" />
+				<entry key="atom" value="application/atom+xml" />
+				<entry key="rss"  value="application/rss+xml" />
+				<entry key="xml"  value="application/xml" />
+			</map>
+		</property>
+		
+		<property name="viewResolvers">
+			<list>
+				<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
+				<bean
+					class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+					<property name="prefix" value="/WEB-INF/jsp/" />
+					<property name="suffix" value=".jsp" />
+				</bean>
+			</list>
+		</property>
+		<property name="defaultViews">
+			<list>
+				<ref bean="MappingJackson2XmlView" />
+				<ref bean="MappingJackson2JsonView" />
+				<bean class="org.springframework.web.servlet.view.InternalResourceView" p:url="/WEN-INF/jsp"/>
+			<!-- <bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+					p:url="/WEB-INF/jasper/dummy.jrxml" /> -->
+			</list>
+		</property>
+	</bean>
+
+	<bean
+		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+		<property name="ignoreDefaultModelOnRedirect" value="true" />
+		<property name="messageConverters">
+			<util:list id="beanList">
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
+<!-- 				<ref bean="marshallingHttpMessageConverter" />
+ -->
+			</util:list>
+		</property>
+	</bean>
+	
+<!-- 	<bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver" /> -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<!-- one of the properties available; the maximum file size in bytes -->
+		<property name="maxUploadSize" value="100000" />
+	</bean>
+
+
+<!--
+	<bean id="marshallingHttpMessageConverter"
+		class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+		<property name="marshaller" ref="castorMarshaller" />
+		<property name="unmarshaller" ref="castorMarshaller" />
+	</bean>
+
+	<bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller" />
+-->
+
+	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean"/>
+<!-- 
+	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+		<property name="messageConverters">
+			<list>
+				<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.FormHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter" />
+				<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
+			</list>
+		</property>
+	</bean>
+ -->
+
+<!-- 
+	<bean id="localeChangeInterceptor"
+		class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+		<property name="paramName" value="siteLanguage" />
+	</bean>
+	
+	<bean id="localeResolver"
+		class="org.springframework.web.servlet.i18n.CookieLocaleResolver" />
+
+	<bean id="urlMapping"
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="localeChangeInterceptor" />
+			</list>
+		</property>
+		<property name="mappings">
+			<value>/*/.view=someController</value>
+		</property>
+	</bean>
+ -->
+
+	<mvc:resources mapping="/resources/**" location="/WEB-INF/resources/, classpath:/WEB-INF/resources/" />
+
+	<mvc:annotation-driven>
+		<mvc:path-matching
+			suffix-pattern="true"
+			trailing-slash="true"
+		/>
+	</mvc:annotation-driven>
+
+	<mvc:default-servlet-handler/>
+</beans>

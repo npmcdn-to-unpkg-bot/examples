@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>TEST Angular JS</title>
+	<link href="../../../target/m2e-wtp/web-resources/css/style.css" rel="stylesheet"/>
+	<script type="text/javascript" src="../../../target/m2e-wtp/web-resources/js/main.js"></script>
+	<script type="text/javascript">
+	angular.element(document).ready()
+	var m = require(["jquery", "main"], function($, m) {
+		var app = m["app"];
+		var log = m["log"];
+
+		app.component("myComponent", {
+			transclude: true,
+			template: "<p>MY COMPONENT: Product name {{$ctrl.product.name}} has price <b>{{$ctrl.product.price|currency}}</b><div ng-transclude></div><span>Seem like working</span></p>",
+			bindings: {
+				product: "="
+			},
+			controller: ["$scope", "$element", "$attrs", function($scope, $element, $attrs) {
+				$ctrl = this;
+				log("hi");
+			}]
+		});
+
+		angular.bootstrap(document, ['store'], {
+			strictDi: true,
+		});
+		
+		log("DONE!");
+	});
+
+	</script>
+</head>
+<body>
+
+<div ng-controller="StoreController as store">
+	<h1>{{store.product.name}}</h1>
+	<h2>{{store.product.price}}</h2>
+	<p>{{store.product.description}}</p>
+	<p>--- {{store.data}} ---</p>
+	<my-component data-product="store.product" ><p>Inner text</p></my-component>
+	<my-directive data-product="store.product"><p>This will not be shown</p></my-directive>
+	<pre my-current-timee="format" />
+</div>
+
+</body>
+</html>
