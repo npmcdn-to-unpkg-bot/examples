@@ -11,7 +11,11 @@
 	<dependencies>
 		<dependency>
 			<groupId>com.slavi</groupId>
-			<artifactId>examples.spa.ui</artifactId>
+			<artifactId>examples.spa.ui.theme</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.slavi</groupId>
+			<artifactId>examples.spa.ui.js</artifactId>
 		</dependency>
 
 		<dependency>

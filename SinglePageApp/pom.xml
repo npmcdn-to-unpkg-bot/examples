@@ -11,23 +11,37 @@
 	<artifactId>examples.spa</artifactId>
 	<packaging>pom</packaging>
 
+	<properties>
+		<examples.spa.version>1.0.0-SNAPSHOT</examples.spa.version>
+	</properties>
+
 	<modules>
 		<module>ui</module>
 		<module>backend</module>
 		<module>webapp</module>
- 	</modules>
+	</modules>
 
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>com.slavi</groupId>
 				<artifactId>examples.spa.ui.theme</artifactId>
-				<version>${project.version}</version>
+				<version>${examples.spa.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.slavi</groupId>
 				<artifactId>examples.spa.ui.js</artifactId>
-				<version>${project.version}</version>
+				<version>${examples.spa.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.slavi</groupId>
+				<artifactId>examples.spa.backend</artifactId>
+				<version>${examples.spa.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.slavi</groupId>
+				<artifactId>examples.spa.webapp</artifactId>
+				<version>${examples.spa.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

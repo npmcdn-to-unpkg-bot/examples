@@ -13,7 +13,7 @@
 	<modules>
 		<module>theme</module>
 		<module>js</module>
- 	</modules>
+	</modules>
 
 	<build>
 		<pluginManagement>
@@ -23,8 +23,8 @@
 					<artifactId>frontend-maven-plugin</artifactId>
 					<version>0.0.23</version>
 					<configuration>
-						<nodeVersion>v0.10.25</nodeVersion>
-						<npmVersion>1.4.21</npmVersion>
+						<nodeVersion>v4.4.2</nodeVersion>
+						<npmVersion>2.15.1</npmVersion>
 					</configuration>
 					<executions>
 						<execution>
