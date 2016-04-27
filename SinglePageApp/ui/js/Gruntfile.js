@@ -34,7 +34,8 @@ module.exports = function( grunt ) {
 						"angular2":				"<%= params.nodemodules %>/angular2/bundles/angular2-all.umd",
 
 						"angular":				"<%= params.nodemodules %>/angular/angular",
-						"angular-route":		"<%= params.nodemodules %>/angular-route/angular-route",
+						//"angular-route":		"<%= params.nodemodules %>/angular-route/angular-route",
+						"angular-route":		"<%= params.nodemodules %>/@angular/router/angular1/angular_1_router",
 						"angular-resource":		"<%= params.nodemodules %>/angular-resource/angular-resource",
 						"ng-grid":				"<%= params.nodemodules %>/ng-grid/build/ng-grid",
 					},

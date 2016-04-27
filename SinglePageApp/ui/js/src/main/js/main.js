@@ -1,17 +1,7 @@
 // http://www.sitepoint.com/using-requirejs-angularjs-applications/
 define("main", ["ang"], function(sl) {
-	log("enter");
+	// $(document).ready(function() { });
 
-	$(document).ready(function() {
-		$("<pre>").text("Done.").appendTo($("#container"));
-	});
-
-	function log(message) {
-		if (typeof message !== "string")
-			message = JSON.stringify(message);
-		console.log(message);
-	}
-	
 	var gem = {
 		name: "My precious",
 		price: 1.23,
@@ -90,13 +80,8 @@ define("main", ["ang"], function(sl) {
 		};
 	}]);
 	
-/*	angular.bootstrap(document, ['store'], {
-		strictDi: true,
-	});
-*/	
-	return {
-		log: log
-	};
+	sl["app"] = app;
+	return sl;
 });
 
 

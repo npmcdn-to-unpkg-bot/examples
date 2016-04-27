@@ -18,7 +18,6 @@
 		<module>examples.spring</module>
 		<module>grunt</module>
 		<module>css-sprites</module>
-		<module>spritesmith</module>
 		<module>SinglePageApp</module>
 	</modules>
 </project>
