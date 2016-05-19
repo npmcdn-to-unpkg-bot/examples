@@ -7,7 +7,7 @@ define("slavi-log", ["jquery"], function($) {
 		consoleLogEnabled: true,
 	};
 	
-	return {
+	var log = {
 		stringify: function(obj) {
 			seen = [];
 			return JSON.stringify(obj, function(key, val) {
@@ -26,7 +26,7 @@ define("slavi-log", ["jquery"], function($) {
 			if (!((settings.uiLogEnabled && !uilog.empty()) || settings.consoleLogEnabled))
 				return;
 			if (typeof message !== "string")
-				message = this.stringify(message);
+				message = log.stringify(message);
 			if (settings.uiLogEnabled && !uilog.empty()) {
 				$(settings.uiLogTag).text(message).prependTo(uilog);
 				var count = uilog.children().length;
@@ -43,6 +43,7 @@ define("slavi-log", ["jquery"], function($) {
 		logClear: function() {
 			$(settings.uiLogSelector).children().remove();
 		},
-		
 	};
+
+	return log;
 });

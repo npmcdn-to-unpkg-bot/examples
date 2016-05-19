@@ -1,0 +1,116 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>TEST Angular JS</title>
+	<base href="./">
+	<link rel="stylesheet" href="../../../target/dependency/style.css">
+	<style>
+h1 {color: #369; font-family: Arial, Helvetica, sans-serif; font-size: 250%;}
+h2 { color: #369; font-family: Arial, Helvetica, sans-serif;  }
+h3 { color: #444; font-weight: lighter; }
+body { margin: 2em; }
+body, input[text], button { color: #888; font-family: Cambria, Georgia; }
+button {padding: 0.2em; font-size: 14px}
+
+ul {list-style-type: none; margin-left: 1em; padding: 0; width: 20em;}
+
+li { cursor: pointer; position: relative; left: 0; transition: all 0.2s ease; }
+li:hover {color: #369; background-color: #EEE; left: .2em;}
+
+/* route-link anchor tags */
+a {padding: 5px; text-decoration: none; font-family: Arial, Helvetica, sans-serif; }
+a:visited, a:link {color: #444;}
+a:hover {color: white; background-color: #1171a3; }
+a.router-link-active {color: white; background-color: #52b9e9; }
+
+.selected { background-color: #EEE; color: #369; }
+
+.badge {
+  font-size: small;
+  color: white;
+  padding: 0.1em 0.7em;
+  background-color: #369;
+  line-height: 1em;
+  position: relative;
+  left: -1px;
+  top: -1px;
+}
+
+crisis-detail input {
+  width: 20em;
+}
+	</style>
+<!-- 
+	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
+	<script src="https://npmcdn.com/@angular/router@0.2.0/angular1/angular_1_router.js"></script>
+ -->
+	<script type="text/javascript" src="../../../target/classes/alljs.js"></script>
+	
+	<script type="text/javascript">
+	angular.element(document).ready(function() {
+	var m = require(["jquery", "ang"], function($, m) {
+		var log = m["log"];
+		
+		var app = angular.module('myapp5', ["ngComponentRouter"]);
+		app.value('$routerRootComponent', 'myapp');
+		app.component('myapp', {
+			template:
+				'<nav> \
+					<a ng-link="[\'Link1\']">Link 1</a> \
+					<a ng-link="[\'Link2\']">Link 2</a> \
+				</nav> \
+				<ng-outlet></ng-outlet>',
+			$routeConfig: [
+				{path: '/link1/...', name: 'Link1', component: 'link1', useAsDefault: true},
+				{path: '/link2', name: 'Link2', component: 'link2' }
+			]
+		});
+		app.component('link1', {
+			template: "<h2>This is LINK 1</h2><ng-outlet></ng-outlet>",
+			$routeConfig: [
+				{path: '/',    name: 'Link1_List',   component: 'link1List', useAsDefault: true},
+				{path: '/:id', name: 'Link1_Detail', component: 'link1Detail'}
+			]
+		});
+		app.component('link1List', {
+			template:
+				'<div ng-repeat="item in $ctrl.items" ng-class="{ selected: $ctrl.isSelected(item) }"> \
+					<a ng-link="[\'HeroDetail\', {id: item.id}]">{{item.name}}</a> \
+				</div>',
+			controller: [function() {
+				this.$routerOnActivate = function(next) {
+					log(next);
+				}
+			}]
+		});
+		app.component('link1Detail', {
+			template: "<p>Details</p>",
+			controller: [function() {
+				this.$routerOnActivate = function(next) {
+					//log()
+				}
+			}]
+		});
+		
+		app.component('link2', {
+			template: "<h2>This is LINK 2</h2>",
+			controller: [function() {
+				this.$routerOnActivate = function(next) {
+					//log()
+				}
+			}]
+		});
+
+		angular.bootstrap(document, ['myapp5'], {
+			strictDi: true,
+		});
+	})
+	});
+	</script>
+</head>
+<body>
+	<h1 class="title">My Component Router</h1>
+	<myapp></myapp>
+</body>
+</html>

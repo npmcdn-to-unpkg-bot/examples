@@ -39,7 +39,7 @@ module.exports = function( grunt ) {
 						"angular-resource":		"<%= params.nodemodules %>/angular-resource/angular-resource",
 						"ng-grid":				"<%= params.nodemodules %>/ng-grid/build/ng-grid",
 					},
-					out: "<%= params.dest %>/main.js",
+					out: "<%= params.dest %>/alljs.js",
 				}
 			}
 		},
@@ -48,7 +48,7 @@ module.exports = function( grunt ) {
 				preserveComments: false,
 				sourceMap: false,
 				report: "min",
-				banner: "// Built on <%= now %>",
+				banner: "// Built on <%= now %>\n",
 			},
 			all: {
 				files: [{
