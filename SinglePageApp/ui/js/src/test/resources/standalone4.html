@@ -163,6 +163,7 @@ crisis-detail input {
 				  };
 				
 				  this.gotoHeroes = function() {
+					  log("Goto List");
 				    var heroId = this.hero && this.hero.id;
 				    this.$router.navigate(['HeroList', {id: heroId}]);
 				  };
@@ -234,9 +235,9 @@ crisis-detail input {
 				  };
 				}
 		],
-		    $canActivate: function($nextInstruction, $prevInstruction) {
+		    $canActivate: ["$nextInstruction", "$prevInstruction", function($nextInstruction, $prevInstruction) {
 		      console.log('$canActivate', arguments);
-		    }
+		    }]
 		  })
 		
 		  .component('crisisDetail', {
