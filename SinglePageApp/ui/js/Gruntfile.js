@@ -11,7 +11,7 @@ module.exports = function( grunt ) {
 			srcjs: "<%= params.src %>/js",
 			nodemodules: "../../../node_modules/"
 		},
-		requirejs: {
+		requirejs: { 
 			compile: {
 				options: {
 					baseUrl: "<%= params.srcjs %>",
@@ -38,6 +38,11 @@ module.exports = function( grunt ) {
 						"angular-route":		"<%= params.nodemodules %>/@angular/router/angular1/angular_1_router",
 						"angular-resource":		"<%= params.nodemodules %>/angular-resource/angular-resource",
 						"ng-grid":				"<%= params.nodemodules %>/ng-grid/build/ng-grid",
+					},
+					useStrict: true,
+					wrap: {
+						start: "// Built on <%= now %>\n'use strict';\n",
+						end: ""
 					},
 					out: "<%= params.dest %>/alljs.js",
 				}

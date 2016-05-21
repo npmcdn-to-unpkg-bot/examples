@@ -1,14 +1,21 @@
-define("slavi-log", ["jquery"], function($) {
-	var settings = {
-		uiLogItemsMax: 10,
-		uiLogSelector: "#output",
-		uiLogTag: "<pre>",
-		uiLogEnabled: true,
-		consoleLogEnabled: true,
-	};
+define("slavi-log", ["angular"], function(a) {
+	var module = angular.module("slavi-log", []);
 	
-	var log = {
-		stringify: function(obj) {
+	module.service("logger", [ function() {
+		var that = this;
+		that.maxLines = 10;
+		that.consoleLogEnabled = true;
+		that.items = [];
+		
+		that.isEmpty = function() {
+			return that.items.length == 0;
+		};
+
+		that.clear = function() {
+			that.items.slipce(0, that.items.length);
+		};
+		
+		that.stringify = function(obj) {
 			seen = [];
 			return JSON.stringify(obj, function(key, val) {
 				if (val != null && typeof val === "object") {
@@ -19,31 +26,38 @@ define("slavi-log", ["jquery"], function($) {
 				}
 				return val;
 			});
-		},
+		};
 		
-		log: function(message) {
-			var uilog = $(settings.uiLogSelector);
-			if (!((settings.uiLogEnabled && !uilog.empty()) || settings.consoleLogEnabled))
-				return;
-			if (typeof message !== "string")
-				message = log.stringify(message);
-			if (settings.uiLogEnabled && !uilog.empty()) {
-				$(settings.uiLogTag).text(message).prependTo(uilog);
-				var count = uilog.children().length;
-				while (count-- > settings.uiLogItemsMax) {
-					uilog.children().remove(":last-child");
-				}
-				uilog.scrollTop( 0 );
+		that.log = function() {
+			var message = "";
+			for (var i = 0; i < arguments.length; i++) {
+				var a = arguments[i];
+				if (typeof a !== "string")
+					a = that.stringify(a);
+				message = message + a;
 			}
-			if (settings.consoleLogEnabled) {
+			that.items.push(message);
+			if (consoleLogEnabled) {
 				console.log(message);
 			}
-		},
-		
-		logClear: function() {
-			$(settings.uiLogSelector).children().remove();
-		},
-	};
+			var remove = that.items.length - that.maxLines;
+			if (remove > 0) {
+				that.items.splice(0, remove);
+			}
+		}
+	}]);
 
+	module.component("log", { 
+		template: "<div ng-hide='$ctrl.isEmpty()' ng-repeat='item in $ctrl.items'><pre>{{item}}</pre></div>",
+		controller: ["logger", function(logger) {
+			this.items = logger.items;
+			this.isEmpty = logger.isEmpty;
+		}]
+	});
+	
+	var injector = angular.element(document).injector();
+	// log is a global variable/function
+	log = injector.get("logger").log;
+	
 	return log;
 });
