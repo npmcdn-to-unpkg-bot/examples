@@ -21,6 +21,7 @@
 							<goal>grunt</goal>
 						</goals>
 						<configuration>
+							<arguments>--no-color</arguments>
 							<triggerfiles>
 								<triggerfile>src/main/less/**</triggerfile>
 								<triggerfile>src/main/sprite/**</triggerfile>

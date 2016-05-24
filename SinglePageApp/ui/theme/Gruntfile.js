@@ -59,7 +59,7 @@ module.exports = function( grunt ) {
 	} );
 
 	var moment = require("moment");
-	grunt.config.set("now", moment().format("YYYY-MM-DD hh:mm"));
+	grunt.config.set("now", moment().format("YYYY-MM-DD HH:mm"));
 	grunt.registerTask("all", ["sprite", "less", "cssmin"]);
 	grunt.registerTask("default", ["all"]);
 	require("load-grunt-tasks")(grunt);

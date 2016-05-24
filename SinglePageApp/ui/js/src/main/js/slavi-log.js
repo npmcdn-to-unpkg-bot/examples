@@ -1,7 +1,39 @@
+// log is a global variable/function
+var log = function() {
+	console.log(arguments)
+};
+
 define("slavi-log", ["angular"], function(a) {
 	var module = angular.module("slavi-log", []);
 	
-	module.service("logger", [ function() {
+	function stringify() {
+		var result = "";
+		for (var i = 0; i < arguments.length; i++) {
+			var obj = arguments[i];
+			if (typeof obj !== "string") {
+				var seen = [];
+				obj = JSON.stringify(obj, function(key, val) {
+					if (val != null && typeof val === "object") {
+						if (seen.indexOf(val) >= 0) {
+							return "... cyclic ref ...";
+						}
+						seen.push(val);
+					}
+					return val;
+				});
+			}
+			result = result + obj;
+		}
+		return result;
+	};
+	
+	log = function() {
+		console.log(stringify.apply(this, arguments));
+	}
+	
+	module.service("logger", LoggerService);
+	LoggerService.$inject = [];
+	function LoggerService() {
 		var that = this;
 		that.maxLines = 10;
 		that.consoleLogEnabled = true;
@@ -15,29 +47,10 @@ define("slavi-log", ["angular"], function(a) {
 			that.items.slipce(0, that.items.length);
 		};
 		
-		that.stringify = function(obj) {
-			seen = [];
-			return JSON.stringify(obj, function(key, val) {
-				if (val != null && typeof val === "object") {
-					if (seen.indexOf(val) >= 0) {
-						return "... cyclic ref ...";
-					}
-					seen.push(val);
-				}
-				return val;
-			});
-		};
-		
 		that.log = function() {
-			var message = "";
-			for (var i = 0; i < arguments.length; i++) {
-				var a = arguments[i];
-				if (typeof a !== "string")
-					a = that.stringify(a);
-				message = message + a;
-			}
+			var message = stringify.apply(this, arguments);
 			that.items.push(message);
-			if (consoleLogEnabled) {
+			if (that.consoleLogEnabled) {
 				console.log(message);
 			}
 			var remove = that.items.length - that.maxLines;
@@ -45,19 +58,25 @@ define("slavi-log", ["angular"], function(a) {
 				that.items.splice(0, remove);
 			}
 		}
-	}]);
-
+		// NOTE: Overrides the global function log.
+		log = that.log;
+	}
+	
+	LoggerCtrl.$inject = ["logger"];
+	function LoggerCtrl(logger) {
+		this.items = logger.items;
+		this.isEmpty = logger.isEmpty;
+	}
 	module.component("log", { 
-		template: "<div ng-hide='$ctrl.isEmpty()' ng-repeat='item in $ctrl.items'><pre>{{item}}</pre></div>",
-		controller: ["logger", function(logger) {
-			this.items = logger.items;
-			this.isEmpty = logger.isEmpty;
-		}]
+		template: "<div ng-hide='$ctrl.isEmpty()' ng-repeat='item in $ctrl.items'><pre ng-bind='item' /></div>",
+		controller: LoggerCtrl
 	});
 	
-	var injector = angular.element(document).injector();
-	// log is a global variable/function
-	log = injector.get("logger").log;
-	
-	return log;
+/*
+	angular.element(document).ready(function() {
+		var injector = angular.element(document).injector();
+		log = injector.get("logger").log;
+	});
+	*/
+	return module;
 });

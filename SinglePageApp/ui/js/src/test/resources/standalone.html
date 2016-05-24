@@ -42,70 +42,92 @@ crisis-detail input {
 
 <script type="text/javascript" src="../../../target/classes/alljs.js"></script>
 <script type="text/javascript">
-var m = require(["jquery", "ang"], function($, m) {
-	var log = m["log"];
-	var app = angular.module('app', []);
+var m = require(["ang"], function(ang) {
+	'use strict';
+	//var log = ang["log"];
+	var app = angular.module('app', ['slavi-log']);
 	
 	app.component("app", { 
 		template: "<button ng-click='$ctrl.clicked()'>Push me</button>",
-		controller: [function() {
+		controller: ["logger", "$timeout", "single-runner", function(logger, $timeout, runner) {
 			var count = 0;
 			this.clicked = function() {
-				log("pushed ", ++count);
+				var cc = ++count;
+				log("pushed ", cc);
+				var rr = runner.get("test-run", function(message) {
+					logger.log("RR ", message);
+				});
+				$timeout(function() {
+					rr.invoke(cc)
+				}, 3000);
+				
 			}
 		}]
 	});
-	
-	app.service("logger", [ function() {
-		var that = this;
-		that.maxLines = 10;
-		that.items = [];
-		
-		that.isEmpty = function() {
-			return that.items.length == 0;
-		};
 
-		that.clear = function() {
-			that.items.slipce(0, that.items.length);
-		};
+	app.service("single-runner", SingleRunner);
+	SingleRunner.$inject = ["logger"];
+	function SingleRunner(logger) {
 		
-		that.stringify = function(obj) {
-			seen = [];
-			return JSON.stringify(obj, function(key, val) {
-				if (val != null && typeof val === "object") {
-					if (seen.indexOf(val) >= 0) {
-						return "... cyclic ref ...";
+		var runners = {};
+		
+		function create(name) {
+			var generation = 0;
+			var scheduled = null;
+			var r = {
+				lastResult: null,
+				lastError: null,
+				
+				request: function(theFunction) {
+					var req = {
+						arguments: [],
+						_this: null,
 					}
-					seen.push(val);
+					req.generation = ++generation;
+					req.theFunction = theFunction;
+					
+					function invoke() {
+						if (req.generation != generation) {
+							return;
+						}
+						req.arguments = arguments;
+						req._this = this;
+						if (scheduled != null) {
+							scheduled = req;
+							return;
+						}
+						
+						scheduled = req;
+						while (scheduled != null) {
+							var curReq = scheduled;
+							scheduled = null;
+							try {
+								r.lastResult = req.theFunction.apply(req._this, req.arguments);
+								r.lastError = null;
+							} catch (err) {
+								r.lastResult = null;
+								r.lastError = err;
+								logger.log(err);
+							}
+						}
+					}
+					req.invoke = invoke;
+					return req;
 				}
-				return val;
-			});
-		};
-		
-		that.log = function() {
-			var message = "";
-			for (var i = 0; i < arguments.length; i++) {
-				var a = arguments[i];
-				if (typeof a !== "string")
-					a = that.stringify(a);
-				message = message + a;
-			}
-			that.items.push(message);
-			console.log(message);
-			var remove = that.items.length - that.maxLines;
-			if (remove > 0) {
-				that.items.splice(0, remove);
-			}
+			};
+			runners[name] = r;
+			return r;
 		}
-	}]);
+		
+		this.get = function(name, theFunction) {
+			var rnr = runners[name];
+			if (rnr == undefined) {
+				rnr = create(name);
+			}
+			return rnr.request(theFunction);
+		}
+	}	
 	
-	app.component("log", { 
-		template: "<div ng-hide='$ctrl.isEmpty()' ng-repeat='item in $ctrl.items'><pre>{{item}}</pre></div>",
-		controller: ["logger", function(logger) {
-			this.items = logger.items;
-			this.isEmpty = logger.isEmpty;
-		}]
-	});
 /*
 	app.run(["logger", function(logger) {
 		log = logger.log;
@@ -120,7 +142,7 @@ var m = require(["jquery", "ang"], function($, m) {
 	log('hi');
 
 	var injector = angular.element(document).injector();
-	log = injector.get("logger").log;
+	//log = injector.get("logger").log;
 
 	injector.invoke(["$rootScope", "logger", function($rootScope, logger) {
 		$rootScope.$apply(function() {

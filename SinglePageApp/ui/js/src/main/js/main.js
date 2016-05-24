@@ -1,7 +1,7 @@
 // http://www.sitepoint.com/using-requirejs-angularjs-applications/
 define("main", ["ang"], function(sl) {
 	// $(document).ready(function() { });
-/*
+/*	
 	var gem = {
 		name: "My precious",
 		price: 1.23,

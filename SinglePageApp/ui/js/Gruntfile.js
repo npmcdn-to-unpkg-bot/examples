@@ -20,24 +20,24 @@ module.exports = function( grunt ) {
 					include: [ "requirejs" ],
 					paths: {
 						"requirejs":			"<%= params.nodemodules %>/requirejs/require",
-						"moment":				"<%= params.nodemodules %>/moment/moment",
+						//"moment":				"<%= params.nodemodules %>/moment/moment",
 						"jquery":				"<%= params.nodemodules %>/jquery/dist/jquery",
-						"datatables.net":		"<%= params.nodemodules %>/datatables.net/js/jquery.dataTables",
-						"datatables.net-dt":	"<%= params.nodemodules %>/datatables.net-dt",
+						//"datatables.net":		"<%= params.nodemodules %>/datatables.net/js/jquery.dataTables",
+						//"datatables.net-dt":	"<%= params.nodemodules %>/datatables.net-dt",
 
-						"es6-shim":				"<%= params.nodemodules %>/es6-shim/es6-shim",
-						"system-polyfills":		"<%= params.nodemodules %>/systemjs/dist/system-polyfills",
-						"shims_for_IE":			"<%= params.nodemodules %>/angular2/es6/dev/src/testing/shims_for_IE",
-						"angular2-polyfills":	"<%= params.nodemodules %>/angular2/bundles/angular2-polyfills",
-						"system.src":			"<%= params.nodemodules %>/systemjs/dist/system.src",
-						"Rx":					"<%= params.nodemodules %>/rxjs/bundles/Rx.umd",
-						"angular2":				"<%= params.nodemodules %>/angular2/bundles/angular2-all.umd",
+						//"es6-shim":				"<%= params.nodemodules %>/es6-shim/es6-shim",
+						//"system-polyfills":		"<%= params.nodemodules %>/systemjs/dist/system-polyfills",
+						//"shims_for_IE":			"<%= params.nodemodules %>/angular2/es6/dev/src/testing/shims_for_IE",
+						//"angular2-polyfills":	"<%= params.nodemodules %>/angular2/bundles/angular2-polyfills",
+						//"system.src":			"<%= params.nodemodules %>/systemjs/dist/system.src",
+						//"Rx":					"<%= params.nodemodules %>/rxjs/bundles/Rx.umd",
+						//"angular2":				"<%= params.nodemodules %>/angular2/bundles/angular2-all.umd",
 
 						"angular":				"<%= params.nodemodules %>/angular/angular",
 						//"angular-route":		"<%= params.nodemodules %>/angular-route/angular-route",
 						"angular-route":		"<%= params.nodemodules %>/@angular/router/angular1/angular_1_router",
 						"angular-resource":		"<%= params.nodemodules %>/angular-resource/angular-resource",
-						"ng-grid":				"<%= params.nodemodules %>/ng-grid/build/ng-grid",
+						//"ng-grid":				"<%= params.nodemodules %>/ng-grid/build/ng-grid",
 					},
 					useStrict: true,
 					wrap: {
@@ -69,7 +69,7 @@ module.exports = function( grunt ) {
 	} );
 
 	var moment = require("moment");
-	grunt.config.set("now", moment().format("YYYY-MM-DD hh:mm"));
+	grunt.config.set("now", moment().format("YYYY-MM-DD HH:mm"));
 	grunt.registerTask("all", ["requirejs", "uglify"]);
 	grunt.registerTask("default", ["all"]);
 	require("load-grunt-tasks")(grunt);
