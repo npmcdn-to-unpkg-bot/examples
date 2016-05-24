@@ -9,13 +9,6 @@
 	<artifactId>examples.spa.ui.js</artifactId>
 	<packaging>jar</packaging>
 
-	<dependencies>
-		<dependency>
-			<groupId>com.slavi</groupId>
-			<artifactId>examples.spa.ui.theme</artifactId>
-		</dependency>
-	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -47,13 +40,17 @@
 				<executions>
 					<execution>
 						<id>unpack</id>
-						<phase>generate-resources</phase>
 						<goals>
-							<goal>unpack-dependencies</goal>
+							<goal>unpack</goal>
 						</goals>
+						<phase>package</phase>
 						<configuration>
-							<includeGroupIds>${project.groupId}</includeGroupIds>
-							<includeArtifactIds>examples.spa.ui.theme</includeArtifactIds>
+							<artifactItems>
+								<artifactItem>
+									<groupId>${project.groupId}</groupId>
+									<artifactId>examples.spa.ui.theme</artifactId>
+								</artifactItem>
+							</artifactItems>
 						</configuration>
 					</execution>
 				</executions>

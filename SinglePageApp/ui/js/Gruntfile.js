@@ -9,9 +9,10 @@ module.exports = function( grunt ) {
 			dest: "<%= params.out %>/classes",
 
 			srcjs: "<%= params.src %>/js",
-			nodemodules: "../../../node_modules/"
+//			nodemodules: "../../../node_modules/"
+			nodemodules: "node_modules/"
 		},
-		requirejs: { 
+/*		requirejs: { 
 			compile: {
 				options: {
 					baseUrl: "<%= params.srcjs %>",
@@ -47,6 +48,36 @@ module.exports = function( grunt ) {
 					out: "<%= params.dest %>/alljs.js",
 				}
 			}
+		},*/
+		concat: {
+			libs: {
+				options: {
+					banner: "// Built on <%= now %>\n",
+				},
+				src: [
+					"<%= params.nodemodules %>/angular/angular.js",
+					"<%= params.nodemodules %>/@angular/router/angular1/angular_1_router.js",
+					"<%= params.nodemodules %>/angular-resource/angular-resource.js",
+				],
+				dest: "<%= params.dest %>/libs.js"
+			},
+			app: {
+				options: {
+					process: function(src, filepath) {
+						return "// File " + filepath + "\n(function() {\n" + src + "\n})();\n";
+					},
+					banner: "// Built on <%= now %>\n'use strict';\n",
+				},
+				src: [
+					"<%= params.srcjs %>/**/*.module.js",
+					"<%= params.srcjs %>/**/*.service.js",
+					"<%= params.srcjs %>/**/*.ctrl.js",
+					"<%= params.srcjs %>/**/*.js",
+					"!<%= params.srcjs %>/main.js",
+					"<%= params.srcjs %>/main.js",	// main.js goes last
+				],
+				dest: "<%= params.dest %>/app.js"
+			}
 		},
 		uglify: {
 			options: {
@@ -55,7 +86,19 @@ module.exports = function( grunt ) {
 				report: "min",
 				banner: "// Built on <%= now %>\n",
 			},
-			all: {
+			libs: {
+				files: [{
+					src: ["<%= params.dest %>/libs.js"],
+					dest: "<%= params.dest %>/libs.min.js",
+				}]
+			},
+			app: {
+				files: [{
+					src: ["<%= params.dest %>/app.js"],
+					dest: "<%= params.dest %>/app.min.js",
+				}]
+			},
+/*			all: {
 				files: [{
 					expand: true,
 					cwd: "<%= params.dest %>",
@@ -64,13 +107,40 @@ module.exports = function( grunt ) {
 					ext: ".min.js",
 					extDot: "last"
 				}]
+			} */
+		},
+		newer: {
+			concat_libs: {
+				src: [
+					"<%= params.nodemodules %>/angular/angular.js",
+					"<%= params.nodemodules %>/@angular/router/angular1/angular_1_router.js",
+					"<%= params.nodemodules %>/angular-resource/angular-resource.js",
+				],
+				dest: "<%= params.dest %>/libs.js",
+				options: { tasks: ["concat:libs"] }
+			},
+			concat_app: {
+				src: ["<%= params.srcjs %>/**/*.js"],
+				dest: "<%= params.dest %>/app.js",
+				options: { tasks: ["concat:app"] }
+			},
+			uglify_libs: {
+				src: ["<%= params.dest %>/libs.js"],
+				dest: "<%= params.dest %>/libs.min.js",
+				options: { tasks: ["uglify:libs"] }
+			},
+			uglify_app: {
+				src: ["<%= params.dest %>/app.js"],
+				dest: "<%= params.dest %>/app.min.js",
+				options: { tasks: ["uglify:app"] }
 			}
 		}
 	} );
 
 	var moment = require("moment");
 	grunt.config.set("now", moment().format("YYYY-MM-DD HH:mm"));
-	grunt.registerTask("all", ["requirejs", "uglify"]);
-	grunt.registerTask("default", ["all"]);
+	grunt.registerTask("all", ["concat", "uglify"]);
+	grunt.registerTask("default", ["newer"]);
+
 	require("load-grunt-tasks")(grunt);
 };

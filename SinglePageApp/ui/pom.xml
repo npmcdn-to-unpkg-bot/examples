@@ -35,13 +35,6 @@
 								<goal>npm</goal>
 							</goals>
 						</execution>
-						<execution>
-							<id>npm install</id>
-							<phase>generate-resources</phase>
-							<goals>
-								<goal>npm</goal>
-							</goals>
-						</execution>
 					</executions>
 				</plugin>
 
@@ -97,6 +90,7 @@
 										<artifactId>maven-dependency-plugin</artifactId>
 										<versionRange>[2.10,)</versionRange>
 										<goals>
+											<goal>unpack</goal>
 											<goal>unpack-dependencies</goal>
 										</goals>
 									</pluginExecutionFilter>
@@ -107,7 +101,7 @@
 										</execute>
 									</action>
 								</pluginExecution>
-							</pluginExecutions>
+ 							</pluginExecutions>
 						</lifecycleMappingMetadata>
 					</configuration>
 				</plugin>

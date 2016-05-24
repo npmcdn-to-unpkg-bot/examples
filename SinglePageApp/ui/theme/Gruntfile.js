@@ -1,7 +1,7 @@
 module.exports = function( grunt ) {
 	"use strict";
 
-	grunt.initConfig( {
+	grunt.initConfig({
 		params: {
 			src: "src/main",
 			out: "target",
@@ -55,12 +55,37 @@ module.exports = function( grunt ) {
 					extDot: "last"
 				}]
 			}
+		},
+		newer: {
+			sprite: {
+				src: [
+					"<%= params.srcSprite %>/**/*.png",
+					"<%= params.srcSprite %>/**/*.bmp",
+					"<%= params.srcSprite %>/**/*.gif",
+					"<%= params.srcSprite %>/**/*.jpg",
+				],
+				dest: "<%= params.tmp %>/sprite.less",
+				options: { tasks: ["sprite"] }
+			},
+			less: {
+				src: [
+					"<%= params.srcLess %>/**/*.less",
+					"<%= params.tmp %>/sprite.less"
+				],
+				dest: "<%= params.dest %>/style.css",
+				options: { tasks: ["less"] }
+			},
+			cssmin: {
+				src: ["<%= params.dest %>/style.css"],
+				dest: "<%= params.dest %>/style.min.css",
+				options: { tasks: ["cssmin"] }
+			}
 		}
-	} );
+	});
 
 	var moment = require("moment");
 	grunt.config.set("now", moment().format("YYYY-MM-DD HH:mm"));
 	grunt.registerTask("all", ["sprite", "less", "cssmin"]);
-	grunt.registerTask("default", ["all"]);
+	grunt.registerTask("default", ["newer"]);
 	require("load-grunt-tasks")(grunt);
 };

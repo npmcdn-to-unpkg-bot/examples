@@ -40,111 +40,16 @@ crisis-detail input {
 }
 </style>
 
-<script type="text/javascript" src="../../../target/classes/alljs.js"></script>
+<script type="text/javascript" src="../../../target/classes/libs.js"></script>
+<script type="text/javascript" src="../../../target/classes/app.js"></script>
 <script type="text/javascript">
-var m = require(["ang"], function(ang) {
+angular.element(document).ready(function() {
 	'use strict';
-	//var log = ang["log"];
-	var app = angular.module('app', ['slavi-log']);
-	
-	app.component("app", { 
-		template: "<button ng-click='$ctrl.clicked()'>Push me</button>",
-		controller: ["logger", "$timeout", "single-runner", function(logger, $timeout, runner) {
-			var count = 0;
-			this.clicked = function() {
-				var cc = ++count;
-				log("pushed ", cc);
-				var rr = runner.get("test-run", function(message) {
-					logger.log("RR ", message);
-				});
-				$timeout(function() {
-					rr.invoke(cc)
-				}, 3000);
-				
-			}
-		}]
-	});
-
-	app.service("single-runner", SingleRunner);
-	SingleRunner.$inject = ["logger"];
-	function SingleRunner(logger) {
-		
-		var runners = {};
-		
-		function create(name) {
-			var generation = 0;
-			var scheduled = null;
-			var r = {
-				lastResult: null,
-				lastError: null,
-				
-				request: function(theFunction) {
-					var req = {
-						arguments: [],
-						_this: null,
-					}
-					req.generation = ++generation;
-					req.theFunction = theFunction;
-					
-					function invoke() {
-						if (req.generation != generation) {
-							return;
-						}
-						req.arguments = arguments;
-						req._this = this;
-						if (scheduled != null) {
-							scheduled = req;
-							return;
-						}
-						
-						scheduled = req;
-						while (scheduled != null) {
-							var curReq = scheduled;
-							scheduled = null;
-							try {
-								r.lastResult = req.theFunction.apply(req._this, req.arguments);
-								r.lastError = null;
-							} catch (err) {
-								r.lastResult = null;
-								r.lastError = err;
-								logger.log(err);
-							}
-						}
-					}
-					req.invoke = invoke;
-					return req;
-				}
-			};
-			runners[name] = r;
-			return r;
-		}
-		
-		this.get = function(name, theFunction) {
-			var rnr = runners[name];
-			if (rnr == undefined) {
-				rnr = create(name);
-			}
-			return rnr.request(theFunction);
-		}
-	}	
-	
-/*
-	app.run(["logger", function(logger) {
-		log = logger.log;
-		log('ho');
-	}]);*/
-	
-	angular.bootstrap(document, ['app'], {
-		strictDi: true,
-	});
-
-	
-	log('hi');
 
 	var injector = angular.element(document).injector();
-	//log = injector.get("logger").log;
+	//log = injector.get("slavi-logger").log;
 
-	injector.invoke(["$rootScope", "logger", function($rootScope, logger) {
+	injector.invoke(["$rootScope", "slavi-logger", function($rootScope, logger) {
 		$rootScope.$apply(function() {
 			logger.log("ho");
 		});

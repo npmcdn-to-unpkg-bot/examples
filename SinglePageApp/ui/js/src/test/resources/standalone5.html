@@ -45,12 +45,14 @@ crisis-detail input {
 	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
 	<script src="https://npmcdn.com/@angular/router@0.2.0/angular1/angular_1_router.js"></script>
  -->
-	<script type="text/javascript" src="../../../target/classes/alljs.js"></script>
+	<script type="text/javascript" src="../../../target/classes/libs.js"></script>
 	
 	<script type="text/javascript">
-//	angular.element(document).ready(function() {
-	var m = require(["jquery", "ang"], function($, m) {
-		var log = m["log"];
+	angular.element(document).ready(function() {
+		//var log = m["log"];
+		function log() {
+			console.log.apply(console, arguments);
+		};
 		
 		var app = angular.module('myapp5', ["ngComponentRouter"]);
 		app.value('$routerRootComponent', 'myapp');
@@ -206,7 +208,6 @@ crisis-detail input {
 		angular.bootstrap(document, ['myapp5'], {
 			strictDi: true,
 		});
-//	})
 	});
 	</script>
 </head>
