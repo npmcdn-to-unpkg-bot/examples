@@ -1,36 +1,19 @@
 <!doctype html>
 <html>
 <head>
-	<meta charset="utf-8" />
-	<title>TEST Angular JS</title>
-	<link rel="stylesheet" href="../../../target/dependency/style.css">
-	<script type="text/javascript" src="../../../target/classes/alljs.js"></script>
-	<script type="text/javascript">
-	angular.element(document).ready();
-	var m = require(["jquery", "main"], function($, m) {
-		var app = m["app"];
-		var log = m["log"];
+<meta charset="utf-8" />
+<title>TEST Angular JS</title>
+<link rel="stylesheet" href="../../../target/dependency/style.css">
 
-		app.component("myComponent", {
-			transclude: true,
-			template: "<p>MY COMPONENT: Product name {{$ctrl.product.name}} has price <b>{{$ctrl.product.price|currency}}</b><div ng-transclude></div><span>Seem like working</span></p>",
-			bindings: {
-				product: "="
-			},
-			controller: ["$scope", "$element", "$attrs", function($scope, $element, $attrs) {
-				$ctrl = this;
-				log("hi");
-			}]
-		});
-
-		angular.bootstrap(document, ['store'], {
-			strictDi: true,
-		});
-		
-		log("DONE!");
+<script type="text/javascript" src="../../../target/classes/libs.js"></script>
+<script type="text/javascript" src="../../../target/classes/app.js"></script>
+<script type="text/javascript">
+angular.element(document).ready(function() {
+	angular.bootstrap(document, ['myapp2'], {
+		strictDi: true,
 	});
-
-	</script>
+});
+</script>
 </head>
 <body>
 

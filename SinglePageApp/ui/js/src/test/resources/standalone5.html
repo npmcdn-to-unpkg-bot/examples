@@ -1,216 +1,24 @@
 <!doctype html>
 <html>
 <head>
-	<meta charset="utf-8" />
-	<title>TEST Angular JS</title>
-	<base href="./">
-	<link rel="stylesheet" href="../../../target/dependency/style.css">
-	<style>
-h1 {color: #369; font-family: Arial, Helvetica, sans-serif; font-size: 250%;}
-h2 { color: #369; font-family: Arial, Helvetica, sans-serif;  }
-h3 { color: #444; font-weight: lighter; }
-body { margin: 2em; }
-body, input[text], button { color: #888; font-family: Cambria, Georgia; }
-button {padding: 0.2em; font-size: 14px}
 
-ul {list-style-type: none; margin-left: 1em; padding: 0; width: 20em;}
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>TEST Angular JS</title>
+<base href="./">
+<link rel="stylesheet" href="../../../target/dependency/style.css">
+<style></style>
 
-li { cursor: pointer; position: relative; left: 0; transition: all 0.2s ease; }
-li:hover {color: #369; background-color: #EEE; left: .2em;}
-
-/* route-link anchor tags */
-a {padding: 5px; text-decoration: none; font-family: Arial, Helvetica, sans-serif; }
-a:visited, a:link {color: #444;}
-a:hover {color: white; background-color: #1171a3; }
-a.router-link-active {color: white; background-color: #52b9e9; }
-
-.selected { background-color: #EEE; color: #369; }
-
-.badge {
-  font-size: small;
-  color: white;
-  padding: 0.1em 0.7em;
-  background-color: #369;
-  line-height: 1em;
-  position: relative;
-  left: -1px;
-  top: -1px;
-}
-
-crisis-detail input {
-  width: 20em;
-}
-	</style>
-<!-- 
-	<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular.min.js"></script>
-	<script src="https://npmcdn.com/@angular/router@0.2.0/angular1/angular_1_router.js"></script>
- -->
-	<script type="text/javascript" src="../../../target/classes/libs.js"></script>
-	
-	<script type="text/javascript">
-	angular.element(document).ready(function() {
-		//var log = m["log"];
-		function log() {
-			console.log.apply(console, arguments);
-		};
-		
-		var app = angular.module('myapp5', ["ngComponentRouter"]);
-		app.value('$routerRootComponent', 'myapp');
-		app.component('myapp', {
-			template:
-				'<nav> \
-					<a ng-link="[\'Link1\']">Link 1</a> \
-					<a ng-link="[\'Link2\']">Link 2</a> \
-				</nav> \
-				<ng-outlet></ng-outlet>',
-			$routeConfig: [
-				{path: '/link1/...', name: 'Link1', component: 'link1', useAsDefault: true},
-				{path: '/link2', name: 'Link2', component: 'link2' }
-			]
-		});
-		app.service('link1Service', ["$q", function($q) {
-			var dataPromise = $q.when([
-				{ id: 1, name: "Name 1"},
-				{ id: 2, name: "Name 2"},
-				{ id: 3, name: "Name 3"},
-				{ id: 4, name: "Name 4"},
-			]);
-			
-			this.getItems = function() {
-				return dataPromise;
-			};
-			
-			this.getItem = function(id) {
-				return dataPromise.then(function(data) {
-					for (var i = 0; i < data.length; i++) {
-						var item = data[i];
-						if (item.id == id) {
-							return item;
-						}
-					}
-				});
-			}
-		}]);
-		
-		app.component('link1', {
-			template: "<h2>This is LINK 1</h2><ng-outlet></ng-outlet>",
-			$routeConfig: [
-				{path: '/',    name: 'Link1_List',   component: 'link1List', useAsDefault: true},
-				{path: '/:id', name: 'Link1_Detail', component: 'link1Detail'}
-			]
-		});
-		app.component('link1List', {
-			template:
-				'<div ng-repeat="item in $ctrl.items" ng-class="{ selected: $ctrl.isSelected(item) }"> \
-					<a ng-link="[\'Link1_Detail\', {id: item.id}]">{{item.name}}</a> \
-				</div>',
-			controller: ["link1Service", function(service) {
-				var $ctrl = this;
-				var selectedId = null;
-				
-				this.$routerOnActivate = function(next) {
-					log(next);
-					selectedId = next.params.id;
-					service.getItems().then(function(items) {
-						$ctrl.items = items;
-					});
-				};
-				
-				this.isSelected = function(item) {
-					return item.id == selectedId;
-				};
-			}]
-		});
-		app.component('link1Detail', {
-			template: '<div ng-if="$ctrl.item">\
-				<h3>Details</h3>\
-				<div><label>ID:</label>{{$ctrl.item.id}}</div>\
-				<div><label>Name:</label><input ng-model="$ctrl.item.name" placeholder="name" /></div>\
-				<button ng-click="$ctrl.done()">Done</button>\
-				</div>',
-			bindings: {
-				$router: "<"
-			},
-			controller: ["link1Service", function(service) {
-				var $ctrl = this;
-
-				this.$routerOnActivate = function(next) {
-					var id = next.params.id;
-					service.getItem(id).then(function(item) {
-						$ctrl.item = item;
-					});
-				};
-				
-				this.done = function() {
-					var itemId = $ctrl.item && $ctrl.item.id;
-					$ctrl.$router.navigate(['Link1_List', {id: itemId}]);
-				}
-			}]
-		});
-		
-		// Link 2
-		
-		app.service('link2Service', ["$q", function($q) {
-			that = this;
-			that.isDone = false;
-			that.items = [];
-			var defered = null;
-			
-			this.load = function(max) {
-				that.isDone = false;
-				if (defered != null)
-					defered.resolve();
-				defered = $q.defer();
-				setTimeout(function() {
-					var r = [];
-					for (var i = 1; i <= max; i++) {
-						var item = { id: i, name: "Name " + i };
-						r.push(item);
-					};
-					defered.resolve(r);
-				}, 3000);
-				
-				defered.promise.then(function(items) {
-					that.items = items;
-					that.isDone = true;
-					log(that.items);
-				}, function(rejectReason) {
-					log(rejectReason);
-				});
-			};
-			that.load(3);
-		}]);
-		
-		app.component('link2', {
-			template: 
-				'<h2>This is LINK 2</h2>\
-				<p ng-hide="$service.isDone">LOADING ...</p>\
-				<table ng-show="$service.isDone">\
-					<tr ng-repeat="item in $service.items" ng-class="{ selected: $ctrl.even(item) }"> \
-						<td>id: {{item.id}}, name: {{item.name}}</td> \
-					</tr> \
-				</table>\
-				<button ng-click="$service.load(4)">Refresh</button>',
-			controller: ["link2Service", "$scope", function(service, $scope) {
-				$scope.$service = service;
-				log(service.items);
-				
-				$scope.even = function(item) {
-					return item.id % 2 == 0;
-				};
-				
-				/* this.$routerOnActivate = function(next) {
-					//log()
-				} */
-			}]
-		});
-
-		angular.bootstrap(document, ['myapp5'], {
-			strictDi: true,
-		});
+<script type="text/javascript" src="../../../target/classes/libs.js"></script>
+<script type="text/javascript" src="../../../target/classes/app.js"></script>
+<script type="text/javascript">
+angular.element(document).ready(function() {
+	angular.bootstrap(document, ['myapp5'], {
+		strictDi: true,
 	});
-	</script>
+});
+</script>
 </head>
+
 <body>
 	<h1 class="title">My Component Router</h1>
 	<myapp></myapp>

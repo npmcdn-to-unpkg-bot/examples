@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Example - example-componentRouter-production</title>
+<link rel="stylesheet" href="../../../target/dependency/style.css">
+<script type="text/javascript" src="../../../target/classes/libs.js"></script>
+<script type="text/javascript" src="../../../target/classes/app.js"></script>
+<script type="text/javascript">
+angular.element(document).ready(function() {
+	'use strict';
+	angular.bootstrap(document, ['myapp1'], {
+		strictDi: true,
+	});
+
+	var injector = angular.element(document).injector();
+	//log = injector.get("slavi-logger").log;
+
+	injector.invoke(["$rootScope", "slavi-logger", function($rootScope, logger) {
+		$rootScope.$apply(function() {
+			logger.log("ho");
+		});
+	}]);
+/*
+	injector.invoke(["$rootScope", function($rootScope) {
+		$rootScope.$apply(function() {
+			log("ho");
+		});
+	}]);*/
+});
+</script>
+</head>
+
+<body>
+<h1 class="title">Component Router</h1>
+<app></app>
+<hr />
+<log></log>
+</body>
+</html>

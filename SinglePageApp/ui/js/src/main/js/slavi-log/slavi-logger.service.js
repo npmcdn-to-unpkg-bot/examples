@@ -21,9 +21,9 @@ function stringify() {
 	return result;
 };
 	
-module.service("slavi-logger", LoggerService);
-LoggerService.$inject = [];
-function LoggerService() {
+module.service("slavi-logger", Service);
+Service.$inject = [];
+function Service() {
 	var that = this;
 	that.maxLines = 10;
 	that.consoleLogEnabled = true;

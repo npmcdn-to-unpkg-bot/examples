@@ -1,0 +1,1 @@
+angular.module("myapp1", ["slavi-log", "slavi-utils"]);
