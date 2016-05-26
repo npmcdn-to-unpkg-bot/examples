@@ -1,3 +1,4 @@
+// TODO: Nice tips at: http://www.bennadel.com/blog/2616-aborting-ajax-requests-using-http-and-angularjs.htm
 var module = angular.module("slavi-utils");
 
 var runners = {};

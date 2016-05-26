@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Plain JavaScippt example</title>
+<link rel="stylesheet" href="../../../target/dependency/style.css">
+
+<script type="text/javascript" src="../../../node_modules/jquery/dist/jquery.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	console.log("Initialized");
+});
+
+var promise = null;
+var promiseCount = 0;
+function btnOnClick() {
+	if (promise) {
+		promise.abort();
+	}
+	
+	promise = new Promise(function(resolve, reject) {
+		var promiseId = ++promiseCount;
+		this.promiseId = promiseId;
+		console.log(this);
+		this.abort = function() {
+			reject(promiseId);
+		}
+		console.log("Promise id=" + promiseId + " started");
+		setTimeout(function() {
+			console.log("Promise id=" + promiseId + " executed");
+			promise = null;
+			resolve(promiseId);
+		}, 3000);
+	});
+	
+	promise.then(function(promiseId) {
+		console.log("Promise id=" + promiseId + " resolved");
+	}, function(promiseId) {
+		console.log("Promise id=" + promiseId + " REJECTED");
+	})
+	
+	return false;
+}
+
+</script>
+</head>
+
+<body>
+<h1 class="title">Example</h1>
+<hr />
+<button onClick="btnOnClick()">Click me</button>
+</body>
+</html>
