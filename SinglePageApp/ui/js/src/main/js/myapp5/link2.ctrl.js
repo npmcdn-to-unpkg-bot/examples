@@ -6,9 +6,9 @@ function Controller(service, $scope, logger) {
 	logger.log(service.items);
 	
 	$scope.even = function(item) {
-		return item.id % 2 == 0;
+		return item.id % 2 === 0;
 	};
-	
+
 	/* this.$routerOnActivate = function(next) {
 		//logger.log()
 	} */

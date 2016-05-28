@@ -14,7 +14,7 @@ function Controller(service) {
 	this.done = function() {
 		var itemId = $ctrl.item && $ctrl.item.id;
 		$ctrl.$router.navigate(['Link1_List', {id: itemId}]);
-	}
+	};
 }
 
 module.component('link1Detail', {

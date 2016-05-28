@@ -22,7 +22,7 @@ function Service($q) {
 				}
 			}
 		});
-	}
+	};
 }
 
 module.service('link1Service', Service);

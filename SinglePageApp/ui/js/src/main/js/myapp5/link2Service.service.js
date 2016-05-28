@@ -9,7 +9,7 @@ function Service($q, logger) {
 	
 	this.load = function(max) {
 		that.isDone = false;
-		if (defered != null)
+		if (defered !== null)
 			defered.resolve();
 		defered = $q.defer();
 		setTimeout(function() {
@@ -17,7 +17,7 @@ function Service($q, logger) {
 			for (var i = 1; i <= max; i++) {
 				var item = { id: i, name: "Name " + i };
 				r.push(item);
-			};
+			}
 			defered.resolve(r);
 		}, 3000);
 		

@@ -14,7 +14,7 @@ function create(name) {
 			var req = {
 				arguments: [],
 				_this: null,
-			}
+			};
 			req.generation = ++generation;
 			req.theFunction = theFunction;
 			
@@ -24,13 +24,13 @@ function create(name) {
 				}
 				req.arguments = arguments;
 				req._this = this;
-				if (scheduled != null) {
+				if (scheduled !== null) {
 					scheduled = req;
 					return;
 				}
 				
 				scheduled = req;
-				while (scheduled != null) {
+				while (scheduled !== null) {
 					var curReq = scheduled;
 					scheduled = null;
 					try {
@@ -53,7 +53,7 @@ function create(name) {
 
 function get(name, theFunction) {
 	var runner = runners[name];
-	if (runner == undefined) {
+	if (runner === undefined) {
 		runner = create(name);
 	}
 	return runner.request(theFunction);

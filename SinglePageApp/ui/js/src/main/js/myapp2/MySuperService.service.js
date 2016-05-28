@@ -1,12 +1,10 @@
 var module = angular.module("myapp2");
 
 function MyLauncher(myNum) {
-	var myNum = "---- " + myNum + " ----";
-	
 	this.getMyNum = function() {
 		return "My num is " + myNum;
-	}
-};
+	};
+}
 
 Service.$inject = [];
 function Service() {

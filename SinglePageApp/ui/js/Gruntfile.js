@@ -49,6 +49,12 @@ module.exports = function( grunt ) {
 				}
 			}
 		},*/
+		jshint: {
+			options: {
+				multistr: true
+			},
+			app: ["<%= params.srcjs %>/**/*.js"]
+		},
 		concat: {
 			libs: {
 				options: {
@@ -122,7 +128,7 @@ module.exports = function( grunt ) {
 			concat_app: {
 				src: ["<%= params.srcjs %>/**/*.js"],
 				dest: "<%= params.dest %>/app.js",
-				options: { tasks: ["concat:app"] }
+				options: { tasks: ["jshint:app", "concat:app"] }
 			},
 			uglify_libs: {
 				src: ["<%= params.dest %>/libs.js"],

@@ -10,9 +10,9 @@ function Controller(logger, $timeout, runner) {
 			logger.log("RR ", message);
 		});
 		$timeout(function() {
-			rr.invoke(cc)
+			rr.invoke(cc);
 		}, 3000);
-	}
+	};
 }
 
 module.component("app", { 

@@ -1,25 +1,29 @@
 var module = angular.module("slavi-log");
-	
+
+function stringify1(obj) {
+	if (typeof obj === "string")
+		return obj;
+
+	var seen = [];
+	return JSON.stringify(obj, function(key, val) {
+		if (val !== null && typeof val === "object") {
+			if (seen.indexOf(val) >= 0) {
+				return "... cyclic ref ...";
+			}
+			seen.push(val);
+		}
+		return val;
+	});
+}
+
 function stringify() {
 	var result = "";
 	for (var i = 0; i < arguments.length; i++) {
 		var obj = arguments[i];
-		if (typeof obj !== "string") {
-			var seen = [];
-			obj = JSON.stringify(obj, function(key, val) {
-				if (val != null && typeof val === "object") {
-					if (seen.indexOf(val) >= 0) {
-						return "... cyclic ref ...";
-					}
-					seen.push(val);
-				}
-				return val;
-			});
-		}
-		result = result + obj;
+		result = result + stringify1(obj);
 	}
 	return result;
-};
+}
 	
 module.service("slavi-logger", Service);
 Service.$inject = [];
@@ -30,7 +34,7 @@ function Service() {
 	that.items = [];
 	
 	that.isEmpty = function() {
-		return that.items.length == 0;
+		return that.items.length === 0;
 	};
 
 	that.clear = function() {
@@ -47,6 +51,6 @@ function Service() {
 		if (remove > 0) {
 			that.items.splice(0, remove);
 		}
-	}
+	};
 }
 
