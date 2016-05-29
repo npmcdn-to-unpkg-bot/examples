@@ -33,6 +33,31 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>Copy Bootstrap resources</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/classes</outputDirectory>
+							<resources>
+								<resource>
+									<targetPath>fonts</targetPath>
+									<directory>node_modules/bootstrap/dist/fonts</directory>
+									<filtering>false</filtering>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>

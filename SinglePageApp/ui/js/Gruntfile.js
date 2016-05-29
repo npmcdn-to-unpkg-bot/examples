@@ -6,7 +6,7 @@ module.exports = function( grunt ) {
 			src: "src/main",
 			out: "target",
 			tmp: "<%= params.out %>/generated-resources",
-			dest: "<%= params.out %>/classes",
+			dest: "<%= params.out %>/classes/js",
 
 			srcjs: "<%= params.src %>/js",
 //			nodemodules: "../../../node_modules/"

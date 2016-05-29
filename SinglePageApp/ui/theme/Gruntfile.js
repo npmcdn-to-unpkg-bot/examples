@@ -19,7 +19,7 @@ module.exports = function( grunt ) {
 					"<%= params.srcSprite %>/**/*.gif",
 					"<%= params.srcSprite %>/**/*.jpg",
 				],
-				dest: "<%= params.dest %>/sprite.png",
+				dest: "<%= params.dest %>/image/sprite.png",
 				imgPath: "sprite.png",
 				cssFormat: "less",
 				cssOpts: {
@@ -37,7 +37,11 @@ module.exports = function( grunt ) {
 					banner: "// Built on <%= now %>\n",
 				},
 				files: {
-					"<%= params.dest %>/style.css": ["<%= params.srcLess %>/**/*.less", "!<%= params.srcLess %>/include/**/*.less"]
+					"<%= params.dest %>/css/style.css": [
+						"node_modules/bootstrap/dist/css/bootstrap.css", 
+						"<%= params.srcLess %>/**/*.less", 
+						"!<%= params.srcLess %>/include/**/*.less"
+					]
 				}
 			}
 		},
@@ -72,12 +76,12 @@ module.exports = function( grunt ) {
 					"<%= params.srcLess %>/**/*.less",
 					"<%= params.tmp %>/sprite.less"
 				],
-				dest: "<%= params.dest %>/style.css",
+				dest: "<%= params.dest %>/css/style.css",
 				options: { tasks: ["less"] }
 			},
 			cssmin: {
-				src: ["<%= params.dest %>/style.css"],
-				dest: "<%= params.dest %>/style.min.css",
+				src: ["<%= params.dest %>/css/style.css"],
+				dest: "<%= params.dest %>/css/style.min.css",
 				options: { tasks: ["cssmin"] }
 			}
 		}

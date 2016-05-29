@@ -46,7 +46,20 @@ function Controller($resource, $timeout, logger) {
 	};
 	
 	this.onClick = function() {
-		logger.log($ctrl.data);
+		if (!(
+			($ctrl.data) &&
+			($ctrl.data.places) &&
+			($ctrl.data.places.place))) {
+			logger.log("No data");
+		}
+		var selected = [];
+		for (var i = 0; i < $ctrl.data.places.place.length; i++) {
+			var item = $ctrl.data.places.place[i];
+			if (item.selected) {
+				selected.push(item.woeid);
+			}
+		}
+		logger.log("Selected items:", selected);
 	};
 	
 	var changePromise = null;
@@ -77,7 +90,9 @@ module.component('searchList', {
 		<button ng-click="$ctrl.onClick()">Click me</button>\
 		<table><tr><td>\
 		<div ng-repeat="item in $ctrl.data.places.place" ng-class="{ selected: $ctrl.isSelected(item) }"> \
-			<div ng-click="$ctrl.onSelect($index)"><h4>{{item.name}}</h4> \
+			<div ng-click="$ctrl.onSelect($index)"> \
+				<input type="checkbox" ng-model="item.selected" />\
+				<h4>{{item.name}}</h4> \
 				WOEID: <span>{{item.woeid}}</span>; country: <span>{{item.country}}</span> \
 			</div> \
 		</div>\
