@@ -212,7 +212,10 @@
 	</bean>
  -->
 
-	<mvc:resources mapping="/resources/**" location="/WEB-INF/resources/, classpath:/WEB-INF/resources/" />
+	<mvc:resources mapping="/js/**"    location="/WEB-INF/js/,    classpath:/js/"    />
+	<mvc:resources mapping="/css/**"   location="/WEB-INF/css/,   classpath:/css/"   />
+	<mvc:resources mapping="/fonts/**" location="/WEB-INF/fonts/, classpath:/fonts/" />
+	<mvc:resources mapping="/image/**" location="/WEB-INF/image/, classpath:/image/" />
 
 	<mvc:annotation-driven>
 		<mvc:path-matching
