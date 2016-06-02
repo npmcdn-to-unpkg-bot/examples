@@ -122,7 +122,6 @@
  -->
 
 	<!-- Setup a default JSON view resolver that handles object mapping 
-	-->
 	<bean
 		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
 		<property name="order" value="1" />
@@ -150,11 +149,12 @@
 				<ref bean="MappingJackson2JsonView" />
 				<bean class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView" p:modelKey="model"/>
 				<bean class="org.springframework.web.servlet.view.InternalResourceView" p:url="/WEN-INF/jsp"/>
-			<!-- <bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
-					p:url="/WEB-INF/jasper/dummy.jrxml" /> -->
+			<!- - <bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
+					p:url="/WEB-INF/jasper/dummy.jrxml" /> - ->
 			</list>
 		</property>
 	</bean>
+	-->
 
 	<bean
 		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">

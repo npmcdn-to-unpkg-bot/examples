@@ -28,6 +28,7 @@ public abstract class EntityWithIdControllerBase<T extends EntityWithId> {
 	@RequestMapping(value="", method=RequestMethod.GET)
 	@ResponseBody
 	protected Items<T> list() throws Exception {
+		System.out.println("List items");
 		return new Items(jpa.list());
 	}
 
@@ -54,6 +55,19 @@ public abstract class EntityWithIdControllerBase<T extends EntityWithId> {
 			@RequestBody T item) throws Exception {
 		System.out.println(item);
 		if ((item == null) || (item.getId() == null) || (id != item.getId())) {
+			return new ResultWrapper(0);
+		} else {
+			item = jpa.save(item);
+			return new ResultWrapper(item.getId());
+		}
+	}
+
+	@RequestMapping(value="save", method=RequestMethod.POST)
+	@ResponseBody
+	protected ResultWrapper<Integer> saveItem2(
+			@RequestBody(required = false) T item) throws Exception {
+		System.out.println(item);
+		if ((item == null) || (item.getId() == null)) {
 			return new ResultWrapper(0);
 		} else {
 			item = jpa.save(item);

@@ -18,7 +18,7 @@
 	<modules>
 		<module>ui</module>
 		<module>backend</module>
-		<module>webapp</module>
+<!--		<module>webapp</module>		-->
 	</modules>
 
 	<dependencyManagement>
