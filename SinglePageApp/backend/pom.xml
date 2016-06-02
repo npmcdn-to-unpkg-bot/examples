@@ -7,8 +7,18 @@
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 	<artifactId>examples.spa.backend</artifactId>
+	<packaging>war</packaging>
 
 	<dependencies>
+		<dependency>
+			<groupId>com.slavi</groupId>
+			<artifactId>examples.spa.ui.theme</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.slavi</groupId>
+			<artifactId>examples.spa.ui.js</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.codehaus.woodstox</groupId>
 			<artifactId>woodstox-core-asl</artifactId>
@@ -87,6 +97,16 @@
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>jstl</artifactId>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>javax.servlet.jsp-api</artifactId>
 		</dependency>
 
 		<!-- Jackson -->
