@@ -10,12 +10,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.slavi.examples.spring.data.MyData;
@@ -81,6 +84,26 @@ public class MyDataController {
 		return "myData";
 	}
 
+	@RequestMapping(value="item/{id}", method=RequestMethod.GET)
+	@ResponseBody
+	protected MyData getMyData(@PathVariable("id") Integer id) {
+		MyData r = new MyData(123, "Qwe"); // data.get(id);
+		System.out.println(r);
+		return r;
+	}
+
+	@RequestMapping(value="item", method=RequestMethod.POST)
+	@ResponseBody
+	protected MyData putMyData(
+			//@RequestBody String d
+			@RequestBody MyData d
+			) {
+//		System.out.println("BODY: " + body);
+		System.out.println(d);
+		return d; //new MyData(123, d);
+	}
+
+	
 	@RequestMapping(value="new", method=RequestMethod.GET)
 	protected String getNewMyData(Model model) {
 		MyData r = new MyData();
