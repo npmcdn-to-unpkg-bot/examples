@@ -9,16 +9,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
 @MappedSuperclass
 @Access(AccessType.FIELD)
-@XmlRootElement
 public abstract class EntityWithId implements Serializable {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(nullable = false, insertable = false, updatable = false)
+	@Column(nullable = true, insertable = false, updatable = false)
 	Integer id;
 
 	public Integer getId() {

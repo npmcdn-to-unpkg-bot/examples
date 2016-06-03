@@ -16,42 +16,35 @@ import examples.spa.backend.model.ResultWrapper;
 
 // @Controller
 // @RequestMapping("/someItem")
-public abstract class EntityWithIdControllerBase<T extends EntityWithId> {
+
+// Read more: https://gist.github.com/wvuong/5673644
+public abstract class EntityWithIdControllerBase<T extends EntityWithId> implements CrudControllerInterface<T>{
 	public static final String messageName = "message";
 	
-	protected EntityWithIdJpa<T> jpa;
+	public EntityWithIdJpa<T> jpa;
 	
 	public EntityWithIdControllerBase(EntityWithIdJpa<T> jpa) {
 		this.jpa = jpa;
 	}
 
-	@RequestMapping(value="", method=RequestMethod.GET)
-	@ResponseBody
-	protected Items<T> list() throws Exception {
+	public Items<T> list() throws Exception {
 		System.out.println("List items");
 		return new Items(jpa.list());
 	}
 
-	@RequestMapping(value="{id}", method=RequestMethod.DELETE)
-	protected void deleteItem(@PathVariable("id") int id) throws Exception {
+	public void deleteItem(@PathVariable("id") int id) throws Exception {
 		jpa.delete(id);
 	}
 	
-	@RequestMapping(value="{id}", method=RequestMethod.GET)
-	@ResponseBody
-	protected T loadItem(@PathVariable("id") int id) throws Exception {
+	public T loadItem(@PathVariable("id") int id) throws Exception {
 		return jpa.load(id);
 	}
 
-	@RequestMapping(value="new", method=RequestMethod.GET)
-	@ResponseBody
-	protected T loadNewItem(Model model) throws Exception {
+	public T loadNewItem(Model model) throws Exception {
 		return jpa.makeNew();
 	}
 
-	@RequestMapping(value="{id}", method=RequestMethod.POST)
-	@ResponseBody
-	protected ResultWrapper<Integer> saveItem(@PathVariable("id") int id,
+	public ResultWrapper<Integer> saveItem(@PathVariable("id") int id,
 			@RequestBody T item) throws Exception {
 		System.out.println(item);
 		if ((item == null) || (item.getId() == null) || (id != item.getId())) {
@@ -62,10 +55,8 @@ public abstract class EntityWithIdControllerBase<T extends EntityWithId> {
 		}
 	}
 
-	@RequestMapping(value="save", method=RequestMethod.POST)
-	@ResponseBody
-	protected ResultWrapper<Integer> saveItem2(
-			@RequestBody(required = false) T item) throws Exception {
+	public ResultWrapper<Integer> saveItem2(
+			@RequestBody T item) throws Exception {
 		System.out.println(item);
 		if ((item == null) || (item.getId() == null)) {
 			return new ResultWrapper(0);
@@ -75,9 +66,7 @@ public abstract class EntityWithIdControllerBase<T extends EntityWithId> {
 		}
 	}
 
-	@RequestMapping(value="new", method=RequestMethod.POST)
-	@ResponseBody
-	protected ResultWrapper<Integer> setNewItem(@Valid T item, BindingResult result) throws Exception {
+	public ResultWrapper<Integer> setNewItem(@Valid T item, BindingResult result) throws Exception {
 		if (result.hasErrors() || (item == null)) {
 			return new ResultWrapper(0);
 		}

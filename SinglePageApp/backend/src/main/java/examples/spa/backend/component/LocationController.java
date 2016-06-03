@@ -31,5 +31,4 @@ public class LocationController extends IdNamePairControllerBase<Location> {
 			return new ResultWrapper(item.getId());
 		}
 	}
-
 }
