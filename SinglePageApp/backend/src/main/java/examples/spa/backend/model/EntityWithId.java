@@ -4,31 +4,14 @@ import java.io.Serializable;
 
 import javax.persistence.Access;
 import javax.persistence.AccessType;
-import javax.persistence.Column;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.xml.bind.annotation.XmlTransient;
 
-@MappedSuperclass
 @Access(AccessType.FIELD)
-public abstract class EntityWithId implements Serializable {
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	@Column(nullable = true, insertable = false, updatable = false)
-	Integer id;
+public interface EntityWithId<ID extends Serializable> extends Serializable {
+	ID getId();
 
-	public Integer getId() {
-		return id;
-	}
+	void setId(ID id);
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	@XmlTransient
-	public boolean isNew() {
-		return (id == null);
+	default boolean isNew() {
+		return (getId() == null);
 	}
 }

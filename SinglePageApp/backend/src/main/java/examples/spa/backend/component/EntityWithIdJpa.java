@@ -1,9 +1,12 @@
 package examples.spa.backend.component;
 
+import java.io.Serializable;
 import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -12,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import examples.spa.backend.model.EntityWithId;
 
-public abstract class EntityWithIdJpa<T extends EntityWithId> {
+public abstract class EntityWithIdJpa<ID extends Serializable, T extends EntityWithId<ID>> {
 	@PersistenceContext
 	protected EntityManager em;
 
@@ -31,16 +34,19 @@ public abstract class EntityWithIdJpa<T extends EntityWithId> {
 	}
 	
 	@Transactional(readOnly=true)
-	public List<T> list() throws Exception {
+	public List<T> list(int page, int size) throws Exception {
 		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery query = builder.createQuery(entityClass);
-		Root<T> from = query.from(entityClass);
-		query.orderBy(builder.asc(from.get(getOrderBy())));
-		return em.createQuery(query).getResultList();
+		CriteriaQuery crQuery = builder.createQuery(entityClass);
+		Root<T> from = crQuery.from(entityClass);
+		crQuery.orderBy(builder.asc(from.get(getOrderBy())));
+		TypedQuery<T> query = em.createQuery(crQuery);
+		query.setFirstResult(page * size);
+		query.setMaxResults(size);
+		return query.getResultList();
 	}
 
 	@Transactional(readOnly=true)
-	public T load(int id) throws Exception {
+	public T load(ID id) throws Exception {
 		return em.find(entityClass, id);
 	}
 
@@ -55,7 +61,7 @@ public abstract class EntityWithIdJpa<T extends EntityWithId> {
 	}
 	
 	@Transactional
-	public void delete(int id) throws Exception {
+	public void delete(ID id) throws Exception {
 		Object item = em.find(entityClass, id);
 		em.remove(item);
 	}

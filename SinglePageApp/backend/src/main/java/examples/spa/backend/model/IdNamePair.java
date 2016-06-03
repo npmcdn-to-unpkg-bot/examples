@@ -3,12 +3,28 @@ package examples.spa.backend.model;
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OrderBy;
 
 @MappedSuperclass
 @Access(AccessType.FIELD)
-public class IdNamePair extends EntityWithId {
+public class IdNamePair implements EntityWithId<Integer> {
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(nullable = false, insertable = false, updatable = false)
+	Integer id;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
 	@Column(nullable=false)
 	@OrderBy
 	String name;
@@ -16,13 +32,13 @@ public class IdNamePair extends EntityWithId {
 	public IdNamePair() {
 	}
 	
-	public IdNamePair(int id, String name) {
-		this.id = id;
+	public IdNamePair(Integer id, String name) {
+		setId(id);
 		this.name = name;
 	}
 
-	public IdNamePair(int id, double name) {
-		this.id = id;
+	public IdNamePair(Integer id, double name) {
+		setId(id);
 		this.name = Double.toString(name);
 	}
 
