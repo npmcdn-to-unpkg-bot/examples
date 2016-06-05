@@ -16,13 +16,12 @@ import examples.spa.backend.model.EntityWithId;
 import examples.spa.backend.model.Items;
 import examples.spa.backend.model.ResultWrapper;
 
-// @Controller
-// @RequestMapping("/someItem")
-
 /**
  * Ideas borrowed from:
  * https://gist.github.com/wvuong/5673644
  */
+// @RestController
+// @RequestMapping("/someItem")
 public abstract class EntityWithIdControllerBase<ID extends Serializable, T extends EntityWithId<ID>> {
 	public static final String messageName = "message";
 	
@@ -49,10 +48,10 @@ public abstract class EntityWithIdControllerBase<ID extends Serializable, T exte
 		jpa.delete(id);
 	}
 	
-	@RequestMapping(value="{id}", method=RequestMethod.POST)
-	public @ResponseBody ResultWrapper<Integer> saveItem(@PathVariable("id") ID id,
+	@RequestMapping(value="", method=RequestMethod.POST)
+	public @ResponseBody ResultWrapper<Integer> saveItem(
 			@RequestBody @Valid T item, BindingResult result) throws Exception {
-		if (result.hasErrors() || (item == null) || (item.getId() == null) || (id != item.getId())) {
+		if (result.hasErrors() || (item == null) || (item.getId() == null)) {
 			return new ResultWrapper(0);
 		} else {
 			item = jpa.save(item);
@@ -61,16 +60,7 @@ public abstract class EntityWithIdControllerBase<ID extends Serializable, T exte
 	}
 
 	@RequestMapping(value="new", method=RequestMethod.GET)
-	public @ResponseBody T loadNewItem() throws Exception {
+	public @ResponseBody T makeNewItem() throws Exception {
 		return jpa.makeNew();
-	}
-
-	@RequestMapping(value="new", method=RequestMethod.POST)
-	public @ResponseBody ResultWrapper<Integer> setNewItem(@RequestBody @Valid T item, BindingResult result) throws Exception {
-		if (result.hasErrors() || (item == null) || (item.getId() != null)) {
-			return new ResultWrapper(0);
-		}
-		item = jpa.save(item);
-		return new ResultWrapper(item.getId());
 	}
 }

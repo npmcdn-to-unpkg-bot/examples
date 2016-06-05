@@ -93,6 +93,7 @@
 			name="suffix"
 			value=".jsp" />
 	</bean>
+
 <!-- 
 	<bean id="MappingJackson2JsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
 		<property name="objectMapper" ref="jsonObjectMapper" />
@@ -102,11 +103,13 @@
 		<property name="objectMapper" ref="xmlObjectMapper" />
 	</bean>
  -->
-	
-<!-- 	<mvc:view-resolvers>
+
+<!-- 
+	<mvc:view-resolvers>
 		<mvc:content-negotiation>
 			<mvc:default-views>
 				<ref bean="MappingJackson2JsonView" />
+				<ref bean="MappingJackson2XmlView" />
 			</mvc:default-views>
 		</mvc:content-negotiation>
 	</mvc:view-resolvers>
@@ -116,15 +119,6 @@
 	<bean
 		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
 		<property name="order" value="1" />
-		<property name="mediaTypes">
-			<map>
-				<entry key="json" value="application/json" />
-				<entry key="atom" value="application/atom+xml" />
-				<entry key="rss"  value="application/rss+xml" />
-				<entry key="xml"  value="application/xml" />
-			</map>
-		</property>
-		
 		<property name="viewResolvers">
 			<list>
 				<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
@@ -140,12 +134,11 @@
 				<ref bean="MappingJackson2XmlView" />
 				<ref bean="MappingJackson2JsonView" />
 				<bean class="org.springframework.web.servlet.view.InternalResourceView" p:url="/WEN-INF/jsp"/>
-			<!- - <bean class="org.springframework.web.servlet.view.jasperreports.JasperReportsPdfView"
-					p:url="/WEB-INF/jasper/dummy.jrxml" /> - ->
 			</list>
 		</property>
 	</bean>
-	-->
+-->
+
 <!-- 
 	<bean
 		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
@@ -227,6 +220,14 @@
 			suffix-pattern="true"
 			trailing-slash="true"
 		/>
+		<mvc:message-converters>
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<property name="objectMapper" ref="jsonObjectMapper"/>
+			</bean>
+			<bean class="org.springframework.http.converter.xml.MappingJackson2XmlHttpMessageConverter">
+				<property name="objectMapper" ref="xmlObjectMapper"/>
+			</bean>
+		</mvc:message-converters>
 	</mvc:annotation-driven>
 <!-- 
 	<mvc:default-servlet-handler/>

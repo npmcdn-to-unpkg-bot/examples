@@ -36,7 +36,7 @@ public class TestSerializationToXML {
 		XmlMapper xm = new XmlMapper();
 		ObjectMapper m = xm;
 		m.setAnnotationIntrospector(pair);
-		//m.enable(SerializationFeature.INDENT_OUTPUT);
+		m.enable(SerializationFeature.INDENT_OUTPUT);
 		
 		StringPrintStream out = new StringPrintStream();
 		m.writeValue(out, items);

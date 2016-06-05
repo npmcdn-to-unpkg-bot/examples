@@ -10,6 +10,7 @@
 	<packaging>war</packaging>
 
 	<dependencies>
+<!--
 		<dependency>
 			<groupId>com.slavi</groupId>
 			<artifactId>examples.spa.ui.theme</artifactId>
@@ -18,7 +19,7 @@
 			<groupId>com.slavi</groupId>
 			<artifactId>examples.spa.ui.js</artifactId>
 		</dependency>
-
+ -->
 		<dependency>
 			<groupId>org.codehaus.woodstox</groupId>
 			<artifactId>woodstox-core-asl</artifactId>
