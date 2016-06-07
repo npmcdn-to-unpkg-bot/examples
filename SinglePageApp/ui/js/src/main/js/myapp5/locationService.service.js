@@ -6,7 +6,6 @@ function Implementation($q, $resource, logger) {
 
 	that.resource = $resource("http://localhost:8080/examples.spa.backend/api/location/:id", {
 		callback: "JSON_CALLBACK",
-		format: "json",
 		search: "",
 		page: 0,
 		size: 10,
@@ -16,7 +15,7 @@ function Implementation($q, $resource, logger) {
 		delete: { method: "delete", params: { id: "@id" }},
 		load: { method: "get", params: { id: "@id" }},
 		new: { method: "get", params: { id: "new" }},
-		save: { method: "post" }
+		save: { method: "post", callback: "" }
 	}, {
 		stripTrailingSlashes: false,
 		cancellable: true

@@ -8,7 +8,8 @@ function Implementation($scope, locationService, logger) {
 	});
 	
 	that.onDone = function() {
-		locationService.resource.save({}, $scope.item).then(function(d) {
+		var save = locationService.resource.save({}, $scope.item);
+		save.$promise.then(function(d) {
 			logger.log("Saved ", d);
 			angular.merge($scope.$ctrl.item, $scope.item);
 		});
