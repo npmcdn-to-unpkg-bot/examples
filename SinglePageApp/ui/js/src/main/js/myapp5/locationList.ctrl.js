@@ -19,7 +19,7 @@ function Implementation($resource, $timeout, locationService, logger, utils) {
 	this.onChange = function() {
 		that.delayedRunner.run(function() {
 			that.selectedItem = null;
-			that.data = locationService.queryData();
+			that.data = locationService.queryData(that.query);
 		});
 	};
 
@@ -42,7 +42,7 @@ module.component('locationList', {
 				ID: <span>{{item.id}}</span>; location: <span>{{item.name}}</span> \
 			</div> \
 		</div>\
-		</td><td><location-detail item="$ctrl.selectedItem"></location-detail></td>\
+		</td><td><location-detail ng-if="$ctrl.selectedItem" item="$ctrl.selectedItem"></location-detail></td>\
 		</tr></table>',
 	controller: Implementation
 });

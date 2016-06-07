@@ -244,7 +244,7 @@ public class FilterItemHelper<T> {
 				
 			result.recordsFiltered = filteredCount.intValue();
 			result.recordsTotal = totalCount.intValue();
-			result.data = items;
+			result.item = items;
 		} catch (Exception e) {
 			logger.error("Error filtering datatables", e);
 			result.error = e.getMessage();
