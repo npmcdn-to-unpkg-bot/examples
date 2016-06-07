@@ -9,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OrderBy;
 
+import examples.spa.backend.model.FieldDef.Order;
+
 @MappedSuperclass
 @Access(AccessType.FIELD)
 public class IdNamePair implements EntityWithId<Integer> {
@@ -27,6 +29,7 @@ public class IdNamePair implements EntityWithId<Integer> {
 
 	@Column(nullable=false)
 	@OrderBy
+	@FieldDef(searchable=true, order=Order.ASC)
 	String name;
 
 	public IdNamePair() {

@@ -23,7 +23,7 @@ public class Config {
 	
 	@PostConstruct
 	public void init() throws Exception {
-		for (int i = 0; i < 10; i++) {
+		for (int i = 0; i < 50; i++) {
 			Location l = new Location();
 			l.setName("Name " + i);
 			jpa.save(l);

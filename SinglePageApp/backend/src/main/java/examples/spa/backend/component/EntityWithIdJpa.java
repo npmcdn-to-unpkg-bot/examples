@@ -1,24 +1,26 @@
 package examples.spa.backend.component;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import examples.spa.backend.misc.FilterItemHelper;
 import examples.spa.backend.model.EntityWithId;
+import examples.spa.backend.model.FilterItemResponse;
 
 public abstract class EntityWithIdJpa<ID extends Serializable, T extends EntityWithId<ID>> {
+	public static final int maxRecordsetRecords = 100;
+	public static final int maxAjaxRecordsetRecords = 20;
+
 	@PersistenceContext
 	protected EntityManager em;
 
 	protected Class<T> entityClass;
+	
+	protected FilterItemHelper<T> filterItemHelper;
 	
 	public EntityWithIdJpa(Class<T> entityClass) {
 		this.entityClass = entityClass;
@@ -28,20 +30,24 @@ public abstract class EntityWithIdJpa<ID extends Serializable, T extends EntityW
 		return entityClass.newInstance();
 	}
 	
-	public String getOrderBy() {
-		return "id";
+	protected FilterItemHelper<T> getFilterItemHelper() {
+		FilterItemHelper<T> r = filterItemHelper;
+		if (r == null) {
+			synchronized (this) {
+				r = filterItemHelper;
+				if (r == null) {
+					this.filterItemHelper = new FilterItemHelper<>(em, entityClass);
+					r = filterItemHelper;
+				}
+			}
+		}
+		return r;
 	}
-	
+
 	@Transactional(readOnly=true)
-	public List<T> list(int page, int size) throws Exception {
-		CriteriaBuilder builder = em.getCriteriaBuilder();
-		CriteriaQuery crQuery = builder.createQuery(entityClass);
-		Root<T> from = crQuery.from(entityClass);
-		crQuery.orderBy(builder.asc(from.get(getOrderBy())));
-		TypedQuery<T> query = em.createQuery(crQuery);
-		query.setFirstResult(page * size);
-		query.setMaxResults(size);
-		return query.getResultList();
+	public FilterItemResponse<T> list(int page, int size, String search, String orderBy) throws Exception {
+		FilterItemHelper<T> f = getFilterItemHelper();
+		return f.find(page, size, search, orderBy);
 	}
 
 	@Transactional(readOnly=true)

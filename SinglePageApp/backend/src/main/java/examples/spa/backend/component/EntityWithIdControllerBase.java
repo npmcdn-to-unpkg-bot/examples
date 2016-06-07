@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import examples.spa.backend.model.EntityWithId;
-import examples.spa.backend.model.Items;
+import examples.spa.backend.model.FilterItemResponse;
 import examples.spa.backend.model.ResultWrapper;
 
 /**
@@ -23,8 +23,6 @@ import examples.spa.backend.model.ResultWrapper;
 // @RestController
 // @RequestMapping("/someItem")
 public abstract class EntityWithIdControllerBase<ID extends Serializable, T extends EntityWithId<ID>> {
-	public static final String messageName = "message";
-	
 	public EntityWithIdJpa<ID, T> jpa;
 	
 	public EntityWithIdControllerBase(EntityWithIdJpa<ID, T> jpa) {
@@ -32,10 +30,15 @@ public abstract class EntityWithIdControllerBase<ID extends Serializable, T exte
 	}
 
 	@RequestMapping(value="", method=RequestMethod.GET)
-	public @ResponseBody Items<T> listItems(
+	public @ResponseBody FilterItemResponse<T> filterItems(
 			@RequestParam(defaultValue = "0") int page, 
-			@RequestParam(defaultValue = "20") int size) throws Exception {
-		return new Items(jpa.list(page, size));
+			@RequestParam(defaultValue = "20") int size,
+			@RequestParam(defaultValue = "") String search,
+			@RequestParam(defaultValue = "") String order,
+			@RequestParam(defaultValue = "0") int draw) throws Exception {
+		FilterItemResponse<T> r = jpa.list(page, size, search, order);
+		r.draw = draw;
+		return r;
 	}
 
 	@RequestMapping(value="{id}", method=RequestMethod.GET)

@@ -1,4 +1,4 @@
-package examples.grunt.test;
+package examples.spa.backend.test;
 
 import java.util.ArrayList;
 
