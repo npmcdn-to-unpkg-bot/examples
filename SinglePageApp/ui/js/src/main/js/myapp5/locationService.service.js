@@ -4,14 +4,14 @@ Implementation.$inject = ["$q", "$resource", "slavi-logger"];
 function Implementation($q, $resource, logger) {
 	var that = this;
 
-	that.resource = $resource("http://localhost:8080/examples.spa.backend/api/location/:id", {
-		callback: "JSON_CALLBACK",
+	that.resource = $resource("api/location/:id", {
+//		callback: "JSON_CALLBACK",
 		search: "",
 		page: 0,
 		size: 10,
 		order: "name|desc"
 	}, {
-		search: { method: "jsonp" },
+		search: { method: "get" },
 		delete: { method: "delete", params: { id: "@id" }},
 		load: { method: "get", params: { id: "@id" }},
 		new: { method: "get", params: { id: "new" }},

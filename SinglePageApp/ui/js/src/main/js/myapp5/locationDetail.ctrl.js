@@ -19,9 +19,17 @@ function Implementation($scope, locationService, logger) {
 module.component('locationDetail', {
 	template: '\
 		<h3>Details</h3>\
-		<div><label>ID:</label>{{item.id}}</div>\
-		<div><input type="text" ng-model="item.name"</div>\
-		<button ng-click="$ctrl.onDone()">Done</button>',
+		<div class="form-horizontal"> \
+			<div class="form-group">\
+				<label class="control-label col-sm-1">ID:</label>\
+				<input type="text" class="form-control col-sm-7" ng-model="item.id" /> \
+			</div>\
+			<div class="form-group">\
+				<label class="control-label col-sm-1">Name:</label>\
+				<input type="text" class="form-control col-sm-7" ng-model="item.name" /> \
+			</div>\
+			<button class="btn btn-primary" ng-click="$ctrl.onDone()">Done</button>\
+		</div>',
 	bindings: {
 		item: "<",
 		save: "&"

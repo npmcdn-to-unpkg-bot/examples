@@ -7,15 +7,15 @@
 	<Resources>
 		<PreResources
 			className="org.apache.catalina.webresources.DirResourceSet"
-			base="/home/slavian/S/git/examples/SinglePageApp/ui/js/target/classes/js"
-			webAppMount="/res/js" />
-		<PreResources
-			className="org.apache.catalina.webresources.DirResourceSet"
-			base="/home/slavian/S/git/examples/SinglePageApp/ui/theme/target/classes"
+			base="${basedir}/../ui/theme/target/classes"
 			webAppMount="/res" />
 		<PreResources
 			className="org.apache.catalina.webresources.DirResourceSet"
-			base="/home/slavian/S/git/examples/SinglePageApp/ui/js/src/test/resources"
+			base="${basedir}/../ui/js/target/classes/js"
+			webAppMount="/res/js" />
+		<PreResources
+			className="org.apache.catalina.webresources.DirResourceSet"
+			base="${basedir}/../ui/js/src/test/resources"
 			webAppMount="/" />
 	</Resources>
 
