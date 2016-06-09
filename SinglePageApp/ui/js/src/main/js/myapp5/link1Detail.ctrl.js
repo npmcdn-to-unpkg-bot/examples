@@ -9,7 +9,7 @@ function Controller($scope, $location, $routeParams, service, utils) {
 
 	that.done = function() {
 		var itemId = that.item && that.item.id;
-		utils.navigateToParent();
+		utils.navigateTo();
 	};
 }
 

@@ -32,11 +32,11 @@ function Implementation($provide, $routeProvider, $locationProvider) {
 	$locationProvider.hashPrefix('!');
 	
 	$routeProvider
-	.when("/search",	{ template: "<search-list></search-list>" })
-	.when("/link1",		{ template: "<link1-list></link1-list>" })
-	.when("/link1/:id",	{ template: "<link1-detail></link1-detail>" })
-	.when("/link2", 	{ template: "<link2></link2>" })
-	.when("/location",	{ template: "<location-list></location-list>" });
+	.when("/search",		{ template: "<search-list></search-list>" })
+	.when("/link1",			{ template: "<link1-list></link1-list>" })
+	.when("/link1/:id",		{ template: "<link1-detail></link1-detail>" })
+	.when("/link2", 		{ template: "<link2></link2>" })
+	.when("/location",		{ template: "<location-list></location-list>" });
 
 }
 module.config(Implementation);

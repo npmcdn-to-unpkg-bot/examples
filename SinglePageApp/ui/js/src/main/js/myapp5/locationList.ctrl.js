@@ -1,7 +1,7 @@
 var module = angular.module('myapp5');
 
-Implementation.$inject = ["$resource", "$timeout", "locationService", "slavi-logger", "slavi-utils"];
-function Implementation($resource, $timeout, locationService, logger, utils) {
+Implementation.$inject = ["$resource", "$routeParams", "$timeout", "locationService", "slavi-logger", "slavi-utils"];
+function Implementation($resource, $routeParams, $timeout, locationService, logger, utils) {
 	var that = this;
 	that.query = "";
 	that.selectedItem = null;
@@ -23,12 +23,9 @@ function Implementation($resource, $timeout, locationService, logger, utils) {
 		});
 	};
 
-	that.onSelect = function(index) {
-		if (that.data.item) {
-			var item = that.data.item[index];
-			// toggle selected item
-			that.selectedItem = item === that.selectedItem ? null : item; 
-		}
+	that.onSelect = function(item) {
+		// toggle selected item
+		that.selectedItem = item === that.selectedItem ? null : item;
 	};
 }
 
@@ -46,7 +43,7 @@ module.component('locationList', {
 					<div class="row">\
 						<div class="col-sm-12"> \
 							<div ng-repeat="item in $ctrl.data.item" ng-class="{ \'alert-info\': $ctrl.isSelected(item) }"> \
-								<div ng-click="$ctrl.onSelect($index)"> \
+								<div ng-click="$ctrl.onSelect(item)"> \
 									ID: <span>{{item.id}}</span>; location: <span>{{item.name}}</span> \
 								</div> \
 							</div> \
