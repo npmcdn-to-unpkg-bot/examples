@@ -34,23 +34,29 @@ function Implementation($resource, $timeout, locationService, logger, utils) {
 
 module.component('locationList', {
 	template:
-		'<div class="row"> \
-			<div class="col-sm-12"> \
-				<input type="text" ng-model="$ctrl.query" ng-change="$ctrl.onChange()" /> \
-				<button ng-click="$ctrl.onClick()">Click me</button>\
+		'<div class="col-sm-4"> \
+			<div class="panel panel-default">\
+				<div class="panel-heading">Location</div>\
+				<div class="panel-body"> \
+					<div class="row">\
+						<div class="col-sm-12"> \
+							<input type="text" class="form-control" ng-model="$ctrl.query" ng-change="$ctrl.onChange()" /> \
+						</div>\
+					</div>\
+					<div class="row">\
+						<div class="col-sm-12"> \
+							<div ng-repeat="item in $ctrl.data.item" ng-class="{ \'alert-info\': $ctrl.isSelected(item) }"> \
+								<div ng-click="$ctrl.onSelect($index)"> \
+									ID: <span>{{item.id}}</span>; location: <span>{{item.name}}</span> \
+								</div> \
+							</div> \
+						</div>\
+					</div>\
+				</div>\
 			</div>\
 		</div> \
-		<div class="row"> \
-			<div class="col-sm-4">\
-				<div ng-repeat="item in $ctrl.data.item" ng-class="{ selected: $ctrl.isSelected(item) }"> \
-					<div ng-click="$ctrl.onSelect($index)"> \
-						ID: <span>{{item.id}}</span>; location: <span>{{item.name}}</span> \
-					</div> \
-				</div> \
-			</div>\
-			<div class="col-sm-8"> \
-				<location-detail ng-if="$ctrl.selectedItem" item="$ctrl.selectedItem"></location-detail> \
-			</div>\
+		<div class="col-sm-8"> \
+			<location-detail ng-if="$ctrl.selectedItem" item="$ctrl.selectedItem"></location-detail> \
 		</div>',
 	controller: Implementation
 });

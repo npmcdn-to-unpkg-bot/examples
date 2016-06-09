@@ -18,17 +18,23 @@ function Implementation($scope, locationService, logger) {
 
 module.component('locationDetail', {
 	template: '\
-		<h3>Details</h3>\
-		<div class="form-horizontal"> \
-			<div class="form-group">\
-				<label class="control-label col-sm-1">ID:</label>\
-				<input type="text" class="form-control col-sm-7" ng-model="item.id" /> \
-			</div>\
-			<div class="form-group">\
-				<label class="control-label col-sm-1">Name:</label>\
-				<input type="text" class="form-control col-sm-7" ng-model="item.name" /> \
-			</div>\
-			<button class="btn btn-primary" ng-click="$ctrl.onDone()">Done</button>\
+		<div class="panel panel-default"> \
+			<div class="panel-heading">Details</div>\
+			<div class="panel-body"> \
+				<div class="form-horizontal"> \
+					<div class="form-group">\
+						<label class="control-label col-sm-2">ID:</label>\
+						<div class="col-sm-10"><p class="form-control-static">{{item.id}}</p></div> \
+					</div>\
+					<div class="form-group">\
+						<label class="control-label col-sm-2">Name:</label>\
+						<div class="col-sm-10"><input type="text" class="form-control" ng-model="item.name" /></div> \
+					</div>\
+					<div class="form-group"> \
+						<div class="col-sm-offset-2 col-sm-10"><button class="btn btn-primary" ng-click="$ctrl.onDone()">Done</button></div> \
+					</div>\
+				</div> \
+			</div> \
 		</div>',
 	bindings: {
 		item: "<",

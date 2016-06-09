@@ -86,7 +86,8 @@ function Controller($resource, $timeout, logger) {
 
 module.component('searchList', {
 	template:
-		'<input type="text" ng-model="$ctrl.query" ng-change="$ctrl.onChange()" /> \
+		'<h2>Search</h2>\
+		<input type="text" ng-model="$ctrl.query" ng-change="$ctrl.onChange()" /> \
 		<button ng-click="$ctrl.onClick()">Click me</button>\
 		<table><tr><td>\
 		<div ng-repeat="item in $ctrl.data.places.place" ng-class="{ selected: $ctrl.isSelected(item) }"> \

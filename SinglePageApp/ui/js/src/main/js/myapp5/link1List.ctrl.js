@@ -20,7 +20,8 @@ function Controller(service, logger) {
 
 module.component('link1List', {
 	template:
-		'<div ng-repeat="item in $ctrl.items" ng-class="{ selected: $ctrl.isSelected(item) }"> \
+		'<h2>This is LINK 1</h2>\
+		<div ng-repeat="item in $ctrl.items" ng-class="{ selected: $ctrl.isSelected(item) }"> \
 			<a ng-link="[\'Link1_Detail\', {id: item.id}]">{{item.name}}</a> \
 		</div>',
 	controller: Controller

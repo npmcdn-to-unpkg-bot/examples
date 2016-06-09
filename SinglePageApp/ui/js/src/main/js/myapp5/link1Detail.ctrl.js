@@ -1,19 +1,16 @@
 var module = angular.module('myapp5');
 
-Controller.$inject = ["link1Service"];
-function Controller(service) {
+Controller.$inject = ["$scope", "$routeParams", "link1Service"];
+function Controller($scope, $routeParams, service) {
 	var $ctrl = this;
+	service.getItem($routeParams.id).then(function(item) {
+		$ctrl.item = item;
+	});
 
-	this.$routerOnActivate = function(next) {
-		var id = next.params.id;
-		service.getItem(id).then(function(item) {
-			$ctrl.item = item;
-		});
-	};
-	
 	this.done = function() {
 		var itemId = $ctrl.item && $ctrl.item.id;
-		$ctrl.$router.navigate(['Link1_List', {id: itemId}]);
+		$scope.log("Done ", itemId);
+//		$ctrl.$router.navigate(['Link1_List', {id: itemId}]);
 	};
 }
 
@@ -25,7 +22,7 @@ module.component('link1Detail', {
 		<button ng-click="$ctrl.done()">Done</button>\
 		</div>',
 	bindings: {
-		$router: "<"
+//		$router: "<"
 	},
 	controller: Controller
 });

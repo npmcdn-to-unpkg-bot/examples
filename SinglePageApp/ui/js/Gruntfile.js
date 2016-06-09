@@ -1,7 +1,7 @@
 module.exports = function( grunt ) {
 	"use strict";
 
-	grunt.initConfig( {
+	var config = {
 		params: {
 			src: "src/main",
 			out: "target",
@@ -9,7 +9,6 @@ module.exports = function( grunt ) {
 			dest: "<%= params.out %>/classes/js",
 
 			srcjs: "<%= params.src %>/js",
-//			nodemodules: "../../../node_modules/"
 			nodemodules: "node_modules/"
 		},
 /*		requirejs: { 
@@ -51,7 +50,8 @@ module.exports = function( grunt ) {
 		},*/
 		jshint: {
 			options: {
-				multistr: true
+				multistr: true,
+				force: false
 			},
 			app: ["<%= params.srcjs %>/**/*.js"]
 		},
@@ -62,7 +62,7 @@ module.exports = function( grunt ) {
 				},
 				src: [
 					"<%= params.nodemodules %>/angular/angular.js",
-					"<%= params.nodemodules %>/@angular/router/angular1/angular_1_router.js",
+					"<%= params.nodemodules %>/angular-route/angular-route.js",
 					"<%= params.nodemodules %>/angular-resource/angular-resource.js",
 				],
 				dest: "<%= params.dest %>/libs.js"
@@ -117,17 +117,9 @@ module.exports = function( grunt ) {
 		},
 		newer: {
 			concat_libs: {
-				src: [
-					"<%= params.nodemodules %>/angular/angular.js",
-					"<%= params.nodemodules %>/@angular/router/angular1/angular_1_router.js",
-					"<%= params.nodemodules %>/angular-resource/angular-resource.js",
-				],
-				dest: "<%= params.dest %>/libs.js",
 				options: { tasks: ["concat:libs"] }
 			},
 			concat_app: {
-				src: ["<%= params.srcjs %>/**/*.js"],
-				dest: "<%= params.dest %>/app.js",
 				options: { tasks: ["jshint:app", "concat:app"] }
 			},
 			uglify_libs: {
@@ -141,11 +133,16 @@ module.exports = function( grunt ) {
 				options: { tasks: ["uglify:app"] }
 			}
 		}
-	} );
+	};
+	config.newer.concat_libs.src	= config.concat.libs.src;
+	config.newer.concat_libs.dest	= config.concat.libs.dest;
+	config.newer.concat_app.src		= config.concat.app.src;
+	config.newer.concat_app.dest	= config.concat.app.dest;
 
+	grunt.initConfig(config);
 	var moment = require("moment");
 	grunt.config.set("now", moment().format("YYYY-MM-DD HH:mm"));
-	grunt.registerTask("all", ["concat", "uglify"]);
+	grunt.registerTask("all", ["jshint", "concat", "uglify"]);
 	grunt.registerTask("default", ["newer"]);
 
 	require("load-grunt-tasks")(grunt);

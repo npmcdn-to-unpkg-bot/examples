@@ -1,9 +1,9 @@
-var module = angular.module('myapp5', ["ngComponentRouter", "ngResource", "slavi-log", "slavi-utils"]);
+var module = angular.module('myapp5', ["ngRoute", "ngResource", "slavi-log", "slavi-utils"]);
 
 module.value('$routerRootComponent', 'myapp');
 
-Implementation.$inject = ["$provide"];
-function Implementation($provide) {
+Implementation.$inject = ["$provide", "$routeProvider", "$locationProvider"];
+function Implementation($provide, $routeProvider, $locationProvider) {
 	/**
 	 * Add a state property and a isDone() function to all deferred objects.
 	 * Code borrowed from http://stackoverflow.com/questions/24091513/get-state-of-angular-deferred/24091953#24091953
@@ -27,5 +27,13 @@ function Implementation($provide) {
 		};
 		return $delegate;
 	}]);
+
+	$routeProvider
+	.when("/search",	{ template: "<search-list></search-list>" })
+	.when("/link1",		{ template: "<link1-list></link1-list>" })
+	.when("/link1/:id",	{ template: "<link1-detail></link1-detail>" })
+	.when("/link2", 	{ template: "<link2></link2>" })
+	.when("/location",	{ template: "<location-list></location-list>" });
+
 }
 module.config(Implementation);
