@@ -1,8 +1,8 @@
 // TODO: Nice tips at: http://www.bennadel.com/blog/2616-aborting-ajax-requests-using-http-and-angularjs.htm
 var module = angular.module("slavi-utils");
 
-Implementation.$inject = ["$timeout", "slavi-logger"];
-function Implementation($timeout, logger) {
+Implementation.$inject = ["$timeout", "$location", "slavi-logger"];
+function Implementation($timeout, $location, logger) {
 	var that = this;
 	that.delayedRunner = DelayedRunner;
 
@@ -27,5 +27,19 @@ function Implementation($timeout, logger) {
 		
 		return result;
 	}
+	
+	that.parentPath = function(path) {
+		if (!path) {
+			path = $location.path();
+		}
+		var lastIndex = path.length - (path.endsWith("/") ? 1 : 0);
+		return path.slice(0, path.lastIndexOf("/", lastIndex));
+	};
+	
+	that.navigateToParent = function() {
+		$location.path(that.parentPath());
+	};
+	
+	that.log = logger.log;
 }
 module.service("slavi-utils", Implementation);

@@ -1,16 +1,15 @@
 var module = angular.module('myapp5');
 
-Controller.$inject = ["$scope", "$routeParams", "link1Service"];
-function Controller($scope, $routeParams, service) {
-	var $ctrl = this;
+Controller.$inject = ["$scope", "$location", "$routeParams", "link1Service", "slavi-utils"];
+function Controller($scope, $location, $routeParams, service, utils) {
+	var that = this;
 	service.getItem($routeParams.id).then(function(item) {
-		$ctrl.item = item;
+		that.item = item;
 	});
 
-	this.done = function() {
-		var itemId = $ctrl.item && $ctrl.item.id;
-		$scope.log("Done ", itemId);
-//		$ctrl.$router.navigate(['Link1_List', {id: itemId}]);
+	that.done = function() {
+		var itemId = that.item && that.item.id;
+		utils.navigateToParent();
 	};
 }
 

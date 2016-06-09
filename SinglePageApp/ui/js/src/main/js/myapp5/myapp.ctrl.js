@@ -1,27 +1,22 @@
 var module = angular.module('myapp5');
 
 Implementation.$inject = ["$scope", "$route", "$routeParams", "$location", "slavi-logger"];
-function Implementation($scope, $route, $location, logger) {
-	$scope.$route = $route;
-	$scope.$location = $location;
-	$scope.log = logger;
-	
+function Implementation($scope, $route, $routeParams, $location, logger) {
 	var that = this;
 	
 	that.items = [
-		{ link: 'search',		label: 'Search' },
-		{ link: 'link1',		label: 'Link 1' },
-		{ link: 'link2',		label: 'Link 2' },
-		{ link: 'location',		label: 'Location' }
+		{ url: '/search',		label: 'Search' },
+		{ url: '/link1',		label: 'Link 1' },
+		{ url: '/link2',		label: 'Link 2' },
+		{ url: '/location',		label: 'Location' }
 	];
 	
-	that.selectedItem = null;
+	that.isActive = function(item) {
+		return $location.path().indexOf(item.url) === 0;
+	};
 	
 	that.onClick = function(item) {
-		that.selectedItem = item;
-	};
-	that.isSelected = function(item) {
-		return that.selectedItem === item;
+		$location.path(item.url);
 	};
 }
 
@@ -37,8 +32,8 @@ module.component('myapp', {
 					<div class="container-fluid"> \
 						<ul class="nav navbar-nav"> \
 							<li	ng-repeat="item in $ctrl.items" \
-								ng-class="{ active: $ctrl.isSelected(item) }">\
-								<a ng-click="$ctrl.onClick(item)" href="#/{{item.link}}" >{{item.label}}</a>\
+								ng-class="{ active: $ctrl.isActive(item) }">\
+								<a href="" ng-click="$ctrl.onClick(item)">{{item.label}}</a>\
 							</li> \
 						</ul>\
 					</div>\

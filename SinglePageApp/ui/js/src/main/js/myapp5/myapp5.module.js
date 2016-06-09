@@ -28,6 +28,9 @@ function Implementation($provide, $routeProvider, $locationProvider) {
 		return $delegate;
 	}]);
 
+	$locationProvider.html5Mode(false);
+	$locationProvider.hashPrefix('!');
+	
 	$routeProvider
 	.when("/search",	{ template: "<search-list></search-list>" })
 	.when("/link1",		{ template: "<link1-list></link1-list>" })

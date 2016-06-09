@@ -5,9 +5,10 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>TEST Angular JS</title>
-<link rel="stylesheet" href="<c:url value='/css/style.css' />">
-<script type="text/javascript" src="<c:url value='/js/libs.js' />"></script>
-<script type="text/javascript" src="<c:url value='/js/app.js' />"></script>
+<base href="<c:url value='/' />">
+<link rel="stylesheet" href="<c:url value='/res/css/style.css' />">
+<script type="text/javascript" src="<c:url value='/res/js/libs.js' />"></script>
+<script type="text/javascript" src="<c:url value='/res/js/app.js' />"></script>
 <script type="text/javascript">
 angular.element(document).ready(function() {
 	angular.bootstrap(document, ['myapp5'], {
@@ -18,7 +19,6 @@ angular.element(document).ready(function() {
 </head>
 
 <body>
-	<h1 class="title">My Component Router</h1>
 	<myapp></myapp>
 </body>
 </html>
