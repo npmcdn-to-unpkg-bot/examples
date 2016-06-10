@@ -9,4 +9,10 @@
 <hr />
 
 <button class="btn btn-default" ng-click="$ctrl.onAddMessageClick()">Add a log message</button>
-<button uib-popover-html="htmlPopover" class="btn btn-default">log</button>
+<button 
+	uib-popover-template="popoverUrl" 
+	popover-is-open="status.isOpen" 
+	class="btn" 
+	ng-class="{ 'btn-default': !status.isDirty(), 'btn-warning': status.isDirty() }">
+log <span ng-show="status.isDirty()" class="badge">{{status.dirtyCount}}</span>
+</button>
