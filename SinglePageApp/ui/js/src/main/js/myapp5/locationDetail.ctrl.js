@@ -17,25 +17,7 @@ function Implementation($scope, locationService, logger) {
 }
 
 module.component('locationDetail', {
-	template: '\
-		<div class="panel panel-default"> \
-			<div class="panel-heading">Details</div>\
-			<div class="panel-body"> \
-				<div class="form-horizontal"> \
-					<div class="form-group">\
-						<label class="control-label col-sm-2">ID:</label>\
-						<div class="col-sm-10"><p class="form-control-static">{{item.id}}</p></div> \
-					</div>\
-					<div class="form-group">\
-						<label class="control-label col-sm-2">Name:</label>\
-						<div class="col-sm-10"><input type="text" class="form-control" ng-model="item.name" /></div> \
-					</div>\
-					<div class="form-group"> \
-						<div class="col-sm-offset-2 col-sm-10"><button class="btn btn-primary" ng-click="$ctrl.onDone()">Done</button></div> \
-					</div>\
-				</div> \
-			</div> \
-		</div>',
+	templateUrl: 'myapp5/locationDetail.html',
 	bindings: {
 		item: "<",
 		save: "&"

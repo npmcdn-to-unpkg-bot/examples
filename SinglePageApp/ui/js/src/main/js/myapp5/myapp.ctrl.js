@@ -8,7 +8,8 @@ function Implementation($scope, $route, $routeParams, $location, logger) {
 		{ url: '/search',		label: 'Search' },
 		{ url: '/link1',		label: 'Link 1' },
 		{ url: '/link2',		label: 'Link 2' },
-		{ url: '/location',		label: 'Location' }
+		{ url: '/location',		label: 'Location' },
+		{ url: '/uiBootstrap',	label: 'UI Bootstrap' }
 	];
 	
 	that.isActive = function(item) {

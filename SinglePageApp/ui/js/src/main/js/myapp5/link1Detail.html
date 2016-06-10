@@ -1,0 +1,11 @@
+<div ng-if="$ctrl.item">
+	<h3>Details</h3>
+	<div>
+		<label>ID:</label>{{$ctrl.item.id}}
+	</div>
+	<div>
+		<label>Name:</label>
+		<input ng-model="$ctrl.item.name" placeholder="name" />"
+	</div>
+	<button ng-click="$ctrl.done()">Done</button>
+</div>

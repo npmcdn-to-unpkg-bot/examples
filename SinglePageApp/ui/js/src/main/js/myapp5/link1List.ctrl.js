@@ -19,10 +19,6 @@ function Controller($location, service, logger) {
 }
 
 module.component('link1List', {
-	template:
-		'<h2>This is LINK 1</h2>\
-		<div ng-repeat="item in $ctrl.items" ng-class="{ \'alert-info\': $ctrl.isSelected(item) }"> \
-			<a href="" ng-click="$ctrl.onClick(item)">{{item.name}}</a> \
-		</div>',
+	templateUrl: "myapp5/link1List.html",
 	controller: Controller
 });

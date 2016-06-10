@@ -9,17 +9,12 @@ function Controller($scope, $location, $routeParams, service, utils) {
 
 	that.done = function() {
 		var itemId = that.item && that.item.id;
-		utils.navigateTo();
+		utils.navigateTo("..");
 	};
 }
 
 module.component('link1Detail', {
-	template: '<div ng-if="$ctrl.item">\
-		<h3>Details</h3>\
-		<div><label>ID:</label>{{$ctrl.item.id}}</div>\
-		<div><label>Name:</label><input ng-model="$ctrl.item.name" placeholder="name" /></div>\
-		<button ng-click="$ctrl.done()">Done</button>\
-		</div>',
+	templateUrl: "myapp5/link1Detail.html",
 	bindings: {
 //		$router: "<"
 	},

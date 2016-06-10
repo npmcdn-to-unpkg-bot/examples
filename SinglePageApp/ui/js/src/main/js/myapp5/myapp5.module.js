@@ -1,4 +1,4 @@
-var module = angular.module('myapp5', ["ngRoute", "ngResource", "slavi-log", "slavi-utils"]);
+var module = angular.module('myapp5', ["ngRoute", "ngResource", "ui.bootstrap", "slavi-log", "slavi-utils", "templates"]);
 
 module.value('$routerRootComponent', 'myapp');
 
@@ -35,8 +35,9 @@ function Implementation($provide, $routeProvider, $locationProvider) {
 	.when("/search",		{ template: "<search-list></search-list>" })
 	.when("/link1",			{ template: "<link1-list></link1-list>" })
 	.when("/link1/:id",		{ template: "<link1-detail></link1-detail>" })
-	.when("/link2", 		{ template: "<link2></link2>" })
-	.when("/location",		{ template: "<location-list></location-list>" });
-
+	.when("/link2",			{ template: "<link2></link2>" })
+	.when("/location",		{ template: "<location-list></location-list>" })
+	.when("/uiBootstrap",	{ template: "<ui-bootstrap />" })
+	;
 }
 module.config(Implementation);
