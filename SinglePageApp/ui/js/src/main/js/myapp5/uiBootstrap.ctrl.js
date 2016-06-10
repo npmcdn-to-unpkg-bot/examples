@@ -2,6 +2,7 @@ var module = angular.module('myapp5');
 
 Implementation.$inject = ["$scope", "slavi-logger"];
 function Implementation($scope, logger) {
+	var that = this;
 	$scope.oneAtATime = true;
 
 	$scope.groups = [{
@@ -11,6 +12,10 @@ function Implementation($scope, logger) {
 		title: 'Dynamic Group Header - 2',
 		content: 'Dynamic Group Body - 2'
 	}];
+	
+	that.onAddMessageClick = function() {
+		
+	};
 }
 
 module.component('uiBootstrap', {

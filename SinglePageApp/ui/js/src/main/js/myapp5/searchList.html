@@ -1,0 +1,19 @@
+<h2>Search</h2>
+<input type="text" ng-model="$ctrl.query" ng-change="$ctrl.onChange()" />
+<button ng-click="$ctrl.onClick()">Click me</button>
+<table>
+<tr>
+	<td>
+		<div ng-repeat="item in $ctrl.data.places.place" ng-class="{ selected: $ctrl.isSelected(item) }">
+			<div ng-click="$ctrl.onSelect($index)">
+				<input type="checkbox" ng-model="item.selected" />
+				<h4>{{item.name}}</h4>
+				WOEID: <span>{{item.woeid}}</span>; country: <span>{{item.country}}</span>
+			</div>
+		</div>
+	</td>
+	<td>
+		<search-detail item="$ctrl.selectedItem"></search-detail>
+	</td>
+</tr>
+</table>

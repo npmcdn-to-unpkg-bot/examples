@@ -8,12 +8,7 @@ function Controller(logger) {
 }
 
 module.component('searchDetail', {
-	template: '<div ng-if="$ctrl.item">\
-		<h3>Details</h3>\
-		<div><label>WOEID:</label>{{$ctrl.item.woeid}}</div>\
-		<div><label>Name:</label><span>{{$ctrl.item.name}}</span></div>\
-		<button ng-click="$ctrl.done()">Done</button>\
-		</div>',
+	templateUrl: "myapp5/searchDetail.html",
 	bindings: {
 		item: "<"
 	},
