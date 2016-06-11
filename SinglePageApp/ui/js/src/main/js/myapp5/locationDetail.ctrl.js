@@ -1,17 +1,21 @@
 var module = angular.module('myapp5');
 
 Implementation.$inject = ["$scope", "locationService", "slavi-logger"];
-function Implementation($scope, locationService, logger) {
+function Implementation($scope, service, logger) {
 	var that = this;
-	$scope.$watch("$ctrl.item", function(newValue) {
+	$scope.service = service;
+
+	$scope.$watch("service.selectedItem", function(newValue) {
 		$scope.item = angular.copy(newValue);
 	});
 	
 	that.onDone = function() {
-		var save = locationService.resource.save({}, $scope.item);
+		var newValue = angular.copy($scope.item);
+		var oldValue = service.selectedItem;
+		var save = service.resource.save({}, newValue);
 		save.$promise.then(function(d) {
 			logger.log("Saved ", d);
-			angular.merge($scope.$ctrl.item, $scope.item);
+			angular.merge(oldValue, newValue);
 		});
 	};
 }

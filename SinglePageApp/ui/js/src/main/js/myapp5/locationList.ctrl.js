@@ -1,31 +1,26 @@
 var module = angular.module('myapp5');
 
-Implementation.$inject = ["$resource", "$routeParams", "$timeout", "locationService", "slavi-logger", "slavi-utils"];
-function Implementation($resource, $routeParams, $timeout, locationService, logger, utils) {
+Implementation.$inject = ["$scope", "$resource", "$routeParams", "$timeout", "locationService", "slavi-logger", "slavi-utils"];
+function Implementation($scope, $resource, $routeParams, $timeout, service, logger, utils) {
 	var that = this;
+	$scope.service = service;
 	that.query = "";
-	that.selectedItem = null;
-	that.data = locationService.queryData();
 	that.delayedRunner = utils.delayedRunner();
 	
 	that.isDone = function() {
 		return that.delayedRunner.isDone();
 	};
 	
-	that.isSelected = function(item) {
-		return (item !== null) && (item === that.selectedItem);
-	};
-	
 	this.onChange = function() {
 		that.delayedRunner.run(function() {
-			that.selectedItem = null;
-			that.data = locationService.queryData(that.query);
+			service.selectedItem = null;
+			service.loadData(that.query);
 		});
 	};
 
 	that.onSelect = function(item) {
 		// toggle selected item
-		that.selectedItem = item === that.selectedItem ? null : item;
+		service.selectedItem = item === service.selectedItem ? null : item;
 	};
 }
 
