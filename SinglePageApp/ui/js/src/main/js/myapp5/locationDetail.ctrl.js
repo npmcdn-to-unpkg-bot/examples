@@ -10,12 +10,12 @@ function Implementation($scope, service, logger) {
 	});
 	
 	that.onDone = function() {
-		var newValue = angular.copy($scope.item);
-		var oldValue = service.selectedItem;
-		var save = service.resource.save({}, newValue);
-		save.$promise.then(function(d) {
+		service.updateSelected($scope.item)
+		.then(function(d) {
 			logger.log("Saved ", d);
-			angular.merge(oldValue, newValue);
+			service.selectedItem = null;
+		}, function(e) {
+			logger.log("save failed ", e);
 		});
 	};
 }

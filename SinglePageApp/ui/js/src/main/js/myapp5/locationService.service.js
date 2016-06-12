@@ -34,6 +34,16 @@ function Implementation($q, $resource, logger) {
 		return (item !== null) && (item === that.selectedItem);
 	};
 	
+	that.updateSelected = function(item) {
+		var newValue = angular.copy(item);
+		var oldValue = that.selectedItem;
+		var save = that.resource.save({}, newValue);
+		save.$promise.then(function(d) {
+			angular.merge(oldValue, newValue);
+		});
+		return save.$promise;
+	};
+	
 	that.loadData();
 }
 
