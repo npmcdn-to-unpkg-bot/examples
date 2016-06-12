@@ -3,6 +3,7 @@ var module = angular.module('myapp5');
 Implementation.$inject = ["$scope", "$resource", "$routeParams", "$timeout", "locationService", "slavi-logger", "slavi-utils"];
 function Implementation($scope, $resource, $routeParams, $timeout, service, logger, utils) {
 	var that = this;
+	that.service = service;
 	$scope.service = service;
 	that.query = "";
 	that.delayedRunner = utils.delayedRunner();
