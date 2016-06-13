@@ -22,6 +22,10 @@ function Implementation($scope, service, logger) {
 			logger.log("save failed ", e);
 		});
 	};
+	
+	that.hasErrors = function(form, attrName) {
+		return form.$error[attrName];
+	};
 }
 
 module.component('locationDetail', {

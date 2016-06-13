@@ -18,6 +18,18 @@ import javax.persistence.Table;
 public class Location extends IdNamePair {
 	
 	private int dum = this.hashCode();
+	
+	String email;
+
+	@Column
+	@FieldDef(searchable = true)
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
 	@Column(name = "dumint")
 	@FieldDef(appendWildcards = false, ignoreCase = false)

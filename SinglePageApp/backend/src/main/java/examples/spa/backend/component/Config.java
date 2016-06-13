@@ -26,6 +26,8 @@ public class Config {
 		for (int i = 0; i < 50; i++) {
 			Location l = new Location();
 			l.setName("Name " + i);
+			if (i % 2 == 0)
+				l.setEmail("Name" + i + "@example.com");
 			jpa.save(l);
 		}
 	}

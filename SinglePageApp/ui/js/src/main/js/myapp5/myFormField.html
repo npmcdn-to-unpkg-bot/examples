@@ -1,0 +1,9 @@
+<div class="form-group" ng-class="{ panel: $ctrl.hasErrors(), 'panel-danger': $ctrl.hasErrors() }">
+	<div ng-show="$ctrl.hasErrors2()">
+		<p>Has some errors</p>
+	</div>
+	<div ng-class="{ 'panel-body': $ctrl.hasErrors() }">
+		<label class="control-label col-sm-2">{{$ctrl.label}}</label>
+		<div class="col-sm-10" ng-transclude />
+	</div>
+</div>
