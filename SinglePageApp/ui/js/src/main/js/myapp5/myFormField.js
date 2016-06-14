@@ -12,6 +12,7 @@ function Implementation($scope, $element, $attrs, logger) {
 	};
 	$scope.$watchCollection("form[name].$error", function(newValue) {
 		that.errors = [];
+		var validators = that.form[that.name].$validators;
 		angular.forEach(newValue, function(value, key) {
 			switch (key) {
 			case "minlength":
@@ -19,6 +20,12 @@ function Implementation($scope, $element, $attrs, logger) {
 				break;
 			case "maxlength":
 				that.errors.push("Value is too long");
+				break;
+			case "max":
+				that.errors.push("Value is too big");
+				break;
+			case "min":
+				that.errors.push("Value is too small");
 				break;
 			case "required":
 				that.errors.push("Value is required");
@@ -30,7 +37,14 @@ function Implementation($scope, $element, $attrs, logger) {
 				that.errors.push("Does not match the format");
 				break;
 			default:
-				that.errors.push("Validator " + key + " failed.");
+				var v = validators[key];
+				var m;
+				if (v && v.message) {
+					m = v.message;
+				} else {
+					m = "Validator " + key + " failed.";
+				}
+				that.errors.push(m);
 				break;
 			}
 		});

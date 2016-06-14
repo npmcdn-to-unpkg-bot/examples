@@ -12,7 +12,7 @@ function Implementation($scope, $resource, $routeParams, $timeout, service, logg
 		return that.delayedRunner.isDone();
 	};
 	
-	this.onChange = function() {
+	that.onChange = function() {
 		that.delayedRunner.run(function() {
 			service.selectedItem = null;
 			service.loadData(that.query);
@@ -29,3 +29,17 @@ module.component("locationList", {
 	templateUrl: "myapp5/locationList.html",
 	controller: Implementation
 });
+
+/*
+module.directive('notEndingWithA', function() {
+	return {
+		require: 'ngModel',
+		link: function(scope, elm, attrs, ctrl) {
+			console.log("Init");
+			ctrl.$validators.notEndingWithA = function(modelValue, viewValue) {
+				console.log("Validate " + viewValue);
+				return !String(viewValue).endsWith("a");
+			};
+		}
+	};
+});*/
