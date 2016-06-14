@@ -15,6 +15,11 @@
 				class="form-control"
 				name="name"
 				ng-model="item.name"
+				ng-minlength="3"
+				ng-maxlength="10"
+				ng-required="true"
+				ng-trim="true"
+				ng-pattern="/[A-Za-z0-9]+/"
 			/>
 		</my-form-field>
 		<my-form-field data-label="'e-mail:'" data-name="'email'">
@@ -24,7 +29,7 @@
 				name="email"
 				ng-model="item.email"
 			/>
-		</div>
+		</my-form-field>
 <!--
 		<div class="form-group" ng-class="{ panel: $ctrl.hasErrors(form, 'email'), 'panel-danger': $ctrl.hasErrors(form, 'email') }">
 			<label class="control-label col-sm-2">e-mail:</label>
