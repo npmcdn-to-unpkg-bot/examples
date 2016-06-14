@@ -1,7 +1,7 @@
 var module = angular.module('myapp5');
 
-Implementation.$inject = ["$scope", "slavi-logger"];
-function Implementation($scope, logger) {
+Implementation.$inject = ["$scope", "$element", "$attrs", "slavi-logger"];
+function Implementation($scope, $element, $attrs, logger) {
 	var that = this;
 	that.hasErrors = false;
 	that.errors = [];
@@ -9,16 +9,33 @@ function Implementation($scope, logger) {
 	that.$onInit = function() {
 		$scope.form = that.form;
 		$scope.name = that.name;
-		
-		
 	};
-	$scope.$watch("form.$error[name]", function(newValue) {
-		that.hasErrors = (newValue) ? true : false;
-		
+	$scope.$watchCollection("form[name].$error", function(newValue) {
 		that.errors = [];
-/*		if (newValue.minlength)
-			that.errors.push("Minimum length is ")
-*/	});
+		angular.forEach(newValue, function(value, key) {
+			switch (key) {
+			case "minlength":
+				that.errors.push("Value is too short");
+				break;
+			case "maxlength":
+				that.errors.push("Value is too long");
+				break;
+			case "required":
+				that.errors.push("Value is required");
+				break;
+			case "email":
+				that.errors.push("Not a valid e-mail");
+				break;
+			case "pattern":
+				that.errors.push("Does not match the format");
+				break;
+			default:
+				that.errors.push("Validator " + key + " failed.");
+				break;
+			}
+		});
+		that.hasErrors = that.errors.length !== 0;
+	});
 }
 
 module.component('myFormField', {

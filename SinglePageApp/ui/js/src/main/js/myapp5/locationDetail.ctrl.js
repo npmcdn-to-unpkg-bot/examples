@@ -30,7 +30,6 @@ function Implementation($scope, service, logger) {
 
 module.component('locationDetail', {
 	templateUrl: 'myapp5/locationDetail.html',
-//	scope: {},
 	bindings: {
 		item: "="
 //		save: "&"
