@@ -2,46 +2,56 @@ var module = angular.module('myapp5');
 
 Implementation.$inject = ["$q", "$parse", "slavi-logger"];
 function Implementation($q, $parse, logger) {
-	
-	logger.log("asyncValidate initialized");
-	
 	return {
 		restrict: 'A',
 		require: '?ngModel',
 		scope: false,
 		link: function($scope, elm, attrs, ctrl) {
-			logger.log("asyncValidate link");
 			if (!ctrl)
 				return;
 
-			console.log(attrs.asyncValidate);
-			var validationFn = $parse(attrs.asyncValidate); //, /* interceptorFn */ null, /* expensiveChecks */ true);
-			console.log(validationFn.toSource());
-			
+			var validationFn = angular.noop;
 			Validator.messageId = "my-async-validator";
 			Validator.message = "Async validation failed";
 			function Validator(modelValue, viewValue) {
-				logger.log("asyncValidate Validator");
+				logger.log("Validator ", modelValue, " ", viewValue);
 				var def = $q.defer();
 				var callback = function() {
-					logger.log("asyncValidate callback");
+					logger.log("Callback");
 					try {
-						validationFn($scope, {
-							modelValue: modelValue, 
-							viewValue: viewValue
-						});
-						def.resolve();
+						var validationFn = $parse(attrs.asyncValidate); //, /* interceptorFn */ null, /* expensiveChecks */ true);
+						if (validationFn.assign) {
+							validationFn = validationFn($scope, {});
+							if (typeof validationFn !== "function")
+								validationFn = angular.noop;
+						} else {
+							validationFn = angular.noop;
+						}
+
+						var r = validationFn.call(ctrl, modelValue, viewValue);
+						def.resolve(r);
 					} catch(e) {
 						def.reject(e);
 						throw e;
 					}
 				};
-				$scope.$evalAsync(callback);
+				$scope.$eval(callback);
 				return def.promise;
 			}
 
 			attrs.$observe("asyncValidate", function(value) {
-				validationFn = value;
+				validationFn = $parse(value); //, /* interceptorFn */ null, /* expensiveChecks */ true);
+				if (validationFn.assign) {
+					validationFn = validationFn($scope, {});
+					if (typeof validationFn !== "function")
+						validationFn = angular.noop;
+				} else {
+					validationFn = angular.noop;
+				}
+				logger.log("-------------");
+				console.log(validationFn);
+				// validationFn = $scope[value];
+				logger.log(validationFn);
 			});
 			attrs.$observe("asyncValidateMessageId", function(value) {
 				Validator.messageId = value;

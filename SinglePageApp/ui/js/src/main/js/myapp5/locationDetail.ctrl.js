@@ -23,9 +23,9 @@ function Implementation($scope, service, logger) {
 		});
 	};
 	
-	that.asyncValidate = function(scope) {
-		logger.log(scope);
-		return true;
+	that.asyncValidate = function(movelValue, viewValue) {
+		logger.log("async validate ", movelValue, " ", viewValue);
+		return false;
 	};
 	
 	that.hasErrors = function(form, attrName) {
