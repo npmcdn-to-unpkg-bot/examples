@@ -23,6 +23,11 @@ function Implementation($scope, service, logger) {
 		});
 	};
 	
+	that.asyncValidate = function(scope) {
+		logger.log(scope);
+		return true;
+	};
+	
 	that.hasErrors = function(form, attrName) {
 		return form.$error[attrName];
 	};

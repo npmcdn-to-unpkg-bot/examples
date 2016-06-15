@@ -28,6 +28,8 @@ public class Config {
 			l.setName("Name " + i);
 			if (i % 2 == 0)
 				l.setEmail("Name" + i + "@example.com");
+			else
+				l.setEmail(Integer.toString(i));
 			jpa.save(l);
 		}
 	}

@@ -28,7 +28,8 @@
 				class="form-control"
 				name="email"
 				ng-model="item.email"
-				my-same-value-as="item.name"
+				async-validate="$ctrl.asyncValidate(modelValue, viewValue)"
+				mmmmy-same-value-as="item.name"
 			/>
 		</my-form-field>
 		<div class="form-group">

@@ -1,13 +1,12 @@
 var module = angular.module('myapp5');
 
-Implementation.$inject = ["slavi-logger"];
-function Implementation(logger) {
+Implementation.$inject = [];
+function Implementation() {
 	return {
 		restrict: 'A',
-		require: 'ngModel',
-//		scope: true,
+		require: '?ngModel',
+		scope: false,
 		link: function($scope, elm, attrs, ctrl) {
-			logger.log("LINK");
 			if (!ctrl)
 				return;
 			var destValue = null;
@@ -15,9 +14,9 @@ function Implementation(logger) {
 				destValue = value;
 				ctrl.$validate();
 			});
-			
+		
 			Validator.messageId = "my-same-value-as";
-			Validator.message = "Values do not match";
+			Validator.message = "Value does not match";
 			function Validator(modelValue, viewValue) {
 				return viewValue == destValue;
 				//return (!ctrl.$dirty) || (viewValue == destValue);
