@@ -9,7 +9,7 @@
 			<label class="control-label col-sm-2">ID:</label>
 			<div class="col-sm-10"><p class="form-control-static">{{item.id}}</p></div>
 		</div>
-		<my-form-field data-label="'Name:'" data-name="'name'">
+		<my-form-field data-label="Name:" data-name="name">
 			<input 
 				type="text" 
 				class="form-control"
@@ -22,14 +22,16 @@
 				ng-pattern="/[A-Za-z0-9]+/"
 			/>
 		</my-form-field>
-		<my-form-field data-label="'e-mail:'" data-name="'email'">
+		<my-form-field data-label="e-mail:" data-name="email">
 			<input 
 				type="email"
 				class="form-control"
 				name="email"
 				ng-model="item.email"
-				async-validate="$ctrl.asyncValidate"
-				mmmmy-same-value-as="item.name"
+				my-validator="$ctrl.validate"
+				my-async-validator="$ctrl.asyncValidate"
+				my-same-value-as="item.name"
+				my-same-value-as-message="{{$ctrl.sameValueMessage}}"
 			/>
 		</my-form-field>
 		<div class="form-group">

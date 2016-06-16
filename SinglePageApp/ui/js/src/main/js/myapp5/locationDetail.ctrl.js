@@ -1,7 +1,7 @@
 var module = angular.module('myapp5');
 
-Implementation.$inject = ["$scope", "locationService", "slavi-logger"];
-function Implementation($scope, service, logger) {
+Implementation.$inject = ["$scope", "locationService", "slavi-logger", "$timeout"];
+function Implementation($scope, service, logger, $timeout) {
 	var that = this;
 
 	that.$onChanges = function() {
@@ -22,10 +22,19 @@ function Implementation($scope, service, logger) {
 			logger.log("save failed ", e);
 		});
 	};
+
+	that.sameValueMessage = "Value no the same";
 	
-	that.asyncValidate = function(movelValue, viewValue) {
-		logger.log("async validate ", movelValue, " ", viewValue);
-		return false;
+	that.asyncValidate = function(value) {
+		return $timeout(function() {
+			return String(value).endsWith("aa") ? "" : 
+				"ASYNC: Must end in double a, i.e. aa, but the value is " + value;
+		}, 1000);
+	};
+	
+	that.validate = function(value) {
+		return String(value).endsWith("a") ? "" : 
+			"Must end in a but the value is " + value;
 	};
 	
 	that.hasErrors = function(form, attrName) {

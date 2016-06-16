@@ -1,5 +1,28 @@
 var module = angular.module('myapp5');
 
+/**
+ * Usage example:
+ * 
+ * <my-form-field data-label="My field:" data-name="myFieldName1">
+ *     <input 
+ *         type="text" 
+ *         name="myFieldName1"
+ *         ng-model="item.name1"
+ *     />
+ * </my-form-field>
+ * <my-form-field data-label="Repeat my field value:" data-name="myFieldName2">
+ *     <input 
+ *         type="text" 
+ *         name="myFieldName2"
+ *         ng-model="item.name2"
+ *         my-same-value-as="item.name1"
+ *         my-same-value-as-message="My message is: {{$ctrl.someMessage}}"
+ *     />
+ * </my-form-field>
+ */
+
+var defaultMessage = "Value does not match";
+
 Implementation.$inject = [];
 function Implementation() {
 	return {
@@ -15,12 +38,17 @@ function Implementation() {
 				ctrl.$validate();
 			});
 		
-			Validator.messageId = "my-same-value-as";
-			Validator.message = "Value does not match";
+			Validator.message = defaultMessage;
 			function Validator(modelValue, viewValue) {
+				var msg = attrs.mySameValueAsMessage;
+				Validator.message = (msg) ? msg : defaultMessage;
 				return viewValue == destValue;
-				//return (!ctrl.$dirty) || (viewValue == destValue);
 			}
+			
+			attrs.$observe("mySameValueAsMessage", function(msg) {
+				Validator.message = (msg) ? msg : defaultMessage;
+			});
+
 			ctrl.$validators.mySameValue = Validator;
 		}
 	};

@@ -1,7 +1,7 @@
 var module = angular.module('myapp5');
 
-Implementation.$inject = ["$scope", "$resource", "$routeParams", "$timeout", "locationService", "$parse", "slavi-logger", "slavi-utils"];
-function Implementation($scope, $resource, $routeParams, $timeout, service, $parse, logger, utils) {
+Implementation.$inject = ["$scope", "$resource", "$routeParams", "$q", "$timeout", "locationService", "$parse", "slavi-logger", "slavi-utils"];
+function Implementation($scope, $resource, $routeParams, $q, $timeout, service, $parse, logger, utils) {
 	var that = this;
 	that.service = service;
 	$scope.service = service;
@@ -13,7 +13,31 @@ function Implementation($scope, $resource, $routeParams, $timeout, service, $par
 	};
 	
 	that.invokeMe = function() {
-		logger.log("invokeMe");
+		logger.log("invokeMe 1");
+		
+		var def = $q.defer();
+		
+		var p = $timeout(function() {
+			return 0; //"some value";
+		}, 1000);
+		$q.when(p, function(v) {
+			logger.log("--- Success ", v);
+			if (!v) {
+				def.reject();
+			}
+			def.resolve();
+		}, function(v) {
+			logger.log("--- Error ", v);
+			def.reject();
+		});
+		logger.log("invokeMe 2");
+		
+		def.promise.then(function(v) {
+			logger.log("Success ", v);
+		}, function(v) {
+			logger.log("Failure ", v);
+		});
+		logger.log("invokeMe 3");
 	};
 	
 	that.onClick = function() {
