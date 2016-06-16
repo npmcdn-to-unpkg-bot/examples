@@ -12,8 +12,26 @@ function Implementation($scope, service, logger, $timeout) {
 		$scope.item = angular.copy(newValue);
 	});
 
+	
+	that.errors = [];
+	that.hasErrors = that.errors.length !== 0;
+	
+	function Validate() {
+		that.errors = [];
+		if ($scope.item.name.startsWith("z")) {
+			that.errors.push("Name should not start with z.");
+		}
+		logger.log("Validate 1 ", $scope.item.name);
+		logger.log("Validate 2 ", that.errors);
+		that.hasErrors = that.errors.length !== 0;
+	}
+	
 	that.onDone = function() {
-		logger.log("onDone()");
+		Validate();
+		if (that.myForm && that.myForm.$valid && that.myForm.$dirty) {
+			logger.log("onDone() ");
+		}
+/*
 		service.updateSelected($scope.item)
 		.then(function(d) {
 			logger.log("Saved ", d);
@@ -21,9 +39,10 @@ function Implementation($scope, service, logger, $timeout) {
 		}, function(e) {
 			logger.log("save failed ", e);
 		});
+*/
 	};
 
-	that.sameValueMessage = "Value no the same";
+	that.sameValueMessage = "Value is not the same";
 	
 	that.asyncValidate = function(value) {
 		return $timeout(function() {
