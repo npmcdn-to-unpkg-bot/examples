@@ -231,5 +231,7 @@
 	</mvc:annotation-driven>
 <!-- 
 	<mvc:default-servlet-handler/>
- -->	
+ -->
+
+	<bean class="examples.spa.backend.validation.LocationValidator" />
 </beans>

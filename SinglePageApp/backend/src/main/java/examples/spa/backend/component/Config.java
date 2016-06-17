@@ -54,4 +54,10 @@ public class Config {
 		configureObjectMapper(m);
 		return m;
 	}
+/*	
+	@Bean
+	public LocalValidatorFactoryBean validator() {
+		return new OptionalValidatorFactoryBean();
+		//return new LocalValidatorFactoryBean();
+	}*/
 }
