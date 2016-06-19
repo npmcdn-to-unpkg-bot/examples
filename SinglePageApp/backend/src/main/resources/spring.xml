@@ -233,5 +233,23 @@
 	<mvc:default-servlet-handler/>
  -->
 
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" p:defaultLocale="en" />
+
+	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+		<property name="paramName" value="lang" />
+	</bean>
+<!-- 
+	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="localeChangeInterceptor" />
+			</list>
+		</property>
+		<property name="mappings">
+			<value>/**=lang2</value>
+		</property>
+	</bean>
+ -->
+	<bean class="org.springframework.context.support.ResourceBundleMessageSource" p:basename="messages" />
 	<bean class="examples.spa.backend.validation.LocationValidator" />
 </beans>

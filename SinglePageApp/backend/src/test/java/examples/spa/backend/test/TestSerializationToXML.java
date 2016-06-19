@@ -15,10 +15,45 @@ import com.slavi.util.StringPrintStream;
 
 import examples.spa.backend.model.Items;
 import examples.spa.backend.model.Location;
+import examples.spa.backend.model.ResponseWrapper;
 
 public class TestSerializationToXML {
 
 	void doIt() throws Exception {
+		dumpObj(0);
+		ArrayList list = new ArrayList();
+		list.add(1);
+		list.add(2);
+		dumpObj(list);
+	}
+	
+	void dumpObj(Object o) throws Exception {
+		ResponseWrapper obj = new ResponseWrapper(o);
+		
+		AnnotationIntrospector primary = new JacksonAnnotationIntrospector();
+		AnnotationIntrospector secondary = new JaxbAnnotationIntrospector();
+		AnnotationIntrospector pair = new AnnotationIntrospectorPair(primary, secondary);
+
+		//ObjectMapper m = Jackson2ObjectMapperBuilder.xml().build();
+		XmlMapper xm = new XmlMapper();
+		ObjectMapper m = xm;
+		m.setAnnotationIntrospector(pair);
+		m.enable(SerializationFeature.INDENT_OUTPUT);
+		
+		StringPrintStream out = new StringPrintStream();
+		m.writeValue(out, obj);
+
+		System.out.println(out.toString());
+		out = new StringPrintStream();
+		//m = Jackson2ObjectMapperBuilder.json().build();
+		m = new ObjectMapper();
+		m.setAnnotationIntrospector(pair);
+		//m.enable(SerializationFeature.INDENT_OUTPUT);
+		m.writeValue(out, obj);
+		System.out.println(out.toString());
+	}
+	
+	void doIt2() throws Exception {
 		ArrayList list = new ArrayList<>();
 		for (int i = 0; i < 3; i++) {
 			Location l = new Location();

@@ -4,6 +4,9 @@ import java.io.Serializable;
 
 import javax.validation.Valid;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,9 +15,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import examples.spa.backend.misc.Utils;
 import examples.spa.backend.model.EntityWithId;
 import examples.spa.backend.model.FilterItemResponse;
-import examples.spa.backend.model.ResultWrapper;
+import examples.spa.backend.model.ResponseWrapper;
 
 /**
  * Ideas borrowed from:
@@ -24,6 +28,9 @@ import examples.spa.backend.model.ResultWrapper;
 // @RequestMapping("/someItem")
 public abstract class EntityWithIdControllerBase<ID extends Serializable, T extends EntityWithId<ID>> {
 	public EntityWithIdJpa<ID, T> jpa;
+	
+	@Autowired
+	protected MessageSource messageSource;
 	
 	public EntityWithIdControllerBase(EntityWithIdJpa<ID, T> jpa) {
 		this.jpa = jpa;
@@ -52,13 +59,13 @@ public abstract class EntityWithIdControllerBase<ID extends Serializable, T exte
 	}
 	
 	@RequestMapping(value="", method=RequestMethod.POST)
-	public @ResponseBody ResultWrapper<Integer> saveItem(
+	public ResponseEntity saveItem(
 			@RequestBody @Valid T item, BindingResult result) throws Exception {
 		if (result.hasErrors() || (item == null) || (item.getId() == null)) {
-			return new ResultWrapper(0);
+			return Utils.makeErrorResponse(result, messageSource);
 		} else {
 			item = jpa.save(item);
-			return new ResultWrapper(item.getId());
+			return ResponseEntity.ok(new ResponseWrapper(item.getId()));
 		}
 	}
 
