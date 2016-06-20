@@ -94,65 +94,6 @@
 			value=".jsp" />
 	</bean>
 
-<!-- 
-	<bean id="MappingJackson2JsonView" class="org.springframework.web.servlet.view.json.MappingJackson2JsonView">
-		<property name="objectMapper" ref="jsonObjectMapper" />
-		<property name="extractValueFromSingleKeyModel" value="true" />
-	</bean>
-	<bean id="MappingJackson2XmlView" class="org.springframework.web.servlet.view.xml.MappingJackson2XmlView">
-		<property name="objectMapper" ref="xmlObjectMapper" />
-	</bean>
- -->
-
-<!-- 
-	<mvc:view-resolvers>
-		<mvc:content-negotiation>
-			<mvc:default-views>
-				<ref bean="MappingJackson2JsonView" />
-				<ref bean="MappingJackson2XmlView" />
-			</mvc:default-views>
-		</mvc:content-negotiation>
-	</mvc:view-resolvers>
- -->
-
-	<!-- Setup a default JSON view resolver that handles object mapping 
-	<bean
-		class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
-		<property name="order" value="1" />
-		<property name="viewResolvers">
-			<list>
-				<bean class="org.springframework.web.servlet.view.BeanNameViewResolver" />
-				<bean
-					class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-					<property name="prefix" value="/WEB-INF/jsp/" />
-					<property name="suffix" value=".jsp" />
-				</bean>
-			</list>
-		</property>
-		<property name="defaultViews">
-			<list>
-				<ref bean="MappingJackson2XmlView" />
-				<ref bean="MappingJackson2JsonView" />
-				<bean class="org.springframework.web.servlet.view.InternalResourceView" p:url="/WEN-INF/jsp"/>
-			</list>
-		</property>
-	</bean>
--->
-
-<!-- 
-	<bean
-		class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
-		<property name="ignoreDefaultModelOnRedirect" value="true" />
-		<property name="messageConverters">
-			<util:list id="beanList">
-				<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
-<!- - 				<ref bean="marshallingHttpMessageConverter" />
- - ->
-			</util:list>
-		</property>
-	</bean>
- -->
-	
 <!-- 	<bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver" /> -->
 <!-- 
 	<bean id="multipartResolver"
@@ -161,7 +102,6 @@
 		<property name="maxUploadSize" value="100000" />
 	</bean>
  -->
-
 
 <!--
 	<bean id="marshallingHttpMessageConverter"
@@ -172,43 +112,6 @@
 
 	<bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller" />
 -->
-
-<!-- 
-	<bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean"/>
-	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
-		<property name="messageConverters">
-			<list>
-				<bean class="org.springframework.http.converter.ByteArrayHttpMessageConverter" />
-				<bean class="org.springframework.http.converter.StringHttpMessageConverter" />
-				<bean class="org.springframework.http.converter.FormHttpMessageConverter" />
-				<bean class="org.springframework.http.converter.xml.SourceHttpMessageConverter" />
-				<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" />
-			</list>
-		</property>
-	</bean>
- -->
-
-<!-- 
-	<bean id="localeChangeInterceptor"
-		class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
-		<property name="paramName" value="siteLanguage" />
-	</bean>
-	
-	<bean id="localeResolver"
-		class="org.springframework.web.servlet.i18n.CookieLocaleResolver" />
-
-	<bean id="urlMapping"
-		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-		<property name="interceptors">
-			<list>
-				<ref bean="localeChangeInterceptor" />
-			</list>
-		</property>
-		<property name="mappings">
-			<value>/*/.view=someController</value>
-		</property>
-	</bean>
- -->
 
 	<mvc:resources mapping="/js/**"    location="/WEB-INF/js/,    classpath:/js/"    />
 	<mvc:resources mapping="/css/**"   location="/WEB-INF/css/,   classpath:/css/"   />
@@ -235,21 +138,17 @@
 
 	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" p:defaultLocale="en" p:cookieName="lang" />
 
-	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
-		<property name="paramName" value="lang" />
-	</bean>
-<!-- 
-	<bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-		<property name="interceptors">
-			<list>
-				<ref bean="localeChangeInterceptor" />
-			</list>
-		</property>
-		<property name="mappings">
-			<value>/**=lang2</value>
-		</property>
-	</bean>
- -->
+	<bean 
+		id="localeChangeInterceptor" 
+		class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" 
+		p:paramName="lang" 
+		p:httpMethods="GET,POST,PUT,DELETE"
+	/>
+	
+	<mvc:interceptors>
+		<ref bean="localeChangeInterceptor" />
+	</mvc:interceptors>
+
 	<bean 
 		id="messageSource" 
 		class="org.springframework.context.support.ReloadableResourceBundleMessageSource" 
