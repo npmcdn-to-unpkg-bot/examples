@@ -16,7 +16,9 @@ public class LocationValidator implements Validator {
 	public void validate(Object o, Errors e) {
 		Location l = (Location) o;
 		ValidationUtils.rejectIfEmpty(e, "name", "name.empty");
-		if (l.getName().toUpperCase().startsWith("ZZ"))
+		if (l.getName().toUpperCase().startsWith("ZZ")) {
 			e.rejectValue("name", "name.beginsWithZZ");
+			e.rejectValue("name", "name.oneMoreError");
+		}
 	}
 }

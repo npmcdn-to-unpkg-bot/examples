@@ -233,7 +233,7 @@
 	<mvc:default-servlet-handler/>
  -->
 
-	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" p:defaultLocale="en" />
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" p:defaultLocale="en" p:cookieName="lang" />
 
 	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
 		<property name="paramName" value="lang" />
@@ -250,6 +250,11 @@
 		</property>
 	</bean>
  -->
-	<bean class="org.springframework.context.support.ResourceBundleMessageSource" p:basename="messages" />
+	<bean 
+		id="messageSource" 
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource" 
+		p:defaultEncoding="UTF-8" 
+		p:basename="classpath:messages"
+	/>
 	<bean class="examples.spa.backend.validation.LocationValidator" />
 </beans>
