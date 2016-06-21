@@ -1,0 +1,16 @@
+<form 
+	name="$ctrl.myForm" 
+	class="form-horizontal" 
+	novalidate
+	ng-model-options="{ updateOn: 'default blur', debounce: { default: 700, blur: 0 } }"
+>
+	<div class="col-sm-12 panel panel-danger" ng-if="$ctrl.hasErrors()">
+		<p ng-repeat="error in $ctrl.myForm.submitErrors.errors">{{error}}</p>
+	</div>
+	<ng-transclude></ng-transclude>
+	<div class="form-group">
+		<div class="col-sm-offset-2 col-sm-10">
+			<button class="btn btn-primary" ng-click="$ctrl.onBtnSave()" ng-class="{ disabled: !$ctrl.isBtnSaveEnabled() }">{{save}}</button>
+		</div>
+	</div>
+</form>

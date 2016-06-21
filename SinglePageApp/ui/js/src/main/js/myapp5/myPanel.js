@@ -4,6 +4,6 @@ module.component('myPanel', {
 	templateUrl: "myapp5/myPanel.html",
 	transclude: true,
 	bindings: {
-		title: "="
+		title: "@"
 	}
 });

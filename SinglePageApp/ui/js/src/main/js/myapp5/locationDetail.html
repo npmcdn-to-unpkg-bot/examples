@@ -1,13 +1,5 @@
-<my-panel ng-show="item" data-title="'Details'">
-	<form 
-		name="$ctrl.myForm" 
-		class="form-horizontal" 
-		novalidate
-		ng-model-options="{ updateOn: 'default blur', debounce: { default: 700, blur: 0 } }"
-	>
-		<div class="col-sm-12 panel panel-danger" ng-if="$ctrl.hasErrors()">
-			<p ng-repeat="error in $ctrl.myForm.submitErrors.errors">{{error}}</p>
-		</div>
+<my-panel ng-show="$ctrl.item" data-title="Details">
+	<my-form data-item="$ctrl.item" data-save="Done" data-on-save="$ctrl.onSave">
 		<div class="form-group">
 			<label class="control-label col-sm-2">ID:</label>
 			<div class="col-sm-10"><p class="form-control-static">{{item.id}}</p></div>
@@ -37,10 +29,5 @@
 				my-same-value-as-message="{{$ctrl.sameValueMessage}}"
 			/>
 		</my-form-field>
-		<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-10">
-				<button class="btn btn-primary" ng-click="$ctrl.onDone()">Done</button>
-			</div>
-		</div>
-	</form>
+	</my-form>
 </my-panel>
