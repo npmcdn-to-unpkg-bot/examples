@@ -17,11 +17,8 @@ public class LocationController extends IdNamePairControllerBase<Location> {
 		super(jpa);
 	}
 
-	@Autowired
-	LocationValidator validator;
-
 	@InitBinder
 	protected void initBinder(WebDataBinder binder) {
-		binder.addValidators(validator);
+		binder.addValidators(new LocationValidator());
 	}
 }

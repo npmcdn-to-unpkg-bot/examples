@@ -5,9 +5,8 @@
 		novalidate
 		ng-model-options="{ updateOn: 'default blur', debounce: { default: 700, blur: 0 } }"
 	>
-		<div class="col-sm-12 panel panel-danger" ng-if="$ctrl.hasErrors">
-			<p>asd {{$ctrl.hasErrors}}</p>
-			<p ng-repeat="error in $ctrl.errors">{{error}}</p>
+		<div class="col-sm-12 panel panel-danger" ng-if="$ctrl.hasErrors()">
+			<p ng-repeat="error in $ctrl.myForm.submitErrors.errors">{{error}}</p>
 		</div>
 		<div class="form-group">
 			<label class="control-label col-sm-2">ID:</label>
@@ -20,7 +19,7 @@
 				name="name"
 				ng-model="item.name"
 				ng-minlength="3"
-				ng-maxlength="10"
+				ng-maxlength="15"
 				ng-required="true"
 				ng-trim="true"
 				ng-pattern="/[A-Za-z0-9]+/"

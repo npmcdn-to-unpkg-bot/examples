@@ -24,11 +24,24 @@ function Implementation($scope) {
 		$scope.form = that.form;
 		$scope.name = that.name;
 	};
-	$scope.$watchCollection("form[name].$error", function(newValue) {
+	function buildErrors(fieldField$error, formFieldSubmitError) {
 		that.errors = [];
-		var validators = that.form[that.name].$validators;
-		var asyncValidators = that.form[that.name].$asyncValidators;
-		angular.forEach(newValue, function(value, key) {
+		
+		var validators;
+		if (that.form && that.form[that.name]) {
+			validators = that.form[that.name].$validators;
+		}
+		if (!validators)
+			validators = {};
+
+		var asyncValidators;
+		if (that.form && that.form[that.name]) {
+			asyncValidators = that.form[that.name].$asyncValidators;
+		}
+		if (!asyncValidators)
+			asyncValidators = {};
+		
+		angular.forEach(fieldField$error, function(value, key) {
 			switch (key) {
 			case "minlength":
 				that.errors.push("Value is too short");
@@ -65,7 +78,38 @@ function Implementation($scope) {
 				break;
 			}
 		});
+		
+		if (formFieldSubmitError) {
+			for (var i = 0; i < formFieldSubmitError.length; i++) {
+				that.errors.push(formFieldSubmitError[i]);
+			}
+		}
 		that.hasErrors = that.errors.length !== 0;
+	} 
+	
+	$scope.$watchCollection("form[name].$error", function(newValue) {
+		var formFieldSubmitError;
+		if (that.form &&
+			that.form.submitErrors &&
+			that.form.submitErrors.fieldErrors &&
+			that.form.submitErrors.fieldErrors[that.name]) {
+			formFieldSubmitError = that.form.submitErrors.fieldErrors[that.name];
+		}
+		if (!formFieldSubmitError)
+			formFieldSubmitError = {};
+		buildErrors(newValue, formFieldSubmitError);
+	});
+
+	$scope.$watchCollection("form.submitErrors.fieldErrors[name]", function(newValue) {
+		var fieldField$error;
+		if (that.form &&
+			that.form[that.name] &&
+			that.form[that.name].$error) {
+			fieldField$error = that.form[that.name].$error;
+		}
+		if (!fieldField$error)
+			fieldField$error = {};
+		buildErrors(fieldField$error, newValue);
 	});
 }
 
