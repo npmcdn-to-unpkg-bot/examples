@@ -53,8 +53,6 @@ module.exports = function( grunt ) {
 				},
 				src: [
 					"<%= params.srcjs %>/**/*.module.js",
-					"<%= params.srcjs %>/**/*.service.js",
-					"<%= params.srcjs %>/**/*.ctrl.js",
 					"<%= params.srcjs %>/**/*.js",
 					"!<%= params.srcjs %>/main.js",
 					"<%= params.tmp %>/app-templates.js",
