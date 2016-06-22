@@ -13,7 +13,7 @@ function Implementation($scope, $sce, $templateCache, logger) {
 		title: 'Dynamic Group Header - 2',
 		content: 'Dynamic Group Body - 2'
 	}];
-	$scope.popoverUrl = "myapp5/uiBootstrap-htmlPopover.html";
+	$scope.popoverUrl = "myapp5/uiBootstrap-popover.html";
 	$scope.status = {
 		isOpen: false,
 		dirtyCount: 0,
