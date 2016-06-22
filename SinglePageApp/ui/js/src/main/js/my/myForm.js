@@ -1,4 +1,4 @@
-var module = angular.module('myapp5');
+var module = angular.module('my');
 
 Implementation.$inject = ["$scope", "$q"];
 function Implementation($scope, $q) {
@@ -6,6 +6,7 @@ function Implementation($scope, $q) {
 	
 	that.$onChanges = function() {
 		$scope.save = that.save ? that.save : "Save";
+		$scope.cancel = that.cancel ? that.cancel : "Cancel";
 	};
 
 	that.hasErrors = function() {
@@ -69,8 +70,7 @@ function Implementation($scope, $q) {
 	}
 	
 	that.isBtnSaveEnabled = function() {
-		return true;
-		// return that.myForm && (!that.myForm.$invalid) && (!that.myForm.$pristine) && (!that.hasErrors());
+		return that.myForm && (!that.myForm.$invalid) && (!that.myForm.$pristine) && (!that.hasErrors());
 	};
 	
 	that.onBtnSave = function() {
@@ -78,27 +78,31 @@ function Implementation($scope, $q) {
 		if ((typeof that.onSave === "function") &&
 			that.isBtnSaveEnabled()) {
 			try {
-				var r = that.onSave.call(that, addError);
+				var r = that.onSave(addError);
 				$q.when(r).catch(function(e) {
-					console.log("Error 1 ", e);
 					addError("Operation failed " + e);
 				});
 			} catch (e) {
-				console.log("Error 2", e);
 				addError("Operation failed " + e);
 			}
-		} else {
-			console.log("onDone ", that.hasErrors(), that.myForm);
+		}
+	};
+
+	that.onBtnCancel = function() {
+		if (typeof that.onCancel === "function") {
+			that.onCancel();
 		}
 	};
 }
 
 module.component('myForm', {
-	templateUrl: 'myapp5/myForm.html',
+	templateUrl: 'my/myForm.html',
 	transclude: true,
 	bindings: {
 		save: "@",
-		onSave: "="
+		onSave: "=",
+		cancel: "@",
+		onCancel: "="
 	},
 	controller: Implementation
 });

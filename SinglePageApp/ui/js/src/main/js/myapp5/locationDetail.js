@@ -12,6 +12,11 @@ function Implementation($scope, service, logger, $timeout) {
 		$scope.item = angular.copy(newValue);
 	});
 
+	that.onCancel = function(addError) {
+		console.log("onCancel");
+		service.selectedItem = null;
+	};
+	
 	that.onSave = function(addError) {
 		console.log("onSave");
 		addError("Just a dummy error");

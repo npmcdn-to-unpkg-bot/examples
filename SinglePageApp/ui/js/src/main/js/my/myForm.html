@@ -10,7 +10,8 @@
 	<ng-transclude></ng-transclude>
 	<div class="form-group">
 		<div class="col-sm-offset-2 col-sm-10">
-			<button class="btn btn-primary" ng-click="$ctrl.onBtnSave()" ng-class="{ disabled: !$ctrl.isBtnSaveEnabled() }">{{save}}</button>
+			<button class="btn btn-success" ng-click="$ctrl.onBtnSave()" ng-class="{ disabled: !$ctrl.isBtnSaveEnabled() }">{{save}}</button>
+			<button class="btn btn-warning" ng-click="$ctrl.onBtnCancel()">{{cancel}}</button>
 		</div>
 	</div>
 </form>

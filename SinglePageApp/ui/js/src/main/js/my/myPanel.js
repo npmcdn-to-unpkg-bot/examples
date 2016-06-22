@@ -1,7 +1,7 @@
-var module = angular.module('myapp5');
+var module = angular.module('my');
 
 module.component('myPanel', {
-	templateUrl: "myapp5/myPanel.html",
+	templateUrl: "my/myPanel.html",
 	transclude: true,
 	bindings: {
 		title: "@"

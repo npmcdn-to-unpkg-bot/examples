@@ -1,4 +1,4 @@
-var module = angular.module('myapp5');
+var module = angular.module('my');
 
 /**
  * Usage example:
@@ -114,7 +114,7 @@ function Implementation($scope) {
 }
 
 module.component('myFormField', {
-	templateUrl: 'myapp5/myFormField.html',
+	templateUrl: 'my/myFormField.html',
 	transclude: true,
 	require: { 
 		form: "^form"
