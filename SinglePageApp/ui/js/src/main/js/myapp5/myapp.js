@@ -22,6 +22,6 @@ function Implementation($scope, $route, $routeParams, $location, logger) {
 }
 
 module.component('myapp', {
-	templateUrl: "myapp5/myapp5.html",
+	templateUrl: "myapp5/myapp.html",
 	controller: Implementation
 });

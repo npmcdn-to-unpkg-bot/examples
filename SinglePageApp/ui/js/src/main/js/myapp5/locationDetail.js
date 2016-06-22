@@ -15,32 +15,18 @@ function Implementation($scope, service, logger, $timeout) {
 	that.onSave = function(addError) {
 		console.log("onSave");
 		addError("Just a dummy error");
-		if(true)return;
 		
 		if ($scope.item.name.startsWith("w")) {
 			addError("Name should not start with w.");
 			return;
 		}
 
-		service.updateSelected($scope.item)
+		return service.updateSelected($scope.item)
 		.then(function(d) {
 			logger.log("Saved ", d);
 			service.selectedItem = null;
 		}, function(e) {
-			console.log("onError");
-			if (e.status === 418) {
-				// "I'm a tea pod." Server validation error.
-				angular.forEach(e.data.errors, function(value) {
-					addError(value);
-				});
-				angular.forEach(e.data.fieldErrors, function(fieldError, name) {
-					angular.forEach(fieldError, function(value) {
-						addError(value, name);
-					});
-				});
-			} else {
-				addError("Operation failed with http error code " + e.status + " " + e.statusText);
-			}
+			addError(e, "submitError");
 		});
 	};
 	

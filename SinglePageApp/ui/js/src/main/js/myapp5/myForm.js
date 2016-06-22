@@ -47,12 +47,18 @@ function Implementation($scope, $q) {
 	ClearErrors();
 	
 	function addError(error, name) {
-		console.log("addError", error, name);
 		if (!error)
 			return;
-		if (name) {
+		if (name === "submitError") {
+			if (error.status === 418) {
+				// "I'm a tea pod." Server validation error.
+				angular.merge(that.myForm.submitErrors, error.data);
+			} else {
+				addError("Operation failed with http error code " + error.status + " " + error.statusText);
+			}
+		} else if (name) {
 			var e = that.myForm.submitErrors.fieldErrors[name];
-			if (typeof e === undefined) {
+			if (!Array.isArray(e)) {
 				e = [];
 				that.myForm.submitErrors.fieldErrors[name] = e;
 			}
