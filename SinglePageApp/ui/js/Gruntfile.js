@@ -40,6 +40,10 @@ module.exports = function( grunt ) {
 					"<%= params.nodemodules %>/angular-resource/angular-resource.js",
 					"<%= params.nodemodules %>/angular-animate/angular-animate.js",
 					"<%= params.nodemodules %>/angular-touch/angular-touch.js",
+					"<%= params.nodemodules %>/angular-cookies/angular-cookies.js",
+					"<%= params.nodemodules %>/angular-translate/dist/angular-translate.js",
+					"<%= params.nodemodules %>/angular-translate/dist/angular-translate-storage-cookie/angular-translate-storage-cookie.js",
+					"<%= params.nodemodules %>/angular-translate/dist/angular-translate-storage-local/angular-translate-storage-local.js",
 					"<%= params.nodemodules %>/angular-ui-bootstrap/dist/ui-bootstrap-tpls.js",
 				],
 				dest: "<%= params.dest %>/libs.js"

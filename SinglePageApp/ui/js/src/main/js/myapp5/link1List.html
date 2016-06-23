@@ -1,3 +1,10 @@
+<select ng-model="$ctrl.lang" ng-change="$ctrl.onChangeLang()">
+	<option ng-repeat="lang in $ctrl.allLangs" value="{{lang}}">{{lang}}</option>
+</select>
+<br/>
+<h2 translate>{{ 'headline' }}</h2>
+
+<hr/>
 <h2>This is LINK 1</h2>
 <div ng-repeat="item in $ctrl.items" ng-class="{ 'alert-info': $ctrl.isSelected(item) }">
 	<a href="" ng-click="$ctrl.onClick(item)">{{item.name}}</a>
