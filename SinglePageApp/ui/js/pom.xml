@@ -37,6 +37,8 @@
 							<triggerfiles>
 								<triggerfile>package.json</triggerfile>
 								<triggerfile>Gruntfile.js</triggerfile>
+								<triggerfile>src/main/i18n/messages_en.properties</triggerfile>
+								<triggerfile>src/main/i18n/messages_bg.properties</triggerfile>
 							</triggerfiles>
 							<outputdir>${project.build.directory}</outputdir>
 						</configuration>
