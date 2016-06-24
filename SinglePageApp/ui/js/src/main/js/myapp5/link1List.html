@@ -1,8 +1,9 @@
 <select ng-model="$ctrl.lang" ng-change="$ctrl.onChangeLang()">
+	<option value="">-- no lang --</option>
 	<option ng-repeat="lang in $ctrl.allLangs" value="{{lang}}">{{lang}}</option>
 </select>
 <br/>
-<h2 translate>{{ 'headline' }}</h2>
+<h2 translate="headline"></h2>
 
 <hr/>
 <h2>This is LINK 1</h2>

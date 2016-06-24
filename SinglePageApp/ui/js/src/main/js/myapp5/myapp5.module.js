@@ -1,20 +1,4 @@
-var module = angular.module('myapp5', ["pascalprecht.translate", "ngRoute", "ngResource", "ui.bootstrap", "slavi-log", "slavi-utils", "templates", "my"]);
-
-module.config(["$translateProvider", function($translateProvider) {
-	var tr_en = {
-		headline: "This is the headline",
-	};
-	var tr_bg = {
-		headline: "Това е заглавието",
-	};
-	$translateProvider
-		.translations('en', tr_en)
-		.translations('bg', tr_bg)
-		.preferredLanguage('en')
-		.fallbackLanguage(['en', 'bg'])
-		.useLocalStorage();
-}]);
-
+var module = angular.module('myapp5', ["ngRoute", "ngResource", "ui.bootstrap", "slavi-log", "slavi-utils", "templates", "translations", "my"]);
 
 module.value('$routerRootComponent', 'myapp');
 

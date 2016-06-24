@@ -32,6 +32,9 @@ module.exports = function( grunt ) {
 		concat: {
 			libs: {
 				options: {
+					process: function(src, filepath) {
+						return "\n// File " + filepath + "\n" + src;
+					},
 					banner: "// Built on <%= now %>\n",
 				},
 				src: [
@@ -41,6 +44,7 @@ module.exports = function( grunt ) {
 					"<%= params.nodemodules %>/angular-animate/angular-animate.js",
 					"<%= params.nodemodules %>/angular-touch/angular-touch.js",
 					"<%= params.nodemodules %>/angular-cookies/angular-cookies.js",
+					"<%= params.nodemodules %>/angular-sanitize/angular-sanitize.js",
 					"<%= params.nodemodules %>/angular-translate/dist/angular-translate.js",
 					"<%= params.nodemodules %>/angular-translate/dist/angular-translate-storage-cookie/angular-translate-storage-cookie.js",
 					"<%= params.nodemodules %>/angular-translate/dist/angular-translate-storage-local/angular-translate-storage-local.js",
@@ -60,6 +64,7 @@ module.exports = function( grunt ) {
 					"<%= params.srcjs %>/**/*.js",
 					"!<%= params.srcjs %>/main.js",
 					"<%= params.tmp %>/app-templates.js",
+					"<%= params.tmp %>/i18n/messages_*.js",
 					"<%= params.srcjs %>/main.js",	// main.js goes last
 				],
 				dest: "<%= params.dest %>/app.js"
@@ -85,11 +90,51 @@ module.exports = function( grunt ) {
 				}]
 			}
 		},
+		propertiesToJSON: {
+			i18n: {
+				src: ["<%= params.src %>/i18n/messages_*.properties"],
+				dest: "<%= params.tmp %>/i18n",
+				options: {
+					______splitKeysBy: '.'
+				}
+			}
+		},
+		i18nextract: {
+			default_options: {
+				src: ['<%= params.srcjs %>/**/*.js', '<%= params.srcjs %>/**/*.html'],
+				namespace: false,
+				defaultLang: "en",
+				lang: ["en", "bg"],
+				prefix: "messages_",
+				sufix: ".json",
+				dest: "<%= params.tmp %>/i18n",
+				safeMode: true
+			}
+		},
+		jsonAngularTranslate: {
+			i18n: {
+				options: {
+					moduleName: 'translations',
+					extractLanguage: /..(?=\.[^.]*$)/,
+					createNestedKeys: false
+				},
+				files: [{
+					expand: true,
+					cwd: '<%= params.tmp %>/i18n',
+					src: 'messages_*.json',
+					dest: '<%= params.tmp %>/i18n',
+					ext: '.js'
+				}]
+			}
+		},
 		newer: {
 			ngtemplates_app: {
 				src: ["<%= params.srcjs %>/**/*.html"],
 				dest: "<%= params.tmp %>/app-templates.js",
 				options: { tasks: ["ngtemplates:app"] }
+			},
+			translations: {
+				options: { tasks: ["translations"] }
 			},
 			concat_libs: {
 				options: { tasks: ["concat:libs", "uglify:libs"] }
@@ -103,11 +148,14 @@ module.exports = function( grunt ) {
 	config.newer.concat_libs.dest	= config.concat.libs.dest;
 	config.newer.concat_app.src		= config.concat.app.src;
 	config.newer.concat_app.dest	= config.concat.app.dest;
+	config.newer.translations.src	= config.propertiesToJSON.i18n.src;
+	config.newer.translations.dest	= config.concat.app.dest;
 
 	grunt.initConfig(config);
 	var moment = require("moment");
 	grunt.config.set("now", moment().format("YYYY-MM-DD HH:mm"));
-	grunt.registerTask("all", ["jshint", "ngtemplates", "concat", "uglify"]);
+	grunt.registerTask("translations", ["propertiesToJSON:i18n", "i18nextract", "jsonAngularTranslate:i18n"]);
+	grunt.registerTask("all", ["jshint", "ngtemplates", "translations", "concat", "uglify"]);
 	grunt.registerTask("default", ["newer"]);
 
 	require("load-grunt-tasks")(grunt);
