@@ -22,7 +22,7 @@ public class Utils {
 			if (i instanceof FieldError) {
 				field = ((FieldError) i).getField();
 			} else {
-				field = i.getObjectName();
+				field = null; // i.getObjectName();
 			}
 			errorResponse.getList(field).add(message);
 		}

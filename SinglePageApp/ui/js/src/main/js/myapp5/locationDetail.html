@@ -1,9 +1,8 @@
 <my-panel ng-show="$ctrl.item" data-title="Details">
 	<my-form data-item="$ctrl.item" data-save="Done" data-on-save="$ctrl.onSave" data-on-cancel="$ctrl.onCancel">
-		<div class="form-group">
-			<label class="control-label col-sm-2">ID:</label>
-			<div class="col-sm-10"><p class="form-control-static">{{item.id}}</p></div>
-		</div>
+		<my-form-field data-label="ID:" data-name="id">
+			<p class="form-control-static">{{item.id}}</p>
+		</my-form-field>
 		<my-form-field data-label="Name:" data-name="name">
 			<input 
 				type="text"

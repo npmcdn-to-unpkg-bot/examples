@@ -1,22 +1,15 @@
 <div class="col-sm-12">
 	<button ng-click="$ctrl.onClick()">Click me</button>
+	<p>Sample data: <span class="badge">zzn@nw</span></p>
 </div>
 <div class="col-sm-4">
 	<my-panel data-title="Location">
-		<div class="row">
-			<div class="col-sm-12">
-				<input type="text" class="form-control" ng-model="$ctrl.query" ng-change="$ctrl.onChange()" />
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-sm-12">
-				<div ng-repeat="item in service.data.item" ng-class="{ 'alert-info': service.isSelected(item) }">
-					<div ng-click="$ctrl.onSelect(item)">
-						ID: <span>{{item.id}}</span>; location: <span>{{item.name}}</span>
-					</div>
-				</div>
-			</div>
-		</div>
+		<input type="text" class="form-control" ng-model="$ctrl.query" ng-change="$ctrl.onChange()" />
+		<dl>
+			<dd ng-repeat="item in service.data.item" ng-class="{ 'alert-info': service.isSelected(item) }" ng-click="$ctrl.onSelect(item)">
+					ID: <span>{{item.id}}</span>; location: <span>{{item.name}}</span>
+			</dd>
+		</dl>
 	</my-panel>
 </div>
 <div class="col-sm-8">

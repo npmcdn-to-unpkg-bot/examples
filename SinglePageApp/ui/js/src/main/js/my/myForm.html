@@ -1,11 +1,15 @@
 <form 
-	name="$ctrl.myForm" 
-	class="form-horizontal" 
+	name="$ctrl.myForm"
+	class="form-horizontal"
+	role="form"
 	novalidate
 	ng-model-options="{ updateOn: 'default blur', debounce: { default: 700, blur: 0 } }"
 >
-	<div class="col-sm-12 panel panel-danger" ng-if="$ctrl.hasErrors()">
-		<p ng-repeat="error in $ctrl.myForm.submitErrors.errors">{{error}}</p>
+	<div class="alert alert-danger" ng-if="$ctrl.hasErrors()">
+		<div ng-repeat="error in $ctrl.myForm.submitErrors.errors">
+			<span class="glyphicon glyphicon-exclamation-sign"></span>
+			{{error}}
+		</div>
 	</div>
 	<ng-transclude></ng-transclude>
 	<div class="form-group">

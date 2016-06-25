@@ -123,5 +123,5 @@ module.component('myFormField', {
 		label: "@",
 		name: "@"
 	},
-	controller: Implementation,
+	controller: Implementation
 });

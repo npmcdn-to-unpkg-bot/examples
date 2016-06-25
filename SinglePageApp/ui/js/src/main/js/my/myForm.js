@@ -14,10 +14,12 @@ function Implementation($scope, $q) {
 			(that.myForm) &&
 			(that.myForm.submitErrors) &&
 			(that.myForm.submitErrors.errors) &&
-			(that.myForm.submitErrors.errors.length === 0) &&
 			(that.myForm.submitErrors.fieldErrors)
 			)) {
 			return false;
+		}
+		if (that.myForm.submitErrors.errors.length !== 0) {
+			return true;
 		}
 		for (var i in that.myForm.submitErrors.fieldErrors) {
 			var e = that.myForm.submitErrors.fieldErrors[i];
