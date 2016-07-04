@@ -1,12 +1,20 @@
+/**
+ * Registers $scope listeners: "myFormClearErrors" and "myFormAddError".
+ * The "myFormAddError" accepts two parameters: error object and name of the error.
+ * If the name of the error is "submitError" then the error object is expected to be the
+ * error object passed by $resource to the $error method of the promise
+ */
+
 var module = angular.module('my');
 
 Implementation.$inject = ["$scope", "$q"];
 function Implementation($scope, $q) {
 	var that = this;
-	
+
 	that.$onChanges = function() {
 		$scope.save = that.save ? that.save : "Save";
 		$scope.cancel = that.cancel ? that.cancel : "Cancel";
+		ClearErrors();
 	};
 
 	that.hasErrors = function() {
@@ -47,7 +55,11 @@ function Implementation($scope, $q) {
 			that.myForm.submitErrors.fieldErrors[i].length = 0;
 		}
 	}
-	ClearErrors();
+	
+	$scope.$on("myFormClearErrors", ClearErrors);
+	$scope.$on("myFormAddError", function(event, error, name) {
+		addError(error, name);
+	});
 	
 	function addError(error, name) {
 		if (!error)
@@ -77,23 +89,13 @@ function Implementation($scope, $q) {
 	
 	that.onBtnSave = function() {
 		ClearErrors();
-		if ((typeof that.onSave === "function") &&
-			that.isBtnSaveEnabled()) {
-			try {
-				var r = that.onSave(addError);
-				$q.when(r).catch(function(e) {
-					addError("Operation failed " + e);
-				});
-			} catch (e) {
-				addError("Operation failed " + e);
-			}
+		if (that.isBtnSaveEnabled()) {
+			that.onSave();
 		}
 	};
 
 	that.onBtnCancel = function() {
-		if (typeof that.onCancel === "function") {
-			that.onCancel();
-		}
+		that.onCancel();
 	};
 }
 
@@ -102,9 +104,9 @@ module.component('myForm', {
 	transclude: true,
 	bindings: {
 		save: "@",
-		onSave: "=",
+		onSave: "&",
 		cancel: "@",
-		onCancel: "="
+		onCancel: "&"
 	},
 	controller: Implementation
 });

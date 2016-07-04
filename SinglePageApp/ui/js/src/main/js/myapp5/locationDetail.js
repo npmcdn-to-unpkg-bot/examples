@@ -12,17 +12,17 @@ function Implementation($scope, service, logger, $timeout) {
 		$scope.item = angular.copy(newValue);
 	});
 
-	that.onCancel = function(addError) {
+	that.onCancel = function() {
 		console.log("onCancel");
 		service.selectedItem = null;
 	};
 	
-	that.onSave = function(addError) {
+	that.onSave = function() {
 		console.log("onSave");
-		addError("Just a dummy error");
+		$scope.$broadcast("myFormAddError", "Just a dummy error");
 		
 		if ($scope.item.name.startsWith("w")) {
-			addError("Name should not start with w.");
+			$scope.$broadcast("myFormAddError", "Name should not start with w.");
 			return;
 		}
 
@@ -31,7 +31,7 @@ function Implementation($scope, service, logger, $timeout) {
 			logger.log("Saved ", d);
 			service.selectedItem = null;
 		}, function(e) {
-			addError(e, "submitError");
+			$scope.$broadcast("myFormAddError", e, "submitError");
 		});
 	};
 	

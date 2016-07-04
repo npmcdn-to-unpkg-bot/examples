@@ -1,5 +1,5 @@
 <my-panel ng-show="$ctrl.item" data-title="Details">
-	<my-form data-item="$ctrl.item" data-save="Done" data-on-save="$ctrl.onSave" data-on-cancel="$ctrl.onCancel">
+	<my-form data-item="$ctrl.item" data-save="Done" data-on-save="$ctrl.onSave()" data-on-cancel="$ctrl.onCancel()">
 		<my-form-field data-label="ID:" data-name="id">
 			<p class="form-control-static">{{item.id}}</p>
 		</my-form-field>
@@ -13,7 +13,7 @@
 				ng-maxlength="15"
 				ng-required="true"
 				ng-trim="true"
-				ng-pattern="/[A-Za-z0-9]+/"
+				ng-pattern="'[A-Za-z@0-9]+'"
 			/>
 		</my-form-field>
 		<my-form-field data-label="e-mail:" data-name="email">
