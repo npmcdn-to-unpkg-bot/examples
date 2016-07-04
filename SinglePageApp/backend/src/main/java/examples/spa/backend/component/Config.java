@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
@@ -38,6 +39,7 @@ public class Config {
 		AnnotationIntrospector i1 = new JacksonAnnotationIntrospector();
 		AnnotationIntrospector i2 = new JaxbAnnotationIntrospector();
 		AnnotationIntrospector pair = new AnnotationIntrospectorPair(i1, i2);
+		m.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
 		m.setAnnotationIntrospector(pair);
 	}
 	

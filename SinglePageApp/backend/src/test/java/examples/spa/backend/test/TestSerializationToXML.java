@@ -1,6 +1,9 @@
 package examples.spa.backend.test;
 
 import java.util.ArrayList;
+import java.util.Date;
+
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -23,7 +26,7 @@ public class TestSerializationToXML {
 		dumpObj(0);
 		ArrayList list = new ArrayList();
 		list.add(1);
-		list.add(2);
+		list.add(new Date());
 		dumpObj(list);
 	}
 	
@@ -34,9 +37,11 @@ public class TestSerializationToXML {
 		AnnotationIntrospector secondary = new JaxbAnnotationIntrospector();
 		AnnotationIntrospector pair = new AnnotationIntrospectorPair(primary, secondary);
 
-		//ObjectMapper m = Jackson2ObjectMapperBuilder.xml().build();
-		XmlMapper xm = new XmlMapper();
-		ObjectMapper m = xm;
+		ObjectMapper m = Jackson2ObjectMapperBuilder.xml().build();
+		//XmlMapper xm = new XmlMapper();
+		//ObjectMapper m = xm;
+		//m.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX"));
+		m.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		m.setAnnotationIntrospector(pair);
 		m.enable(SerializationFeature.INDENT_OUTPUT);
 		
