@@ -4,7 +4,10 @@
 </div>
 <div class="col-sm-4">
 	<my-panel data-title="Location">
-		<input type="text" class="form-control" ng-model="$ctrl.query" ng-change="$ctrl.updateList()" />
+		<div class="form-group has-feedback">
+			<input placeholder="Search" type="text" class="form-control" ng-model="$ctrl.query" ng-change="$ctrl.updateList()" />
+			<a href="" class="btn btn-primary form-control-feedback"><span class="glyphicon glyphicon-cog"></span></a>
+		</div>
 		<label>max:</label><select ng-model="$ctrl.size" ng-change="$ctrl.updateList()"
 			ng-options="size for size in [3,5,10,20,50,100]">
 		</select>
@@ -23,6 +26,7 @@
 			max-size="5"
 			previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"
 			boundary-links="true"
+			boundary-link-numbers="false"
 			ng-model="$ctrl.page"
 			ng-change="$ctrl.updateList()">
 		</uib-pagination>
