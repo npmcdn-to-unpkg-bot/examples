@@ -20,13 +20,14 @@ import org.slf4j.LoggerFactory;
 
 import com.slavi.math.MathUtil;
 
-import examples.spa.backend.component.EntityWithIdJpa;
 import examples.spa.backend.model.FieldDef;
 import examples.spa.backend.model.FilterItemResponse;
 
 /**
  */
 public class FilterItemHelper<T> {
+	public static final int maxRecordsetRecords = 100;
+
 	protected final Logger logger;
 
 	protected EntityManager em;
@@ -98,13 +99,6 @@ public class FilterItemHelper<T> {
 		});
 	}
 	
-	/**
-	 * Order by format is: 
-	 * <column_name[|sort_direction]>[,<column_name[|sort_direction]> ...]
-	 * Where sort_direction is "asc" or "desc". Default is "asc".
-	 * Example:
-	 * name|asc, createDate,id|desc
-	 */
 	public String getOrderBy() {
 		return "";
 	}
@@ -119,19 +113,23 @@ public class FilterItemHelper<T> {
 			item = StringUtils.trimToNull(item);
 			if (item == null)
 				continue;
-			String split[] = item.split("|");
-			if (split.length == 0)
+			boolean descending = false;
+			switch (item.charAt(0)) {
+			case '-':
+				descending = true;
+				// no break here
+			case '+':
+				item = StringUtils.trimToNull(item.substring(1));
+				// no break needed
+			}
+			if (item == null)
 				continue;
-			String name = StringUtils.trimToNull(split[0]);
-			if (name == null)
-				continue;
-			FieldDefinition fd = fields.remove(name.toUpperCase());
+			FieldDefinition fd = fields.remove(item.toUpperCase());
 			if (fd == null)
 				continue;
 			r.append(prefix);
 			r.append("t.");
-			r.append(name);
-			boolean descending = "DESC".equalsIgnoreCase(split.length >= 2 ? StringUtils.trimToNull(split[1]) : null);
+			r.append(item);
 			if (descending)
 				r.append(" DESC");
 			prefix = ",";
@@ -202,6 +200,13 @@ public class FilterItemHelper<T> {
 		return etype.getName() + " t";
 	}
 	
+	/**
+	 * Order by format is: 
+	 * <[sort_direction]column_name>[,<[sort_direction]column_name ...]
+	 * Where sort_direction is "+" (ascending) or "-" (descending). Default is asccending.
+	 * Example:
+	 * -name,+createDate,id
+	 */
 	public FilterItemResponse<T> find(int page, int size, String search, String orderBy) throws Exception {
 		FilterItemResponse<T> result = new FilterItemResponse<>();
 		try {
@@ -225,7 +230,7 @@ public class FilterItemHelper<T> {
 				q.setParameter(i.getKey(), i.getValue());
 			}
 	
-			q.setMaxResults(MathUtil.clipValue(size, 0, EntityWithIdJpa.maxRecordsetRecords));
+			q.setMaxResults(MathUtil.clipValue(size, 0, maxRecordsetRecords));
 			q.setFirstResult(Math.max(page * size, 0));
 			List<T> items = q.getResultList();
 		

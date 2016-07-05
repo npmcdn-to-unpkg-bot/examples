@@ -10,7 +10,7 @@ import examples.spa.backend.model.Location;
 import examples.spa.backend.validation.LocationValidator;
 
 @Controller
-@RequestMapping("/location")
+@RequestMapping("/locations")
 public class LocationController extends IdNamePairControllerBase<Location> {
 	@Autowired
 	public LocationController(LocationJpa jpa) {

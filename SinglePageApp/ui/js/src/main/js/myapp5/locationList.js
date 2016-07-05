@@ -5,7 +5,6 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, service, 
 	var that = this;
 	that.service = service;
 	$scope.service = service;
-	that.query = "";
 	that.delayedRunner = utils.delayedRunner();
 	
 	that.isDone = function() {
@@ -46,13 +45,32 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, service, 
 		fn($scope, {});
 	};
 	
-	that.onChange = function() {
-		that.delayedRunner.run(function() {
-			service.selectedItem = null;
-			service.loadData(that.query);
+	that.query = "";
+	that.page = 1;
+	that.size = 5;
+	that.data = {};
+	that.orderBy = [
+		{ v: "+name",		k: "Name asc" },
+		{ v: "-name",		k: "Name desc" },
+		{ v: "+id",			k: "ID asc" },
+		{ v: "-id",			k: "ID desc" },
+	];
+	that.order = that.orderBy[0].v;
+	
+	that.updateList = function() {
+		service.selectedItem = null;
+		var r = service.resource.search({ search: that.query, page: that.page-1, size: that.size, order: that.order });
+		r.$promise.then(function() {
+			that.data = r;
+			console.log(r);
 		});
 	};
-
+	that.updateList();
+	
+	that.dummy = function() {
+		console.log(that.order);
+	};
+	
 	that.onSelect = function(item) {
 		// toggle selected item
 		service.selectedItem = item === service.selectedItem ? null : item;

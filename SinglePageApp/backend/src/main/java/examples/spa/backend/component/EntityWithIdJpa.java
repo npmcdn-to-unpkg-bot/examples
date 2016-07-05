@@ -5,6 +5,7 @@ import java.io.Serializable;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import examples.spa.backend.misc.FilterItemHelper;
@@ -12,15 +13,13 @@ import examples.spa.backend.model.EntityWithId;
 import examples.spa.backend.model.FilterItemResponse;
 
 public abstract class EntityWithIdJpa<ID extends Serializable, T extends EntityWithId<ID>> {
-	public static final int maxRecordsetRecords = 100;
-	public static final int maxAjaxRecordsetRecords = 20;
-
 	@PersistenceContext
 	protected EntityManager em;
 
+	@Autowired
+	protected UtilsService utils;
+
 	protected Class<T> entityClass;
-	
-	protected FilterItemHelper<T> filterItemHelper;
 	
 	public EntityWithIdJpa(Class<T> entityClass) {
 		this.entityClass = entityClass;
@@ -30,23 +29,9 @@ public abstract class EntityWithIdJpa<ID extends Serializable, T extends EntityW
 		return entityClass.newInstance();
 	}
 	
-	protected FilterItemHelper<T> getFilterItemHelper() {
-		FilterItemHelper<T> r = filterItemHelper;
-		if (r == null) {
-			synchronized (this) {
-				r = filterItemHelper;
-				if (r == null) {
-					this.filterItemHelper = new FilterItemHelper<>(em, entityClass);
-					r = filterItemHelper;
-				}
-			}
-		}
-		return r;
-	}
-
 	@Transactional(readOnly=true)
-	public FilterItemResponse<T> list(int page, int size, String search, String orderBy) throws Exception {
-		FilterItemHelper<T> f = getFilterItemHelper();
+	public FilterItemResponse filter(int page, int size, String search, String orderBy) throws Exception {
+		FilterItemHelper f = utils.getFilterItemHelper(entityClass);
 		return f.find(page, size, search, orderBy);
 	}
 
@@ -73,9 +58,5 @@ public abstract class EntityWithIdJpa<ID extends Serializable, T extends EntityW
 
 	public Class<T> getEntityClass() {
 		return entityClass;
-	}
-
-	public void setEntityClass(Class<T> entityClass) {
-		this.entityClass = entityClass;
 	}
 }

@@ -5,7 +5,6 @@ import java.io.Serializable;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import examples.spa.backend.misc.Utils;
 import examples.spa.backend.model.EntityWithId;
 import examples.spa.backend.model.FilterItemResponse;
 import examples.spa.backend.model.ResponseWrapper;
@@ -30,20 +28,20 @@ public abstract class EntityWithIdControllerBase<ID extends Serializable, T exte
 	public EntityWithIdJpa<ID, T> jpa;
 	
 	@Autowired
-	protected MessageSource messageSource;
+	protected UtilsService utils;
 	
 	public EntityWithIdControllerBase(EntityWithIdJpa<ID, T> jpa) {
 		this.jpa = jpa;
 	}
 
 	@RequestMapping(value="", method=RequestMethod.GET)
-	public @ResponseBody FilterItemResponse<T> filterItems(
+	public @ResponseBody FilterItemResponse filterItems(
 			@RequestParam(defaultValue = "0") int page, 
 			@RequestParam(defaultValue = "20") int size,
 			@RequestParam(defaultValue = "") String search,
 			@RequestParam(defaultValue = "") String order,
 			@RequestParam(defaultValue = "0") int draw) throws Exception {
-		FilterItemResponse<T> r = jpa.list(page, size, search, order);
+		FilterItemResponse r = jpa.filter(page, size, search, order);
 		r.draw = draw;
 		return r;
 	}
@@ -62,7 +60,7 @@ public abstract class EntityWithIdControllerBase<ID extends Serializable, T exte
 	public ResponseEntity saveItem(
 			@RequestBody @Valid T item, BindingResult result) throws Exception {
 		if (result.hasErrors() || (item == null) || (item.getId() == null)) {
-			return Utils.makeErrorResponse(result, messageSource);
+			return utils.makeErrorResponse(result);
 		} else {
 			item = jpa.save(item);
 			return ResponseEntity.ok(new ResponseWrapper(item.getId()));

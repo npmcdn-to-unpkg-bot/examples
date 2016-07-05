@@ -5,12 +5,12 @@ function Implementation($q, $resource, logger) {
 	var that = this;
 	that.selectedItem = null;
 
-	that.resource = $resource("api/location/:id", {
+	that.resource = $resource("api/locations/:id", {
 //		callback: "JSON_CALLBACK",
 		search: "",
 		page: 0,
 		size: 10,
-		order: "name|desc"
+		order: "-name"
 	}, {
 		search: { method: "get" },
 		delete: { method: "delete", params: { id: "@id" }},
