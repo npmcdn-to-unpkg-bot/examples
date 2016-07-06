@@ -1,0 +1,8 @@
+<div class="btn-group" uib-dropdown keyboard-nav>
+	<button id="simple-btn-keyboard-nav" type="button" class="btn btn-default" uib-dropdown-toggle>
+		{{$ctrl.modelValue}} &nbsp;<span class="caret"></span>&nbsp;
+	</button>
+	<ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="simple-btn-keyboard-nav">
+		<li role="menuitem" ng-repeat="item in $ctrl.itemList"><a href="" ng-click="$ctrl.model=item.k">{{item.v}}</a></li>
+	</ul>
+</div>

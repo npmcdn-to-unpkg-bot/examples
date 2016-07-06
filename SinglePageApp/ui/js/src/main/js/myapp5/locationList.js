@@ -50,10 +50,10 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, service, 
 	that.size = 5;
 	that.data = {};
 	that.orderBy = [
-		{ v: "+name",		k: "Name asc" },
-		{ v: "-name",		k: "Name desc" },
-		{ v: "+id",			k: "ID asc" },
-		{ v: "-id",			k: "ID desc" },
+		{ k: "+name",		v: "Name asc" },
+		{ k: "-name",		v: "Name desc" },
+		{ k: "+id",			v: "ID asc" },
+		{ k: "-id",			v: "ID desc" },
 	];
 	that.order = that.orderBy[0].v;
 	

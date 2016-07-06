@@ -19,17 +19,12 @@
 			</div>
 		</form>
 		
-		<label>max:</label><select ng-model="$ctrl.size" ng-change="$ctrl.updateList()"
-			ng-options="size for size in [3,5,10,20,50,100]">
-		</select>
-		<label>sort:</label><select ng-model="$ctrl.order" ng-change="$ctrl.updateList()"
-			ng-options="order.v as order.k for order in $ctrl.orderBy">
-		</select>
 		<dl>
 			<dd ng-repeat="item in $ctrl.data.item" ng-class="{ 'alert-info': service.isSelected(item) }" ng-click="$ctrl.onSelect(item)">
-					ID: <span>{{item.id}}</span>; location: <span>{{item.name}}</span>
+				ID: <span>{{item.id}}</span>; location: <span>{{item.name}}</span>
 			</dd>
 		</dl>
+
 		<uib-pagination 
 			class="pagination-sm" 
 			total-items="$ctrl.data.recordsFiltered"
@@ -41,7 +36,6 @@
 			ng-model="$ctrl.page"
 			ng-change="$ctrl.updateList()">
 		</uib-pagination>
-		
 	</my-panel>
 </div>
 <div class="col-sm-8">
