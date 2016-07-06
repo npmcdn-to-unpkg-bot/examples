@@ -1,0 +1,36 @@
+<form class="form-horizontal">
+	<div class="form-group">
+		<label class="control-label col-sm-2">max:</label>
+		<div class="col-sm-10">
+			<div class="btn-group" uib-dropdown keyboard-nav>
+				<button id="simple-btn-keyboard-nav" type="button" class="btn btn-default" uib-dropdown-toggle>
+					{{$ctrl.size}} &nbsp;<span class="caret"></span>&nbsp;
+				</button>
+				<ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="simple-btn-keyboard-nav">
+					<li role="menuitem" ng-repeat="size in [3,5,10,20,50,100]"><a href="" ng-click="$ctrl.size=size; $ctrl.updateList()">{{size}}</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<label class="control-label col-sm-2">max:</label>
+		<div class="col-sm-10">
+			<select class="" 
+				ng-model="$ctrl.size" 
+				ng-change="$ctrl.updateList()"
+				ng-options="size for size in [3,5,10,20,50,100]">
+			</select>
+		</div>
+	</div>
+	<div class="form-group">
+		<label class="control-label col-sm-2">sort:</label>
+		<div class="col-sm-10">
+			<select class="form-control"
+				ng-model="$ctrl.order" 
+				ng-change="$ctrl.updateList()"
+				ng-options="order.v as order.k for order in $ctrl.orderBy">
+			</select>
+		</div>
+	</div>
+</form>

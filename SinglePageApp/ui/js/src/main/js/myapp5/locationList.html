@@ -4,10 +4,21 @@
 </div>
 <div class="col-sm-4">
 	<my-panel data-title="Location">
-		<div class="form-group has-feedback">
-			<input placeholder="Search" type="text" class="form-control" ng-model="$ctrl.query" ng-change="$ctrl.updateList()" />
-			<a href="" class="btn btn-primary form-control-feedback"><span class="glyphicon glyphicon-cog"></span></a>
-		</div>
+		<form class="form-horizontal">
+			<div class="input-group">
+				<input placeholder="Search" type="text" class="form-control" ng-model="$ctrl.query" ng-change="$ctrl.updateList()" />
+				<span class="input-group-btn">
+					<a	href=""
+						class="btn btn-primary"
+						uib-popover-template="'myapp5/locationList-popover.html'" 
+						popover-placement="top-right"
+						popover-is-open="settings-isOpened">
+						<span class="glyphicon glyphicon-cog"></span>
+					</a>
+				</span>
+			</div>
+		</form>
+		
 		<label>max:</label><select ng-model="$ctrl.size" ng-change="$ctrl.updateList()"
 			ng-options="size for size in [3,5,10,20,50,100]">
 		</select>
