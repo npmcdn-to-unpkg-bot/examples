@@ -1,9 +1,9 @@
-<form class="form-vertical">
-	<my-form-field data-label="max:" data-name="max">
-		<my-combo data-items="[3,5,10,20,50,100]" data-model="$ctrl.size" data-on-update="$ctrl.updateList()"></my-combo>
+<form class="form-horizontal" style="width: 250px">
+	<my-form-field data-label="max:" data-label-width="4">
+		<my-combo data-items="[3,5,10,20,50,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117]" data-model="$ctrl.size" data-on-update="$ctrl.updateList()"></my-combo>
 	</my-form-field>
 	
-	<my-form-field data-label="order by:" data-name="max">
+	<my-form-field data-label="order by:" data-label-width="4">
 		<my-combo data-items="$ctrl.orderBy" data-model="$ctrl.order" data-on-update="$ctrl.updateList()"></my-combo>
 	</my-form-field>
 </form>

@@ -20,9 +20,22 @@ function Implementation($scope) {
 	that.hasErrors = false;
 	that.errors = [];
 
-	that.$onInit = function() {
+	that.$onChanges = function() {
 		$scope.form = that.form;
 		$scope.name = that.name;
+		var lw;
+		if (that.labelWidth >= 1 && that.labelWidth <= 11) {
+			lw = that.labelWidth;
+		} else if (that.labelWidth > 11) {
+			lw = 11;
+		} else if (that.labelWidth < 1) {
+			lw = 1;
+		} else {
+			lw = 2;
+		}
+		$scope.labelClass = "control-label col-sm-" + lw;
+		$scope.controlClass = "col-sm-" + (12-lw);
+		$scope.errorClass = "help-block col-sm-offset-" + lw + " col-sm-" + (12-lw);
 	};
 	function buildErrors(fieldField$error, formFieldSubmitError) {
 		that.errors = [];
@@ -121,6 +134,7 @@ module.component('myFormField', {
 	},
 	bindings: {
 		label: "@",
+		labelWidth: "@",
 		name: "@"
 	},
 	controller: Implementation

@@ -14,6 +14,18 @@ function Implementation($scope, $q) {
 	that.$onChanges = function() {
 		$scope.save = that.save ? that.save : "Save";
 		$scope.cancel = that.cancel ? that.cancel : "Cancel";
+		var lw;
+		if (that.labelWidth >= 1 && that.labelWidth <= 11) {
+			lw = that.labelWidth;
+		} else if (that.labelWidth > 11) {
+			lw = 11;
+		} else if (that.labelWidth < 1) {
+			lw = 1;
+		} else {
+			lw = 2;
+		}
+		$scope.btnGroupClass = "col-sm-offset-" + lw + " col-sm-" + (12-lw);
+
 		ClearErrors();
 	};
 
@@ -103,6 +115,7 @@ module.component('myForm', {
 	templateUrl: 'my/myForm.html',
 	transclude: true,
 	bindings: {
+		labelWidth: "@",
 		save: "@",
 		onSave: "&",
 		cancel: "@",

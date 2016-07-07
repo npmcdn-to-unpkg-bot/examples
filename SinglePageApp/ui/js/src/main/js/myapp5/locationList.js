@@ -62,14 +62,9 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, service, 
 		var r = service.resource.search({ search: that.query, page: that.page-1, size: that.size, order: that.order });
 		r.$promise.then(function() {
 			that.data = r;
-			console.log(r);
 		});
 	};
 	that.updateList();
-	
-	that.dummy = function() {
-		console.log(that.order);
-	};
 	
 	that.onSelect = function(item) {
 		// toggle selected item

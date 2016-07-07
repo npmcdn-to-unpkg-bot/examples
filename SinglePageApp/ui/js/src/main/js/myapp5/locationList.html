@@ -11,17 +11,26 @@
 					<a	href=""
 						class="btn btn-primary"
 						uib-popover-template="'myapp5/locationList-popover.html'" 
-						popover-placement="top-right"
+						popover-placement="bottom-right"
 						popover-is-open="settings-isOpened">
 						<span class="glyphicon glyphicon-cog"></span>
 					</a>
 				</span>
 			</div>
 		</form>
-		
+<!-- 
+		<div class="btn-group btn-block" uib-dropdown keyboard-nav is-open="true" auto-close="disabled">
+			<ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu">
+				<li role="menuitem" ng-repeat="item in $ctrl.data.item" ng-click="$ctrl.onSelect(item)">
+					ID: <span>{{item.id}}</span>; location: <span>{{item.name}}</span>
+				</li>
+			</ul>
+		</div>
+ -->
+
 		<dl>
 			<dd ng-repeat="item in $ctrl.data.item" ng-class="{ 'alert-info': service.isSelected(item) }" ng-click="$ctrl.onSelect(item)">
-				ID: <span>{{item.id}}</span>; location: <span>{{item.name}}</span>
+				<a href="">ID: <span>{{item.id}}</span>; location: <span>{{item.name}}</span></a>
 			</dd>
 		</dl>
 

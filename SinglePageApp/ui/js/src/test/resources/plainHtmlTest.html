@@ -8,56 +8,105 @@
 </head>
 
 <body>
+	<br/><br/><br/><br/><br/><br/><br/><br/><br/>
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-4">
 				<div class="panel panel-default">
 					<div class="panel-heading">Location</div>
-					<nav class="navbar navbar-default">
-						<div class="container-fluid">
-							<form class="navbar-form navbar-left" role="search" style="width: 100%;">
-								<div class="form-group" style="width: 100%;">
-									<input placeholder="Search" class="form-control" type="text" style="overflow:hidden; width: auto">
-									<a href="" class="btn btn-primary" style="float:right;"><span class="glyphicon glyphicon-cog"></span></a>
-								</div>
-							</form>
-						</div>
-					</nav>
 					<div class="panel-body">
 
 						<form class="form-horizontal">
 							<div class="input-group">
-								<input placeholder="Search" class="form-control" type="text">
-								<a href="" class="btn btn-primary input-group-addon"><span class="glyphicon glyphicon-cog"></span></a>
+								<input placeholder="Search" class="form-control" type="text"> <a href=""
+									class="btn btn-primary input-group-addon"><span class="glyphicon glyphicon-cog"></span></a>
+								<div style="display: block; top: -133px; left: -195px;" uib-popover-template-popup="" uib-title="" content-exp="contentExp()"
+									placement="top-right" popup-class="" animation="animation" is-open="isOpen" origin-scope="origScope"
+									class="popover ng-isolate-scope top fade in top-right" tooltip-animation-class="fade" uib-tooltip-classes=""
+									ng-class="{ in: isOpen() }">
+									<div style="bottom: -11px; right: 6px;" class="arrow"></div>
+
+									<div class="popover-inner">
+										<!-- ngIf: uibTitle -->
+										<div class="popover-content" uib-tooltip-template-transclude="contentExp()"
+											tooltip-template-transclude-scope="originScope()">
+											<form class="form-vertical ng-pristine ng-valid ng-scope">
+												<my-form-field class="ng-isolate-scope" data-label="max:" data-name="max">
+												<div class="form-group" ng-class="$ctrl.hasErrors ? 'has-error' : ''">
+													<label class="control-label col-sm-3 ng-binding">max:</label>
+													<div class="col-sm-9" ng-transclude="">
+														<my-combo class="ng-scope ng-isolate-scope" data-items="[3,5,10,20,50,100]" data-model="$ctrl.size"
+															data-on-update="$ctrl.updateList()">
+														<div class="btn-group dropdown" uib-dropdown="" keyboard-nav="">
+															<button aria-expanded="false" aria-haspopup="true" id="simple-btn-keyboard-nav" type="button"
+																class="btn btn-default ng-binding dropdown-toggle" uib-dropdown-toggle="">
+																5 &nbsp;<span class="caret"></span>&nbsp;
+															</button>
+															<ul class="dropdown-menu" uib-dropdown-menu="" role="menu" aria-labelledby="simple-btn-keyboard-nav">
+																<!-- ngRepeat: item in $ctrl.itemList -->
+																<li class="ng-scope" role="menuitem" ng-repeat="item in $ctrl.itemList"><a class="ng-binding"
+																	href="" ng-click="$ctrl.model=item.k">3</a></li>
+																<!-- end ngRepeat: item in $ctrl.itemList -->
+																<li class="ng-scope" role="menuitem" ng-repeat="item in $ctrl.itemList"><a class="ng-binding"
+																	href="" ng-click="$ctrl.model=item.k">5</a></li>
+																<!-- end ngRepeat: item in $ctrl.itemList -->
+																<li class="ng-scope" role="menuitem" ng-repeat="item in $ctrl.itemList"><a class="ng-binding"
+																	href="" ng-click="$ctrl.model=item.k">10</a></li>
+																<!-- end ngRepeat: item in $ctrl.itemList -->
+																<li class="ng-scope" role="menuitem" ng-repeat="item in $ctrl.itemList"><a class="ng-binding"
+																	href="" ng-click="$ctrl.model=item.k">20</a></li>
+																<!-- end ngRepeat: item in $ctrl.itemList -->
+																<li class="ng-scope" role="menuitem" ng-repeat="item in $ctrl.itemList"><a class="ng-binding"
+																	href="" ng-click="$ctrl.model=item.k">50</a></li>
+																<!-- end ngRepeat: item in $ctrl.itemList -->
+																<li class="ng-scope" role="menuitem" ng-repeat="item in $ctrl.itemList"><a class="ng-binding"
+																	href="" ng-click="$ctrl.model=item.k">100</a></li>
+																<!-- end ngRepeat: item in $ctrl.itemList -->
+															</ul>
+														</div>
+														</my-combo>
+													</div>
+													<!-- ngIf: $ctrl.hasErrors -->
+												</div>
+												</my-form-field>
+												<my-form-field class="ng-isolate-scope" data-label="order by:" data-name="max">
+												<div class="form-group" ng-class="$ctrl.hasErrors ? 'has-error' : ''">
+													<label class="control-label col-sm-3 ng-binding">order by:</label>
+													<div class="col-sm-9" ng-transclude="">
+														<my-combo class="ng-scope ng-isolate-scope" data-items="$ctrl.orderBy" data-model="$ctrl.order"
+															data-on-update="$ctrl.updateList()">
+														<div class="btn-group dropdown" uib-dropdown="" keyboard-nav="">
+															<button aria-expanded="false" aria-haspopup="true" id="simple-btn-keyboard-nav" type="button"
+																class="btn btn-default ng-binding dropdown-toggle" uib-dropdown-toggle="">
+																Name asc &nbsp;<span class="caret"></span>&nbsp;
+															</button>
+															<ul class="dropdown-menu" uib-dropdown-menu="" role="menu" aria-labelledby="simple-btn-keyboard-nav">
+																<!-- ngRepeat: item in $ctrl.itemList -->
+																<li class="ng-scope" role="menuitem" ng-repeat="item in $ctrl.itemList"><a class="ng-binding"
+																	href="" ng-click="$ctrl.model=item.k">Name asc</a></li>
+																<!-- end ngRepeat: item in $ctrl.itemList -->
+																<li class="ng-scope" role="menuitem" ng-repeat="item in $ctrl.itemList"><a class="ng-binding"
+																	href="" ng-click="$ctrl.model=item.k">Name desc</a></li>
+																<!-- end ngRepeat: item in $ctrl.itemList -->
+																<li class="ng-scope" role="menuitem" ng-repeat="item in $ctrl.itemList"><a class="ng-binding"
+																	href="" ng-click="$ctrl.model=item.k">ID asc</a></li>
+																<!-- end ngRepeat: item in $ctrl.itemList -->
+																<li class="ng-scope" role="menuitem" ng-repeat="item in $ctrl.itemList"><a class="ng-binding"
+																	href="" ng-click="$ctrl.model=item.k">ID desc</a></li>
+																<!-- end ngRepeat: item in $ctrl.itemList -->
+															</ul>
+														</div>
+														</my-combo>
+													</div>
+													<!-- ngIf: $ctrl.hasErrors -->
+												</div>
+												</my-form-field>
+											</form>
+										</div>
+									</div>
+								</div>
 							</div>
 						</form>
-
-
-
-						<div class="form-group">
-							<a href="" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-cog"></span></a>
-							<a href="" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-cog"></span></a>
-							<div class="fill-width" style="">
-								<input placeholder="Search" class="form-control" type="text" style="">
-							</div>
-						</div>
-						
-						<label>max:</label>
-						<select class="">
-							<option value="number:3" label="3">3</option>
-							<option selected="selected" value="number:5" label="5">5</option>
-							<option value="number:10" label="10">10</option>
-							<option value="number:20" label="20">20</option>
-							<option value="number:50" label="50">50</option>
-							<option value="number:100" label="100">100</option>
-						</select>
-						<label class="">sort:</label>
-						<select class="" >
-							<option selected="selected" value="string:+name" label="Name asc">Name asc</option>
-							<option value="string:-name" label="Name desc">Name desc</option>
-							<option value="string:+id" label="ID asc">ID asc</option>
-							<option value="string:-id" label="ID desc">ID desc</option>
-						</select>
 						
 						<p>
 						This is a veeeery long, long paragraph. 

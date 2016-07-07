@@ -6,7 +6,6 @@ function Implementation($scope, $q) {
 	that.modelValue = "";
 	
 	$scope.$watchCollection("$ctrl.items", function(newValue) {
-		console.log("collection ", that.model);
 		that.itemList = [];
 		var found = false;
 		var isArray = newValue && Array === newValue.constructor; 
@@ -46,7 +45,6 @@ function Implementation($scope, $q) {
 
 	var isInitialized = false;
 	$scope.$watch("$ctrl.model", function(newValue) {
-		console.log("value ", that.model);
 		if (!that.model)
 			return;
 		var found = false;
