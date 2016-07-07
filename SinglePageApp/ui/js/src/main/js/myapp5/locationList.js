@@ -70,23 +70,36 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, service, 
 		// toggle selected item
 		service.selectedItem = item === service.selectedItem ? null : item;
 	};
+	
+	////////////////////// Table
+	
+	that.columns = [
+		{ id: "id", name: "ID" },
+		{ id: "name", name: "Location" },
+	];
+	
+	that.doOrderBy = function(column) {
+		if (that.order === '+' + column.id) {
+			that.order = '+' + column.id;
+		} else {
+			that.order = '-' + column.id;
+		}
+		that.updateList();
+	};
+
+	that.getOrderByClass = function(column) {
+		console.log(column);
+		if (that.order === '+' + column.id) {
+			return "glyphicon glyphicon-chevron-up";
+		} else if (that.order === '-' + column.id) {
+			return "glyphicon glyphicon-chevron-down";
+		} else {
+			return "";
+		}
+	};
 }
 
 module.component("locationList", {
 	templateUrl: "myapp5/locationList.html",
 	controller: Implementation
 });
-
-/*
-module.directive('notEndingWithA', function() {
-	return {
-		require: 'ngModel',
-		link: function(scope, elm, attrs, ctrl) {
-			console.log("Init");
-			ctrl.$validators.notEndingWithA = function(modelValue, viewValue) {
-				console.log("Validate " + viewValue);
-				return !String(viewValue).endsWith("a");
-			};
-		}
-	};
-});*/

@@ -28,11 +28,21 @@
 		</div>
  -->
 
-		<dl>
-			<dd ng-repeat="item in $ctrl.data.item" ng-class="{ 'alert-info': service.isSelected(item) }" ng-click="$ctrl.onSelect(item)">
-				<a href="">ID: <span>{{item.id}}</span>; location: <span>{{item.name}}</span></a>
-			</dd>
-		</dl>
+		<table class="table table-condensed table-striped table-hover">
+			<thead>
+				<tr>
+					<th ng-repeat="column in $ctrl.columns" ng-click="$ctrl.doOrderBy(column)">
+						<span>{{column.name}}</span>
+						<span ng-class="$ctrl.getOrderByClass(column)"</span></a>
+					</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr ng-repeat="item in $ctrl.data.item" ng-class="{ 'info': service.isSelected(item) }" ng-click="$ctrl.onSelect(item)">
+					<td ng-repeat="column in $ctrl.columns">{{item[column.id]}}</td>
+				</tr>
+			</tbody>
+		</table>
 
 		<uib-pagination 
 			class="pagination-sm" 
