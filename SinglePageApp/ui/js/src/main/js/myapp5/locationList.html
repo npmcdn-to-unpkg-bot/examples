@@ -31,9 +31,9 @@
 		<table class="table table-condensed table-striped table-hover">
 			<thead>
 				<tr>
-					<th ng-repeat="column in $ctrl.columns" ng-click="$ctrl.doOrderBy(column)">
+					<th ng-repeat="column in $ctrl.columns" ng-click="$ctrl.doOrderBy($index)" ng-class="$ctrl.getHeaderColumnClass($index)">
 						<span>{{column.name}}</span>
-						<span ng-class="$ctrl.getOrderByClass(column)"</span></a>
+						<span ng-class="$ctrl.getOrderByClass($index)"</span>
 					</th>
 				</tr>
 			</thead>

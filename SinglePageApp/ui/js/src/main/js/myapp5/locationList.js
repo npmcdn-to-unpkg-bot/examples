@@ -55,13 +55,15 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, service, 
 		{ k: "+id",			v: "ID asc" },
 		{ k: "-id",			v: "ID desc" },
 	];
-	that.order = that.orderBy[0].v;
+	that.order = that.orderBy[0].k;
 	
 	that.updateList = function() {
-		service.selectedItem = null;
-		var r = service.resource.search({ search: that.query, page: that.page-1, size: that.size, order: that.order });
-		r.$promise.then(function() {
-			that.data = r;
+		that.delayedRunner.run(function() {
+			service.selectedItem = null;
+			var r = service.resource.search({ search: that.query, page: that.page-1, size: that.size, order: that.order });
+			r.$promise.then(function() {
+				that.data = r;
+			});
 		});
 	};
 	that.updateList();
@@ -74,21 +76,75 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, service, 
 	////////////////////// Table
 	
 	that.columns = [
-		{ id: "id", name: "ID" },
-		{ id: "name", name: "Location" },
+		{ id: "id", name: "ID", width: 2 },
+		{ id: "name", name: "Location", width: 3 },
 	];
+
+	that.calcColumns = [];
 	
-	that.doOrderBy = function(column) {
+	$scope.$watchCollection("$ctrl.columns", function(newValue) {
+		var i, totalWidth = 0;
+		that.calcColumns = [];
+
+		for (i = 0; i < newValue.length; i++) {
+			var tmp = angular.extend(
+					{ id: i+1, name: "", width: 1, sortable: true },
+					newValue[i]
+			);
+			if (tmp.name === null || tmp.name === "")
+				tmp.sortable = false;
+			that.calcColumns.push(tmp);
+			totalWidth += tmp.width;
+		}
+
+		if (totalWidth < 1)
+			totalWidth = that.calcColumns.length;
+		if (totalWidth > 12)
+			totalWidth = 12;
+
+		var calcTotalWidth = 0;
+		for (i = 0; i < that.calcColumns.length; i++) {
+			var col = that.calcColumns[i];
+			var c = col.width;
+			c = Math.floor(c * 12 / totalWidth);
+			if (c < 1)
+				c = 1;
+			if (c > 12)
+				c = 12;
+			calcTotalWidth += c;
+			col._calcWidth = c;
+		}
+		for (i = that.calcColumns.length - 1; i >= 0; i--) {
+			that.calcColumns[i]._calcWidth++;
+			calcTotalWidth++;
+			if (calcTotalWidth >= 12)
+				break;
+		}
+	});
+	
+	that.getHeaderColumnClass = function(index) {
+		var column = that.calcColumns[index];
+		if ((!column) || (!column.sortable))
+			return "";
+		return "clickable col-sm-" + column._calcWidth;
+	};
+	
+	that.doOrderBy = function(index) {
+		var column = that.calcColumns[index];
+		if ((!column) || (!column.sortable))
+			return;
 		if (that.order === '+' + column.id) {
-			that.order = '+' + column.id;
-		} else {
 			that.order = '-' + column.id;
+		} else {
+			that.order = '+' + column.id;
 		}
 		that.updateList();
 	};
 
-	that.getOrderByClass = function(column) {
-		console.log(column);
+	that.getOrderByClass = function(index) {
+		var column = that.calcColumns[index];
+		if ((!column) || (!column.sortable))
+			return "";
 		if (that.order === '+' + column.id) {
 			return "glyphicon glyphicon-chevron-up";
 		} else if (that.order === '-' + column.id) {
