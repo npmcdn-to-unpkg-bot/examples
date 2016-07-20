@@ -113,6 +113,21 @@
 	<bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller" />
 -->
 
+<!-- 
+	<mvc:resources mapping="/js/**"    location="/WEB-INF/js/,    classpath:/js/"   >
+		<mvc:cache-control max-age="3600" cache-public="true" />
+	</mvc:resources>
+	<mvc:resources mapping="/css/**"   location="/WEB-INF/css/,   classpath:/css/"  >
+		<mvc:cache-control max-age="3600" cache-public="true" />
+	</mvc:resources>
+	<mvc:resources mapping="/fonts/**" location="/WEB-INF/fonts/, classpath:/fonts/">
+		<mvc:cache-control max-age="3600" cache-public="true" />
+	</mvc:resources>
+	<mvc:resources mapping="/image/**" location="/WEB-INF/image/, classpath:/image/">
+		<mvc:cache-control max-age="3600" cache-public="true" />
+	</mvc:resources>
+ -->
+
 	<mvc:resources mapping="/js/**"    location="/WEB-INF/js/,    classpath:/js/"    />
 	<mvc:resources mapping="/css/**"   location="/WEB-INF/css/,   classpath:/css/"   />
 	<mvc:resources mapping="/fonts/**" location="/WEB-INF/fonts/, classpath:/fonts/" />

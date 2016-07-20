@@ -48,7 +48,7 @@ public class FilterItemHelper<T> {
 		String isMethodName = Boolean.class.equals(fieldClass) || boolean.class.equals(fieldClass) ? "is" + attributeName : null;
 		Class cl = entityClass;
 		while (cl != null) {
-			// First check getter methods. This is the way ot override an annotation
+			// First check getter methods. This is the way to override an annotation
 			for (Method m : cl.getDeclaredMethods()) {
 				String name = m.getName();
 				if (m.getReturnType().equals(fieldClass) &&
