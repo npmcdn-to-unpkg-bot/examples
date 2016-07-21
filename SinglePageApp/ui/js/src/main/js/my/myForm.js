@@ -96,7 +96,7 @@ function Implementation($scope, $q) {
 	}
 	
 	that.isBtnSaveEnabled = function() {
-		return that.myForm && (!that.myForm.$invalid) && (!that.myForm.$pristine) && (!that.hasErrors());
+		return that.myForm && (!that.myForm.$invalid) && (!that.myForm.$pristine);
 	};
 	
 	that.onBtnSave = function() {

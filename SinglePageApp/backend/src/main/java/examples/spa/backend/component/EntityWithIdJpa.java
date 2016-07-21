@@ -31,12 +31,12 @@ public abstract class EntityWithIdJpa<ID extends Serializable, T extends EntityW
 	
 	@Transactional(readOnly=true)
 	public FilterItemResponse filter(int page, int size, String search, String orderBy) throws Exception {
-		FilterItemHelper f = utils.getFilterItemHelper(entityClass);
+		FilterItemHelper f = new FilterItemHelper<>(em, entityClass);
 		return f.find(page, size, search, orderBy);
 	}
 
 	@Transactional(readOnly=true)
-	public T load(ID id) {
+	public T load(ID id) throws Exception {
 		return em.find(entityClass, id);
 	}
 

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Context
+	path="/examples.spa.backend"
+	reloadable="true"
+	antiJARLocking="true">
+
+	<Resources>
+		<PreResources
+			className="org.apache.catalina.webresources.DirResourceSet"
+			base="${basedir}/../ui/theme/target/classes"
+			webAppMount="/res" />
+		<PreResources
+			className="org.apache.catalina.webresources.DirResourceSet"
+			base="${basedir}/../ui/js/target/classes/js"
+			webAppMount="/res/js" />
+		<PreResources
+			className="org.apache.catalina.webresources.DirResourceSet"
+			base="${basedir}/../ui/js/src/test/resources"
+			webAppMount="/" />
+	</Resources>
+
+	<Resource
+		name="jdbc/example"
+		type="javax.sql.DataSource"  auth="Container"
+		maxActive="100" maxIdle="30" maxWait="10000"
+		username="" password="" 
+		driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
+		url="jdbc:derby:memory:example;create=true"/>
+</Context>

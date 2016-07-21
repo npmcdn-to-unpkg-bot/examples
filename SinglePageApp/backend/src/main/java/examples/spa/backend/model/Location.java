@@ -9,10 +9,10 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "loc")
+@Table(name = "mate_geo")
 @AttributeOverrides({
-	@AttributeOverride(name="id", column=@Column(name="loc_id")),
-	@AttributeOverride(name="name", column=@Column(name="loc_name"))
+	@AttributeOverride(name="id", column=@Column(name="geo_id")),
+	@AttributeOverride(name="name", column=@Column(name="geo_name"))
 })
 @Access(AccessType.PROPERTY)
 public class Location extends IdNamePair {

@@ -15,9 +15,6 @@ import examples.spa.backend.validation.LocationValidator;
 @Controller
 @RequestMapping("/locations")
 public class LocationController extends IdNamePairControllerBase<Location> {
-	
-	CacheControl cacheControl = CacheControl.maxAge(1, TimeUnit.DAYS);
-	
 	@Autowired
 	public LocationController(LocationJpa jpa) {
 		super(jpa);

@@ -1,17 +1,13 @@
 package examples.spa.backend.misc;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import javax.persistence.metamodel.Attribute;
 import javax.persistence.metamodel.EntityType;
 
 import org.apache.commons.lang3.StringUtils;
@@ -31,72 +27,14 @@ public class FilterItemHelper<T> {
 	protected final Logger logger;
 
 	protected EntityManager em;
-	protected final Class<T> entityClass;
+	protected FilterItemClassData<T> classData;
 	
-	protected List<FieldDefinition> orderByFields;
-	protected Map<String, FieldDefinition> fields;
+	private static ConcurrentMap<Class, FilterItemClassData> filterItemHelpers = new ConcurrentHashMap<>();
 	
 	public FilterItemHelper(EntityManager em, Class<T> entityClass) {
 		this.em = em;
-		this.entityClass = entityClass;
-		logger = LoggerFactory.getLogger(this.getClass());
-		initializeFieldDefinitions();
-	}
-	
-	private FieldDefinition getFieldDef(String attributeName, Class fieldClass) {
-		String getMethodName = "get" + attributeName;
-		String isMethodName = Boolean.class.equals(fieldClass) || boolean.class.equals(fieldClass) ? "is" + attributeName : null;
-		Class cl = entityClass;
-		while (cl != null) {
-			// First check getter methods. This is the way to override an annotation
-			for (Method m : cl.getDeclaredMethods()) {
-				String name = m.getName();
-				if (m.getReturnType().equals(fieldClass) &&
-					(name.equalsIgnoreCase(getMethodName) || name.equalsIgnoreCase(isMethodName))) {
-					FieldDef fd = m.getAnnotation(FieldDef.class);
-					if (fd != null) {
-						return new FieldDefinition(attributeName, fd);
-					}
-				}
-			}
-
-			for (Field f : cl.getDeclaredFields()) {
-				if (f.getName().equalsIgnoreCase(attributeName) && f.getType().equals(fieldClass)) {
-					FieldDef fd = f.getAnnotation(FieldDef.class);
-					if (fd != null) {
-						return new FieldDefinition(attributeName, fd);
-					}
-				}
-			}
-			cl = cl.getSuperclass();
-		}
-		return new FieldDefinition(attributeName);
-	}
-	
-	protected void initializeFieldDefinitions() {
-		orderByFields = new ArrayList<>();
-		fields = new HashMap<>();
-
-		EntityType etype = em.getMetamodel().entity(entityClass);
-		for (Attribute attr : (Set<Attribute>) etype.getAttributes()) {
-			String name = attr.getName();
-			String uname = name.toUpperCase();
-			if (fields.containsKey(uname))
-				continue;
-			FieldDefinition fd = getFieldDef(name, attr.getJavaType());
-			fields.put(uname, fd);
-			if (fd.order != FieldDef.Order.NOT_SORTED)
-				orderByFields.add(fd);
-		}
-		
-		orderByFields.sort(new Comparator<FieldDefinition>() {
-			public int compare(FieldDefinition o1, FieldDefinition o2) {
-				int r = Integer.compare(o1.orderPrecednce, o2.orderPrecednce);
-				if (r == 0)
-					r = o1.name.compareToIgnoreCase(o2.name);
-				return r;
-			}
-		});
+		this.logger = LoggerFactory.getLogger(this.getClass());
+		this.classData = filterItemHelpers.computeIfAbsent(entityClass, klazz -> new FilterItemClassData<>(em, klazz));
 	}
 	
 	public String getOrderBy() {
@@ -104,7 +42,7 @@ public class FilterItemHelper<T> {
 	}
 	
 	protected String buildSqlOrderBy(String orderBy) {
-		Map<String, FieldDefinition> fields = new HashMap<>(this.fields);
+		Map<String, FieldDefinition> fields = new HashMap<>(this.classData.fields);
 		StringBuilder r = new StringBuilder();
 		String prefix = "ORDER BY ";
 		
@@ -135,7 +73,7 @@ public class FilterItemHelper<T> {
 			prefix = ",";
 		}
 		
-		for (FieldDefinition i : orderByFields) {
+		for (FieldDefinition i : classData.orderByFields) {
 			FieldDefinition fd = fields.remove(i);
 			if (fd == null)
 				continue;
@@ -160,10 +98,10 @@ public class FilterItemHelper<T> {
 
 		StringBuilder where = new StringBuilder();
 		String prefix = "";
-		EntityType etype = em.getMetamodel().entity(entityClass);
+		EntityType etype = em.getMetamodel().entity(classData.entityClass);
 		
 		if (!"".equals(searchString)) {
-			for (FieldDefinition fd : fields.values()) {
+			for (FieldDefinition fd : classData.fields.values()) {
 				if (!fd.searchable)
 					continue;
 				where.append(prefix);
@@ -196,7 +134,7 @@ public class FilterItemHelper<T> {
 	}
 	
 	public String getFrom() {
-		EntityType etype = em.getMetamodel().entity(entityClass);
+		EntityType etype = em.getMetamodel().entity(classData.entityClass);
 		return etype.getName() + " t";
 	}
 	
@@ -225,7 +163,7 @@ public class FilterItemHelper<T> {
 			String order = StringUtils.trimToEmpty(buildSqlOrderBy(orderBy));
 	
 			String fromClause = getFrom();
-			TypedQuery<T> q = em.createQuery("SELECT t from " + fromClause + where + " " + order, entityClass);
+			TypedQuery<T> q = em.createQuery("SELECT t from " + fromClause + where + " " + order, classData.entityClass);
 			for (Map.Entry<String, Object> i : paramMapAll.entrySet()) {
 				q.setParameter(i.getKey(), i.getValue());
 			}

@@ -10,6 +10,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
+import examples.spa.backend.component.UtilsService;
 import examples.spa.backend.model.FieldDef.Order;
 
 @MappedSuperclass
@@ -47,5 +48,9 @@ public abstract class EntityWithTimestamps<ID extends Serializable> implements E
 
 	public void setCreatedOn(Date createdOn) {
 		this.createdOn = createdOn;
+	}
+	
+	public String toString() {
+		return UtilsService.objectToString(this);
 	}
 }

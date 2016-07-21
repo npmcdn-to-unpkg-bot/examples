@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OrderBy;
 
+import examples.spa.backend.component.UtilsService;
 import examples.spa.backend.model.FieldDef.Order;
 
 @MappedSuperclass
@@ -53,6 +54,6 @@ public class IdNamePair implements EntityWithId<Integer> {
 	}
 	
 	public String toString() {
-		return getClass().getSimpleName() + " [id:" + getId() + ", name:" + getName() + "]";
+		return UtilsService.objectToString(this);
 	}
 }
