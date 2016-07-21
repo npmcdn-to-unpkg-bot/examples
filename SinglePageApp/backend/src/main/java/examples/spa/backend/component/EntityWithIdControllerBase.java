@@ -1,7 +1,6 @@
 package examples.spa.backend.component;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
@@ -72,23 +71,12 @@ public abstract class EntityWithIdControllerBase<ID extends Serializable, T exte
 	@RequestMapping(value="", method=RequestMethod.POST)
 	public ResponseEntity saveItem(
 			@RequestBody @Valid T item, BindingResult result) throws Exception {
-		if (item instanceof EntityWithTimestamps) {
-			ID id = item.getId();
-			if (id != null) {
-				EntityWithTimestamps tt = (EntityWithTimestamps) item;
-				Date lastModified = tt.getLastModified();
-				if (lastModified == null) {
-					result.rejectValue("lastModified", "lastModified.canNotBeEmptyWhenSavingData");
-				}
-			}
-		}
-		
 		if (result.hasErrors() || (item == null)) {
 			return utils.makeErrorResponse(result);
 		} else {
 			item = jpa.save(item);
-			return ResponseEntity.ok(new ResponseWrapper(item.getId()));
 		}
+		return ResponseEntity.ok(new ResponseWrapper(item.getId()));
 	}
 
 	@RequestMapping(value="new", method=RequestMethod.GET)

@@ -10,6 +10,8 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
+import examples.spa.backend.model.FieldDef.Order;
+
 @MappedSuperclass
 @Access(AccessType.FIELD)
 public abstract class EntityWithTimestamps<ID extends Serializable> implements EntityWithId<ID> {
@@ -17,6 +19,7 @@ public abstract class EntityWithTimestamps<ID extends Serializable> implements E
 	@Column
 	Date createdOn;
 
+	@FieldDef(order = Order.DESC, orderPrecednce = -100)
 	@Column
 	Date lastModified;
 	

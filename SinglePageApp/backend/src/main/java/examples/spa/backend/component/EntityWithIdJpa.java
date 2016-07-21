@@ -36,7 +36,7 @@ public abstract class EntityWithIdJpa<ID extends Serializable, T extends EntityW
 	}
 
 	@Transactional(readOnly=true)
-	public T load(ID id) throws Exception {
+	public T load(ID id) {
 		return em.find(entityClass, id);
 	}
 

@@ -25,9 +25,9 @@ public @interface FieldDef {
 	Order order() default Order.NOT_SORTED;
 	
 	/**
-	 * Precedence in the order by list. The higher the number the more upfront in the order by list. 
-	 * If more than one have the same precedence number then the "final" precence is determined in
-	 * alfabetical order.
+	 * Precedence in the order by list. The higher the number the higher in the order by list. 
+	 * If more than one have the same precedence number then the "final" precedence is determined in
+	 * alphabetical order.
 	 */
 	int orderPrecednce() default 0;
 }
