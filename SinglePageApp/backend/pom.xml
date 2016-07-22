@@ -20,6 +20,12 @@
 			<artifactId>examples.spa.ui.js</artifactId>
 		</dependency>
  -->
+
+		<dependency>
+			<groupId>commons-dbutils</groupId>
+			<artifactId>commons-dbutils</artifactId>
+		</dependency>
+
 		<dependency>
 			<groupId>org.codehaus.woodstox</groupId>
 			<artifactId>woodstox-core-asl</artifactId>
@@ -28,6 +34,10 @@
 		<dependency>
 			<groupId>com.slavi</groupId>
 			<artifactId>util.util</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.slavi</groupId>
+			<artifactId>util.io</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.slavi</groupId>

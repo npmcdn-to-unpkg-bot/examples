@@ -40,4 +40,8 @@ public class UtilsService {
 	public static String objectToString(Object o) {
 		return ReflectionToStringBuilder.toString(o, ToStringStyle.SHORT_PREFIX_STYLE);	
 	}
+	
+	public static <T> T nvl(T value, T defaultValue) {
+		return value == null ? defaultValue : value;
+	}
 }

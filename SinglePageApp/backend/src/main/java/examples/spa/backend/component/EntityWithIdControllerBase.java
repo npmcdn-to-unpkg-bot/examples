@@ -26,7 +26,7 @@ import examples.spa.backend.model.ResponseWrapper;
  * Ideas borrowed from:
  * https://gist.github.com/wvuong/5673644
  */
-// @RestController
+// @MyRestController
 // @RequestMapping("/someItem")
 public abstract class EntityWithIdControllerBase<ID extends Serializable, T extends EntityWithId<ID>> {
 	public EntityWithIdJpa<ID, T> jpa;

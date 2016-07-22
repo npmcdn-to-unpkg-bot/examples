@@ -2,6 +2,8 @@ package examples.spa.backend.test;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
@@ -27,6 +29,25 @@ public class TestSerializationToXML {
 		ArrayList list = new ArrayList();
 		list.add(1);
 		list.add(new Date());
+		dumpObj(list);
+		
+		list.clear();
+		Map map = new HashMap();
+		map.put("a", "AAA");
+		map.put("b", "BBB");
+		map.put("c", "CCC");
+		map.put("d", "DDD");
+
+		Map map2 = new HashMap();
+		map2.put("a2", "AAA-2");
+		map2.put("b2", "BBB-2");
+		map2.put("c2", "CCC-2");
+		map2.put("d2", "DDD-2");
+		
+		map.put("map", map2);
+		
+		list.add(map2);
+		list.add(map);
 		dumpObj(list);
 	}
 	
