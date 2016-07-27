@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
@@ -42,8 +43,12 @@ public class MyRestConfigurer {
 		try (InputStream is = config.getInputStream()) {
 			myRestConfig = xmlObjectMapper.readValue(is, MyRestConfig.class);
 		}
-		if (myRestConfig == null || myRestConfig.configItem == null || myRestConfig.configItem.length == 0)
+		if (myRestConfig == null)
 			return;
+		if (myRestConfig.configItem == null)
+			myRestConfig.configItem = new MyRestConfigItem[0];
+		if (myRestConfig.rest == null)
+			myRestConfig.rest = new MyRestObject[0];
 
 		try (Connection connection = dataSource.getConnection()) {
 			for (MyRestConfigItem item : myRestConfig.configItem) {
@@ -69,6 +74,18 @@ public class MyRestConfigurer {
 						dbField[i] = dbf;
 					}
 					item.setDbField(dbField);
+				}
+			}
+			//////////////////
+			DatabaseMetaData meta = connection.getMetaData();
+			for (MyRestObject item : myRestConfig.rest) {
+				// item.table;
+				try (
+					ResultSet rs = meta.getTables(null, null, item.getTable(), null);
+					) {
+					while (rs.next()) {
+						
+					}
 				}
 			}
 		}

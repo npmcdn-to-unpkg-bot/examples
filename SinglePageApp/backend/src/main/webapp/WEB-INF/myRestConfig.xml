@@ -5,4 +5,9 @@
 		<field name="geo_id"   searchable="false" ignoreCase="true"  appendWildcards="true"  order="NONE" />
 		<field name="geo_name" searchable="true"  ignoreCase="true"  appendWildcards="true"  order="ASC"  />
 	</configItem>
+	
+	<rest>
+		<name>loc</name>
+		<table>mate_geo</table>
+	</rest>
 </myRestConfig>

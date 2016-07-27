@@ -13,6 +13,8 @@ import examples.spa.backend.component.UtilsService;
 public class MyRestConfig implements Serializable {
 
 	MyRestConfigItem configItem[];
+	
+	MyRestObject rest[];
 
 	public MyRestConfigItem[] getConfigItem() {
 		return configItem;
@@ -24,5 +26,13 @@ public class MyRestConfig implements Serializable {
 	
 	public String toString() {
 		return UtilsService.objectToString(this);
+	}
+
+	public MyRestObject[] getRest() {
+		return rest;
+	}
+
+	public void setRest(MyRestObject[] rest) {
+		this.rest = rest;
 	}
 }
