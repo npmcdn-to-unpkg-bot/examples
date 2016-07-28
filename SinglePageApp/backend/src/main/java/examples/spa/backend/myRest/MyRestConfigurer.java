@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
+import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
 import org.jdom2.JDOMException;
@@ -21,9 +22,15 @@ import org.springframework.core.io.Resource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import examples.spa.backend.component.UtilsService;
+import examples.spa.backend.myRest.meta.MyDatabaseMeta;
+
 public class MyRestConfigurer {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+	@Autowired
+	UtilsService utils;
+	
 	@Autowired
 	DataSource dataSource;
 
@@ -31,8 +38,19 @@ public class MyRestConfigurer {
 	ObjectMapper xmlObjectMapper;
 	
 	MyRestConfig myRestConfig;
+	MyDatabaseMeta myDatabaseMeta;
 	
 	Resource config;
+	
+	@PostConstruct
+	void initialize() throws SQLException {
+		try (Connection conn = dataSource.getConnection()) {
+			myDatabaseMeta = new MyDatabaseMeta();
+			DatabaseMetaData meta = conn.getMetaData();
+			myDatabaseMeta.load(meta, null, null);
+		}
+		logger.debug(utils.toJson(myDatabaseMeta));
+	}
 	
 	protected void loadConfig(Resource config) throws IOException, JDOMException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, IntrospectionException, SQLException {
 		if (config == null) {
@@ -118,5 +136,9 @@ public class MyRestConfigurer {
 				return item;
 		}
 		return null;
+	}
+
+	public MyDatabaseMeta getMyDatabaseMeta() {
+		return myDatabaseMeta;
 	}
 }

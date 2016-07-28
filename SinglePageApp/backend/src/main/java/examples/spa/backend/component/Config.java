@@ -58,6 +58,15 @@ public class Config {
 		configureObjectMapper(m);
 		return m;
 	}
+	
+	@Bean
+	public ObjectMapper prettyJsonObjectMapper() {
+		ObjectMapper m = jsonObjectMapper();
+		m.configure(SerializationFeature.INDENT_OUTPUT, true);
+		m.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+		return m;
+	}
+	
 /*	
 	@Bean
 	public LocalValidatorFactoryBean validator() {

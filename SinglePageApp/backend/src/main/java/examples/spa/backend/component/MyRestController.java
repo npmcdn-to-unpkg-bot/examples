@@ -7,6 +7,7 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
+import javax.validation.Valid;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.MapListHandler;
@@ -16,7 +17,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -32,6 +35,8 @@ import examples.spa.backend.myRest.DbField;
 import examples.spa.backend.myRest.MyRestConfigField;
 import examples.spa.backend.myRest.MyRestConfigItem;
 import examples.spa.backend.myRest.MyRestConfigurer;
+import examples.spa.backend.myRest.meta.MyTabColumnMeta;
+import examples.spa.backend.myRest.meta.MyTableMeta;
 
 @RestController
 @RequestMapping("/rest")
@@ -53,9 +58,160 @@ public class MyRestController {
 	void initialize() {
 		queryRunner = new QueryRunner(dataSource);
 	}
+
+	@RequestMapping(value="{configName}/{id}", method=RequestMethod.GET)
+	public ResponseEntity loadItem(
+			@PathVariable("configName") String configName,
+			@PathVariable("id") String id) throws Exception {
+		MyTableMeta config = myRestConfigurer.getMyDatabaseMeta().tables.get(StringUtils.upperCase(configName));
+		if (config == null) {
+			// return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
+			throw new Exception("Config " + configName + " not defined.");
+		}
+		String ids[] = StringUtils.split(StringUtils.trimToEmpty(id), ",");
+		if (ids.length != config.bestRowIdColumns.size()) {
+			throw new Exception("Invalid id " + id);
+		}
+		StringBuilder sql = new StringBuilder();
+		sql.append("select * from ");
+		sql.append(config.name);
+		sql.append(" where ");
+		String prefix = "";
+		List params = new ArrayList<>();
+		for (int i = 0; i < ids.length; i++) {
+			String col = config.bestRowIdColumns.get(i);
+			String val = StringUtils.trimToNull(ids[i]);
+			sql.append(prefix);
+			sql.append(col);
+			if (val == null)
+				sql.append(" is null");
+			else {
+				sql.append("= ?");
+				params.add(val);
+			}
+			prefix = " and ";
+		}
+		List items = queryRunner.query(sql.toString(), mapListHandler, params.toArray());
+		switch (items.size()) {
+		case 0:
+			return ResponseEntity.notFound().build();
+		case 1:
+			return ResponseEntity.ok().body(new ResponseWrapper(items.get(0)));
+		default:
+			return ResponseEntity.unprocessableEntity().build();
+		}
+	}
+	
+	@RequestMapping(value="{configName}", method=RequestMethod.DELETE)
+	public void deleteItem(
+			@PathVariable("configName") String configName,
+			@PathVariable("id") String id) throws Exception {
+		MyTableMeta config = myRestConfigurer.getMyDatabaseMeta().tables.get(StringUtils.upperCase(configName));
+		if (config == null) {
+			// return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
+			throw new Exception("Config " + configName + " not defined.");
+		}
+		String ids[] = StringUtils.split(StringUtils.trimToEmpty(id), ",");
+		if (ids.length != config.bestRowIdColumns.size()) {
+			throw new Exception("Invalid id " + id);
+		}
+		StringBuilder sql = new StringBuilder();
+		sql.append("delete from ");
+		sql.append(config.name);
+		sql.append(" where ");
+		String prefix = "";
+		List params = new ArrayList<>();
+		for (int i = 0; i < ids.length; i++) {
+			String col = config.bestRowIdColumns.get(i);
+			String val = StringUtils.trimToNull(ids[i]);
+			sql.append(prefix);
+			sql.append(col);
+			if (val == null)
+				sql.append(" is null");
+			else {
+				sql.append("= ?");
+				params.add(val);
+			}
+			prefix = " and ";
+		}
+		queryRunner.update(sql.toString(), params.toArray());
+	}
+	
+	private String objToString(Object o) {
+		return o == null ? null : o.toString();
+	}
+	
+	@RequestMapping(value="{configName}", method=RequestMethod.POST)
+	public ResponseEntity saveItem(
+			@PathVariable("configName") String configName,
+			@RequestBody Map<?,?> item) throws Exception {
+		MyTableMeta config = myRestConfigurer.getMyDatabaseMeta().tables.get(StringUtils.upperCase(configName));
+		if (config == null) {
+			// return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
+			throw new Exception("Config " + configName + " not defined.");
+		}
+		
+		// Convert to case insensitive map.
+		Map<String, String> itemCI = new HashMap<>();
+		for (Map.Entry i : item.entrySet()) {
+			String key =  StringUtils.upperCase(objToString(i.getKey()));
+			String val = StringUtils.trimToNull(objToString(i.getValue()));
+			if (key != null)
+				itemCI.put(key, val);
+		}
+		
+		boolean keyHasNulls = false;
+		boolean keyHasNullsThatAreNotNull = false;
+		boolean keyHasNonNulls = false;
+		List ids = new ArrayList<>();
+		for (String col : config.bestRowIdColumns) {
+			String val = itemCI.get(col);
+			ids.add(val);
+			if (val == null) {
+				keyHasNulls = true;
+				MyTabColumnMeta c = config.columns.get(col);
+				if (!c.isNullable) {
+					keyHasNullsThatAreNotNull = true;
+				}
+			} else {
+				keyHasNonNulls = true;
+			}
+		}
+		
+		if (keyHasNonNulls && keyHasNullsThatAreNotNull) {
+			// Incomplete primary/unique key
+		}
+		
+		
+		return ResponseEntity.ok(new ResponseWrapper(item));
+/*		String ids[] = StringUtils.split(StringUtils.trimToEmpty(id), ",");
+		if (ids.length != config.bestRowIdColumns.size()) {
+			throw new Exception("Invalid id " + id);
+		}
+		StringBuilder sql = new StringBuilder();
+		sql.append("delete from ");
+		sql.append(config.name);
+		sql.append(" where ");
+		String prefix = "";
+		List params = new ArrayList<>();
+		for (int i = 0; i < ids.length; i++) {
+			String col = config.bestRowIdColumns.get(i);
+			String val = StringUtils.trimToNull(ids[i]);
+			sql.append(prefix);
+			sql.append(col);
+			if (val == null)
+				sql.append(" is null");
+			else {
+				sql.append("= ?");
+				params.add(val);
+			}
+			prefix = " and ";
+		}
+		queryRunner.update(sql.toString(), params.toArray());*/
+	}
 	
 	@RequestMapping(value="{configName}", method=RequestMethod.GET)
-	public ResponseEntity loadItem(
+	public ResponseEntity filterItems(
 			@PathVariable("configName") String configName,
 			@RequestParam(defaultValue = "0") int page, 
 			@RequestParam(defaultValue = "20") int size,

@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.introspect.AnnotationIntrospectorPair;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.fasterxml.jackson.dataformat.xml.JacksonXmlModule;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import com.slavi.util.StringPrintStream;
@@ -52,15 +53,16 @@ public class TestSerializationToXML {
 	}
 	
 	void dumpObj(Object o) throws Exception {
-		ResponseWrapper obj = new ResponseWrapper(o);
+		Object obj = new ResponseWrapper(o);
 		
 		AnnotationIntrospector primary = new JacksonAnnotationIntrospector();
 		AnnotationIntrospector secondary = new JaxbAnnotationIntrospector();
 		AnnotationIntrospector pair = new AnnotationIntrospectorPair(primary, secondary);
 
-		ObjectMapper m = Jackson2ObjectMapperBuilder.xml().build();
-		//XmlMapper xm = new XmlMapper();
-		//ObjectMapper m = xm;
+		//ObjectMapper m = Jackson2ObjectMapperBuilder.xml().build();
+		XmlMapper xm = new XmlMapper();
+		ObjectMapper m = xm;
+		m.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
 		//m.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX"));
 		m.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		m.setAnnotationIntrospector(pair);
@@ -74,7 +76,7 @@ public class TestSerializationToXML {
 		//m = Jackson2ObjectMapperBuilder.json().build();
 		m = new ObjectMapper();
 		m.setAnnotationIntrospector(pair);
-		//m.enable(SerializationFeature.INDENT_OUTPUT);
+		m.enable(SerializationFeature.INDENT_OUTPUT);
 		m.writeValue(out, obj);
 		System.out.println(out.toString());
 	}

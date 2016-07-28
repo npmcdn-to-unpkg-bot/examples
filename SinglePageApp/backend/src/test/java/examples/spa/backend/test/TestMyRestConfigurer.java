@@ -44,7 +44,7 @@ public class TestMyRestConfigurer {
 	}
 
 	void doIt() throws Exception {
-		ObjectMapper mapper = jsonObjectMapper();
+		ObjectMapper mapper = xmlObjectMapper();
 		
 		Connection conn = DriverManager.getConnection("jdbc:derby:memory:MyDbTest;create=true");
 		QueryRunner run = new QueryRunner();
