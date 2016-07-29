@@ -1,5 +1,8 @@
 package examples.spa.backend.component;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,7 +10,6 @@ import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-import javax.validation.Valid;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.MapListHandler;
@@ -17,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -140,7 +141,7 @@ public class MyRestController {
 	private String objToString(Object o) {
 		return o == null ? null : o.toString();
 	}
-	
+/*	
 	@RequestMapping(value="{configName}", method=RequestMethod.POST)
 	public ResponseEntity saveItem(
 			@PathVariable("configName") String configName,
@@ -152,24 +153,25 @@ public class MyRestController {
 		}
 		
 		// Convert to case insensitive map.
-		Map<String, String> itemCI = new HashMap<>();
+		Map<String, Object> itemCI = new HashMap<>();
 		for (Map.Entry i : item.entrySet()) {
 			String key =  StringUtils.upperCase(objToString(i.getKey()));
-			String val = StringUtils.trimToNull(objToString(i.getValue()));
+			Object val = i.getValue();
+			if (val instanceof String)
+				val = StringUtils.trimToNull((String) val);
 			if (key != null)
 				itemCI.put(key, val);
 		}
 		
-		boolean keyHasNulls = false;
+//		boolean keyHasNulls = false;
 		boolean keyHasNullsThatAreNotNull = false;
 		boolean keyHasNonNulls = false;
-		List ids = new ArrayList<>();
-		for (String col : config.bestRowIdColumns) {
-			String val = itemCI.get(col);
-			ids.add(val);
+		for (String col : config.bestRowIdColumnsSet) {
+			Object val = itemCI.get(col);
 			if (val == null) {
-				keyHasNulls = true;
+//				keyHasNulls = true;
 				MyTabColumnMeta c = config.columns.get(col);
+				// if (!(c.isNullable || c.isAutoincrement || c.isGeneratedColumn)) {
 				if (!c.isNullable) {
 					keyHasNullsThatAreNotNull = true;
 				}
@@ -180,34 +182,168 @@ public class MyRestController {
 		
 		if (keyHasNonNulls && keyHasNullsThatAreNotNull) {
 			// Incomplete primary/unique key
+			throw new Exception("Incomplete primary/unique key for " + configName);
 		}
 		
-		
-		return ResponseEntity.ok(new ResponseWrapper(item));
-/*		String ids[] = StringUtils.split(StringUtils.trimToEmpty(id), ",");
-		if (ids.length != config.bestRowIdColumns.size()) {
-			throw new Exception("Invalid id " + id);
-		}
+		boolean isUpdating = keyHasNonNulls;
 		StringBuilder sql = new StringBuilder();
-		sql.append("delete from ");
-		sql.append(config.name);
-		sql.append(" where ");
-		String prefix = "";
 		List params = new ArrayList<>();
-		for (int i = 0; i < ids.length; i++) {
-			String col = config.bestRowIdColumns.get(i);
-			String val = StringUtils.trimToNull(ids[i]);
-			sql.append(prefix);
-			sql.append(col);
-			if (val == null)
-				sql.append(" is null");
-			else {
-				sql.append("= ?");
+		
+		if (isUpdating) {
+			sql.append("update ");
+			sql.append(config.name);
+			String prefix = " set ";
+			for (MyTabColumnMeta col : config.columns.values()) {
+				if (config.bestRowIdColumnsSet.contains(col.name))
+					continue;
+				Object val = itemCI.get(col.name);
+				sql.append(prefix);
+				sql.append(col.name);
+				sql.append("=?");
 				params.add(val);
+				prefix = ",";
 			}
-			prefix = " and ";
+			prefix = " where ";
+			for (String col : config.bestRowIdColumnsSet) {
+				Object val = itemCI.get(col);
+				sql.append(prefix);
+				sql.append(col);
+				if (val == null)
+					sql.append(" is null");
+				else {
+					sql.append("= ?");
+					params.add(val);
+				}
+				prefix = " and ";
+			}
+		} else {
+			sql.append("insert into ");
+			sql.append(config.name);
+			String prefix = "(";
+			StringBuilder valuesSql = new StringBuilder();
+			for (MyTabColumnMeta col : config.columns.values()) {
+				if (col.isAutoincrement || col.isGeneratedColumn)
+					continue;
+				Object val = itemCI.get(col.name);
+				sql.append(prefix);
+				sql.append(col.name);
+				valuesSql.append(prefix);
+				valuesSql.append("?");
+				params.add(val);
+				prefix = ",";
+			}
+			sql.append(") values ");
+			sql.append(valuesSql);
+			sql.append(")");
 		}
-		queryRunner.update(sql.toString(), params.toArray());*/
+		
+		int affectedRecords = queryRunner.update(sql.toString(), params.toArray());
+		if (isUpdating && (affectedRecords != 1))
+			throw new Exception("Update failed. Item not found.");
+
+		return ResponseEntity.ok().build();
+	}
+*/	
+	@RequestMapping(value="{configName}", method=RequestMethod.POST)
+	public ResponseEntity saveItem(
+			@PathVariable("configName") String configName,
+			@RequestBody Map<?,?> item) throws Exception {
+		MyTableMeta config = myRestConfigurer.getMyDatabaseMeta().tables.get(StringUtils.upperCase(configName));
+		if (config == null) {
+			// return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).build();
+			throw new Exception("Config " + configName + " not defined.");
+		}
+		
+		// Convert to case insensitive map.
+		Map<String, Object> itemCI = new HashMap<>();
+		for (Map.Entry i : item.entrySet()) {
+			String key =  StringUtils.upperCase(objToString(i.getKey()));
+			Object val = i.getValue();
+			if (val instanceof String)
+				val = StringUtils.trimToNull((String) val);
+			if (key != null)
+				itemCI.put(key, val);
+		}
+		
+//		boolean keyHasNulls = false;
+		boolean keyHasNullsThatAreNotNull = false;
+		boolean keyHasNonNulls = false;
+		for (String col : config.bestRowIdColumnsSet) {
+			Object val = itemCI.get(col);
+			if (val == null) {
+//				keyHasNulls = true;
+				MyTabColumnMeta c = config.columns.get(col);
+				// if (!(c.isNullable || c.isAutoincrement || c.isGeneratedColumn)) {
+				if (!c.isNullable) {
+					keyHasNullsThatAreNotNull = true;
+				}
+			} else {
+				keyHasNonNulls = true;
+			}
+		}
+		
+		if (keyHasNonNulls && keyHasNullsThatAreNotNull) {
+			// Incomplete primary/unique key
+			throw new Exception("Incomplete primary/unique key for " + configName);
+		}
+		
+		boolean isUpdating = keyHasNonNulls;
+		
+		StringBuilder sql = new StringBuilder();
+		sql.append("select * from ");
+		sql.append(config.name);
+		List params = new ArrayList<>();
+		
+		if (isUpdating) {
+			sql.append(" where ");
+			String prefix = "";
+			for (String col : config.bestRowIdColumnsSet) {
+				Object val = itemCI.get(col);
+				sql.append(prefix);
+				sql.append(col);
+				if (val == null)
+					sql.append(" is null");
+				else {
+					sql.append("= ?");
+					params.add(val);
+				}
+				prefix = " and ";
+			}
+		}
+		sql.append(" for update");
+		
+		logger.debug(sql.toString());
+		try (
+			Connection conn = dataSource.getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql.toString(), ResultSet.FETCH_FORWARD, ResultSet.CONCUR_UPDATABLE);
+			) {
+			for (int i = 0; i < params.size(); i++) {
+				ps.setObject(i+1, params.get(i));
+			}
+			try (ResultSet rs = ps.executeQuery()) {
+				if (isUpdating) {
+					if (!rs.next())
+						throw new Exception("Update failed. Item not found.");
+				} else {
+					rs.moveToInsertRow();
+				}
+				
+				for (MyTabColumnMeta col : config.columns.values()) {
+					boolean isKey = config.bestRowIdColumnsSet.contains(col.name);
+					if (isKey && (isUpdating || col.isAutoincrement || col.isGeneratedColumn))
+						continue;
+					Object val = itemCI.get(col.name);
+					rs.updateObject(col.name, val);
+				}
+				
+				if (isUpdating) {
+					rs.updateRow();
+				} else {
+					rs.insertRow();
+				}
+			}
+		}
+		return ResponseEntity.ok().build();
 	}
 	
 	@RequestMapping(value="{configName}", method=RequestMethod.GET)

@@ -3,6 +3,8 @@ package examples.spa.backend.test;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import org.apache.commons.dbutils.QueryRunner;
 
@@ -17,7 +19,6 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import com.slavi.util.db.ResultSetToString;
 
 import examples.spa.backend.myRest.meta.MyDatabaseMeta;
-import examples.spa.backend.myRest.meta.MyDatabaseMetaParams;
 
 public class TestMyRestConfigurer {
 
@@ -60,6 +61,22 @@ public class TestMyRestConfigurer {
 		System.out.println(rss.resultSetToString(meta.getIndexInfo(null, null, "C", false, false), -1, Integer.MAX_VALUE, true, 40));
 		//System.out.println(rss.resultSetToString(meta.getColumns(null, null, "C", null), -1, Integer.MAX_VALUE, true, 40));
 
+		String sql = "select * from a for update";
+		PreparedStatement ps = conn.prepareStatement(sql, ResultSet.FETCH_FORWARD, ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs = ps.executeQuery();
+		rs.moveToInsertRow();
+		rs.updateObject("name", "Some name");
+		rs.insertRow();
+		rs.close();
+		ps.close();
+		conn.commit();
+		
+		ps = conn.prepareStatement("select * from a");
+		rs = ps.executeQuery();
+		System.out.println(rss.resultSetToString(rs, -1, Integer.MAX_VALUE, true, 40));
+		rs.close();
+		ps.close();
+		
 /*		MyDatabaseMetaParams dbParams = new MyDatabaseMetaParams();
 		dbParams.load(meta);
 		mapper.writeValue(System.out, dbParams);*/

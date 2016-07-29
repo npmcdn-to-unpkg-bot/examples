@@ -5,8 +5,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -26,6 +28,7 @@ public class MyTableMeta {
 	public Map<String, MyTabColumnMeta> columns = new HashMap<>();
 	public List<String> primaryKeyColumns = new ArrayList<>();
 	public List<String> bestRowIdColumns = new ArrayList<>();
+	public Set<String> bestRowIdColumnsSet = new HashSet<>();
 	public Map<String, MyTabForegnKey> foreignKeys = new HashMap<>();
 	public Map<String, MyTabIndex> indexes = new HashMap<>();
 
@@ -65,6 +68,7 @@ public class MyTableMeta {
 			while (rs.next()) {
 				String columnName = StringUtils.upperCase(rs.getString("COLUMN_NAME"));
 				bestRowIdColumns.add(columnName);
+				bestRowIdColumnsSet.add(columnName);
 			}
 		}
 		
