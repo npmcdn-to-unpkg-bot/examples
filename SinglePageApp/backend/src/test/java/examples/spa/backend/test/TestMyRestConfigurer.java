@@ -71,6 +71,16 @@ public class TestMyRestConfigurer {
 		ps.close();
 		conn.commit();
 		
+		sql = "select id iid, name as nnn from a where id != 0 for update";
+		ps = conn.prepareStatement(sql, ResultSet.FETCH_FORWARD, ResultSet.CONCUR_UPDATABLE);
+		rs = ps.executeQuery();
+		System.out.println(rs.next());
+		rs.updateObject("nnn", "Other name");
+		rs.updateRow();
+		rs.close();
+		ps.close();
+		conn.commit();
+		
 		ps = conn.prepareStatement("select * from a");
 		rs = ps.executeQuery();
 		System.out.println(rss.resultSetToString(rs, -1, Integer.MAX_VALUE, true, 40));
@@ -80,11 +90,11 @@ public class TestMyRestConfigurer {
 /*		MyDatabaseMetaParams dbParams = new MyDatabaseMetaParams();
 		dbParams.load(meta);
 		mapper.writeValue(System.out, dbParams);*/
-		
+/*
 		MyDatabaseMeta myMeta = new MyDatabaseMeta();
 		myMeta.load(meta, null, "APP");
 		mapper.writeValue(System.out, myMeta);
-
+*/
 		conn.close();
 	}
 

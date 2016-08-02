@@ -22,10 +22,34 @@ import com.slavi.util.StringPrintStream;
 import examples.spa.backend.model.Items;
 import examples.spa.backend.model.Location;
 import examples.spa.backend.model.ResponseWrapper;
+import examples.spa.backend.myRest.ui.MyField;
+import examples.spa.backend.myRest.ui.MyFieldText;
+import examples.spa.backend.myRest.ui.MyForm;
 
 public class TestSerializationToXML {
 
 	void doIt() throws Exception {
+		MyFieldText text = new MyFieldText();
+		text.label = "my label";
+		text.name = "my name";
+		text.multiLine = true;
+		
+		MyForm form = new MyForm();
+		form.field = text; //new MyField[] { text };
+		
+		ObjectMapper m = xmlMapper();
+		StringPrintStream out = new StringPrintStream();
+		m.writeValue(out, form);
+		String str = out.toString();
+		System.out.println(str);
+		
+		MyForm f = m.readValue(str, MyForm.class);
+		m.writeValue(System.out, f);
+		
+		System.out.println(str);
+	}
+	
+	void doIt2() throws Exception {
 		dumpObj(0);
 		ArrayList list = new ArrayList();
 		list.add(1);
@@ -52,36 +76,44 @@ public class TestSerializationToXML {
 		dumpObj(list);
 	}
 	
-	void dumpObj(Object o) throws Exception {
-		Object obj = new ResponseWrapper(o);
-		
+	void configureMapper(ObjectMapper m) {
 		AnnotationIntrospector primary = new JacksonAnnotationIntrospector();
 		AnnotationIntrospector secondary = new JaxbAnnotationIntrospector();
 		AnnotationIntrospector pair = new AnnotationIntrospectorPair(primary, secondary);
 
-		//ObjectMapper m = Jackson2ObjectMapperBuilder.xml().build();
-		XmlMapper xm = new XmlMapper();
-		ObjectMapper m = xm;
 		m.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
 		//m.setDateFormat(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX"));
 		m.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 		m.setAnnotationIntrospector(pair);
 		m.enable(SerializationFeature.INDENT_OUTPUT);
+	}
+	
+	ObjectMapper xmlMapper() {
+		ObjectMapper m = new XmlMapper();
+		configureMapper(m);
+		return m;
+	}
+	
+	ObjectMapper jsonMapper() {
+		ObjectMapper m = new ObjectMapper();
+		configureMapper(m);
+		return m;
+	}
+	
+	
+	void dumpObj(Object o) throws Exception {
+		Object obj = new ResponseWrapper(o);
 		
 		StringPrintStream out = new StringPrintStream();
-		m.writeValue(out, obj);
+		xmlMapper().writeValue(out, obj);
 
 		System.out.println(out.toString());
 		out = new StringPrintStream();
-		//m = Jackson2ObjectMapperBuilder.json().build();
-		m = new ObjectMapper();
-		m.setAnnotationIntrospector(pair);
-		m.enable(SerializationFeature.INDENT_OUTPUT);
-		m.writeValue(out, obj);
+		jsonMapper().writeValue(out, obj);
 		System.out.println(out.toString());
 	}
 	
-	void doIt2() throws Exception {
+	void doIt3() throws Exception {
 		ArrayList list = new ArrayList<>();
 		for (int i = 0; i < 3; i++) {
 			Location l = new Location();

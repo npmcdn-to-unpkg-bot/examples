@@ -1,23 +1,17 @@
 package examples.spa.backend.test;
 
-import java.io.File;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.util.List;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.adapters.XmlAdapter;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -28,69 +22,38 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 public class TestSerialization2 {
 
-	@XmlJavaTypeAdapter(ContactMethodAdapter.class)
-	@XmlSeeAlso({ Address.class, PhoneNumber.class })
+	//@XmlJavaTypeAdapter(ContactMethodAdapter.class)
+	//@MappedSuperclass
+	//@XmlSeeAlso({ Address.class, PhoneNumber.class })
+	@JsonTypeInfo(
+		use = JsonTypeInfo.Id.NAME,
+		include = JsonTypeInfo.As.EXISTING_PROPERTY,
+		visible = true,
+		property = "ttype"
+	)
+	@JsonSubTypes({
+		@Type(name = "address", value = Address.class),
+		@Type(name = "phone", value = PhoneNumber.class)
+	})
 	public static abstract class ContactMethod {
+		@XmlAttribute
+		public String ttype;
 	}
 	
-	@XmlJavaTypeAdapter(ContactMethodAdapter.class)
+	@XmlAccessorType(XmlAccessType.FIELD)
 	public static class Address extends ContactMethod {
+		@XmlAttribute
 		public String street;
+		@XmlAttribute
 		public String city;
 	}
 	
-	@XmlJavaTypeAdapter(ContactMethodAdapter.class)
+	@XmlAccessorType(XmlAccessType.FIELD)
 	public static class PhoneNumber extends ContactMethod {
+		@XmlAttribute
 		public String number;
 	}
 	
-	public static class ContactMethodAdapter extends XmlAdapter<AdaptedContactMethod, ContactMethod> {
-		@Override
-		public AdaptedContactMethod marshal(ContactMethod contactMethod) throws Exception {
-			if (null == contactMethod) {
-				return null;
-			}
-			AdaptedContactMethod adaptedContactMethod = new AdaptedContactMethod();
-			if (contactMethod instanceof Address) {
-				Address address = (Address) contactMethod;
-				adaptedContactMethod.street = address.street;
-				adaptedContactMethod.city = address.city;
-			} else {
-				PhoneNumber phoneNumber = (PhoneNumber) contactMethod;
-				adaptedContactMethod.number = phoneNumber.number;
-			}
-			return adaptedContactMethod;
-		}
-
-		@Override
-		public ContactMethod unmarshal(AdaptedContactMethod adaptedContactMethod) throws Exception {
-			if (null == adaptedContactMethod) {
-				return null;
-			}
-			if (null != adaptedContactMethod.number) {
-				PhoneNumber phoneNumber = new PhoneNumber();
-				phoneNumber.number = adaptedContactMethod.number;
-				return phoneNumber;
-			} else {
-				Address address = new Address();
-				address.street = adaptedContactMethod.street;
-				address.city = adaptedContactMethod.city;
-				return address;
-			}
-		}
-	}
-	
-	public static class AdaptedContactMethod {
-		@XmlAttribute
-		public String number;
-
-		@XmlAttribute
-		public String street;
-
-		@XmlAttribute
-		public String city;
-	}
-
 	@XmlRootElement
 	@XmlAccessorType(XmlAccessType.FIELD)
 	public static class Customer {
@@ -120,23 +83,11 @@ public class TestSerialization2 {
 		return m;
 	}
 	
-	String str = "<?xml version='1.0' encoding='UTF-8'?>\n" + 
-			"<customer>\n" + 
-			"    <contact-method\n" + 
-			"        number='555-1111'/>\n" + 
-			"    <contact-method\n" + 
-			"        street='1 A St'\n" + 
-			"        city = 'Any Town'/>\n" + 
-			"    <contact-method\n" + 
-			"        number='555-2222'/>\n" + 
-			"</customer>";
-	
 	void doIt() throws Exception {
-		JAXBContext jc = JAXBContext.newInstance(Customer.class);
+/*		JAXBContext jc = JAXBContext.newInstance(Customer.class);
 
 		Unmarshaller unmarshaller = jc.createUnmarshaller();
-		StringReader xml = new StringReader(str);
-		Customer customer = (Customer) unmarshaller.unmarshal(xml);
+		Customer customer = (Customer) unmarshaller.unmarshal(getClass().getResourceAsStream("TestSerialization2.xml"));
 
 		for (ContactMethod contactMethod : customer.contactMethods) {
 			System.out.println(contactMethod.getClass());
@@ -145,10 +96,23 @@ public class TestSerialization2 {
 		Marshaller marshaller = jc.createMarshaller();
 		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
 		marshaller.marshal(customer, System.out);
+	*/
+		ObjectMapper mapper;
+		Customer c2;
+		String str;
 		
-		ObjectMapper mapper = xmlObjectMapper();
-		customer = mapper.readValue(str, Customer.class);
-		mapper.writeValue(System.out, customer);
+		mapper = jsonObjectMapper();
+		c2 = mapper.readValue(getClass().getResourceAsStream("TestSerialization2.json"), Customer.class);
+		str = mapper.writeValueAsString(c2);
+		System.out.println(str);
+		c2 = mapper.readValue(str, Customer.class);
+		
+		mapper = xmlObjectMapper();
+		c2 = mapper.readValue(getClass().getResourceAsStream("TestSerialization2.xml"), Customer.class);
+		System.out.println(c2.contactMethods.get(0).ttype);
+		str = mapper.writeValueAsString(c2);
+		System.out.println(str);
+		c2 = mapper.readValue(str, Customer.class);
 	}
 
 	public static void main(String[] args) throws Exception {

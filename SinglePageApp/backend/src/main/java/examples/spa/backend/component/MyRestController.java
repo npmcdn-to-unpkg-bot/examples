@@ -1,8 +1,5 @@
 package examples.spa.backend.component;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -87,7 +84,7 @@ public class MyRestController {
 			if (val == null)
 				sql.append(" is null");
 			else {
-				sql.append("= ?");
+				sql.append("=?");
 				params.add(val);
 			}
 			prefix = " and ";
@@ -141,7 +138,7 @@ public class MyRestController {
 	private String objToString(Object o) {
 		return o == null ? null : o.toString();
 	}
-/*	
+
 	@RequestMapping(value="{configName}", method=RequestMethod.POST)
 	public ResponseEntity saveItem(
 			@PathVariable("configName") String configName,
@@ -243,7 +240,11 @@ public class MyRestController {
 
 		return ResponseEntity.ok().build();
 	}
-*/	
+
+/*
+
+	// Using select for update
+
 	@RequestMapping(value="{configName}", method=RequestMethod.POST)
 	public ResponseEntity saveItem(
 			@PathVariable("configName") String configName,
@@ -311,8 +312,7 @@ public class MyRestController {
 			}
 		}
 		sql.append(" for update");
-		
-		logger.debug(sql.toString());
+
 		try (
 			Connection conn = dataSource.getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql.toString(), ResultSet.FETCH_FORWARD, ResultSet.CONCUR_UPDATABLE);
@@ -345,7 +345,8 @@ public class MyRestController {
 		}
 		return ResponseEntity.ok().build();
 	}
-	
+*/
+
 	@RequestMapping(value="{configName}", method=RequestMethod.GET)
 	public ResponseEntity filterItems(
 			@PathVariable("configName") String configName,

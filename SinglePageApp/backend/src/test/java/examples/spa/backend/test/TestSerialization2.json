@@ -1,0 +1,17 @@
+{
+	"contact-method": [
+		{
+			"ttype": "phone",
+			"number": "555-1111"
+		}, 
+		{
+			"ttype": "address",
+			"street": "1 A St",
+			"city": "Any Town"
+		}, 
+		{
+			"ttype": "phone",
+			"number": "555-2222"
+		}
+	]
+}

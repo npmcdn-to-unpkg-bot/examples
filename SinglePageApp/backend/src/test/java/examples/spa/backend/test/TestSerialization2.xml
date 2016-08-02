@@ -1,0 +1,5 @@
+<customer>
+	<contact-method ttype="phone" number="555-1111" />
+	<contact-method ttype="address" street="1 A St" city="Any Town" />
+	<contact-method ttype="phone" number="555-2222" />
+</customer>
