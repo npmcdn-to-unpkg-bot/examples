@@ -62,6 +62,44 @@ function Implementation($timeout, $location, logger) {
 	that.navigateTo = function(relativePath) {
 		$location.path(that.calcPath(relativePath));
 	};
+
+	/**
+	 * Make a list of key) and V (value) objects.
+	 * The supplied obj can be in the form:
+	 * obj = [1, 2, "v", 4];
+	 * obj = [ 
+	 * 		{ k: 1, v:"one" },
+	 * 		{ key: 2, val: "two" },
+	 * 		{ id: 3, value: "three" },
+	 * 		{ name: "4", label: "four" }];
+	 * obj = { 1: "one", "2": "two", 3: "three" };
+	 */
+	that.toKeyValueList = function(obj) {
+		var r = [];
+		var isArray = obj && Array === obj.constructor; 
+		angular.forEach(obj, function(v, k) {
+			if (isArray) {
+				if (v instanceof Object) {
+					k = 
+						v.key ? v.key :
+						v.k ? v.k :
+						v.id ? v.id :
+						v.name ? v.name :
+						k;
+					v = 
+						v.value ? v.value :
+						v.val ? v.val :
+						v.v ? v.v :
+						v.label ? v.label :
+						v;
+				} else {
+					k = v;
+				}
+			}
+			r.push({ value: v, key: k });
+		});
+		return r;
+	};
 	
 	that.log = logger.log;
 }

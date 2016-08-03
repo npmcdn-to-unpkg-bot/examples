@@ -21,6 +21,8 @@ public class Location extends IdNamePair {
 	
 	String email;
 
+	LocationType type = LocationType.Unknown;
+	
 	@Column
 	@FieldDef(searchable = true)
 	public String getEmail() {
@@ -39,5 +41,13 @@ public class Location extends IdNamePair {
 
 	public void setDummy(int dummy) {
 		this.dum = dummy;
+	}
+
+	public LocationType getType() {
+		return type;
+	}
+
+	public void setType(LocationType type) {
+		this.type = type;
 	}
 }

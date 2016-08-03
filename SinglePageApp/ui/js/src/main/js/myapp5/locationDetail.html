@@ -28,5 +28,11 @@
 				my-same-value-as-message="{{$ctrl.sameValueMessage}}"
 			/>
 		</my-form-field>
+		<my-form-field data-label="type:" data-name="type">
+			<my-radio data-model="item.type" data-items="$ctrl.types" />
+		</my-form-field>
+		<my-form-field data-label="type (same with combo):" data-name="type">
+			<my-combo data-model="item.type" data-items="$ctrl.types" />
+		</my-form-field>
 	</my-form>
 </my-panel>

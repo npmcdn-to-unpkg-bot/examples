@@ -16,6 +16,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 
 import examples.spa.backend.model.Location;
+import examples.spa.backend.model.LocationType;
 
 @Configuration
 public class Config {
@@ -27,6 +28,7 @@ public class Config {
 	public void init() throws Exception {
 		for (int i = 0; i < 50; i++) {
 			Location l = new Location();
+			l.setType(LocationType.Office);
 			l.setName("Name " + i);
 			if (i % 2 == 0)
 				l.setEmail("Name" + i + "@example.com");

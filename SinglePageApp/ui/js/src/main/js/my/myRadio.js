@@ -42,8 +42,8 @@ function Implementation($scope, $q, utils) {
 	});
 }
 
-module.component('myCombo', {
-	templateUrl: "my/myCombo.html",
+module.component('myRadio', {
+	templateUrl: "my/myRadio.html",
 	transclude: true,
 	bindings: {
 		items: "<",

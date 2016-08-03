@@ -1,8 +1,8 @@
 <div class="btn-group btn-block" uib-dropdown keyboard-nav>
 	<button type="button" class="btn btn-default btn-block" style="text-align: right" uib-dropdown-toggle>
-		{{$ctrl.modelValue}} &nbsp;<span class="caret"></span>
+		<span>{{$ctrl.modelValue}}</span><span class="caret"></span>
 	</button>
-	<ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu">
-		<li role="menuitem" ng-repeat="item in $ctrl.itemList"><a href="" ng-click="$ctrl.model=item.k">{{item.v}}</a></li>
+	<ul class="dropdown-menu" uib-dropdown-menu role="menu">
+		<li role="menuitem" ng-repeat="item in $ctrl.itemList"><a href="" ng-click="$ctrl.model=item.key">{{item.value}}</a></li>
 	</ul>
 </div>

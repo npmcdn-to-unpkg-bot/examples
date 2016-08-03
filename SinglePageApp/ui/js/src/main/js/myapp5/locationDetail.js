@@ -48,6 +48,8 @@ function Implementation($scope, service, logger, $timeout) {
 		return !String(value).endsWith("a") ? "" : 
 			"Must not end in a but the value is " + value;
 	};
+
+	that.types = [ "Unknown", "Headquarter", "Office", "Home" ];
 }
 
 module.component('locationDetail', {

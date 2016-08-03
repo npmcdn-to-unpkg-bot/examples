@@ -1,0 +1,9 @@
+<div class="btn-group">
+	<button 
+		type="button" 
+		class="btn btn-default" 
+		ng-click="$ctrl.model=item.key" 
+		ng-repeat="item in $ctrl.itemList"
+		ng-class="{ active: $ctrl.model === item.key }"
+	>{{item.value}}</button>
+</div>
