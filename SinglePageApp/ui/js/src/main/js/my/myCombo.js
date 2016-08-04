@@ -44,7 +44,6 @@ function Implementation($scope, $q, utils) {
 
 module.component('myCombo', {
 	templateUrl: "my/myCombo.html",
-	transclude: true,
 	bindings: {
 		items: "<",
 		model: "=",

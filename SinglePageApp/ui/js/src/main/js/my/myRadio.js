@@ -44,7 +44,6 @@ function Implementation($scope, $q, utils) {
 
 module.component('myRadio', {
 	templateUrl: "my/myRadio.html",
-	transclude: true,
 	bindings: {
 		items: "<",
 		model: "=",

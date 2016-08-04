@@ -18,22 +18,13 @@
 				</span>
 			</div>
 		</form>
-<!-- 
-		<div class="btn-group btn-block" uib-dropdown keyboard-nav is-open="true" auto-close="disabled">
-			<ul class="dropdown-menu dropdown-menu-right" uib-dropdown-menu role="menu">
-				<li role="menuitem" ng-repeat="item in $ctrl.data.item" ng-click="$ctrl.onSelect(item)">
-					ID: <span>{{item.id}}</span>; location: <span>{{item.name}}</span>
-				</li>
-			</ul>
-		</div>
- -->
 
 		<table class="table table-condensed table-striped table-hover">
 			<thead>
 				<tr>
 					<th ng-repeat="column in $ctrl.columns" ng-click="$ctrl.doOrderBy($index)" ng-class="$ctrl.getHeaderColumnClass($index)">
 						<span>{{column.name}}</span>
-						<span ng-class="$ctrl.getOrderByClass($index)"</span>
+						<span ng-class="$ctrl.getOrderByClass($index)" />
 					</th>
 				</tr>
 			</thead>
@@ -57,6 +48,9 @@
 		</uib-pagination>
 	</my-panel>
 </div>
-<div class="col-sm-8">
+ <div class="col-sm-8">
+	<my-form-gen data-item="service.selectedItem"></my-form-gen>
+<!--
 	<location-detail data-item="service.selectedItem"></location-detail>
+ -->
 </div>
