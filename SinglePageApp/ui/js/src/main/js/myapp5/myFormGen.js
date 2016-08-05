@@ -19,52 +19,13 @@ function Implementation($scope, logger, $timeout) {
 	that.onSave = function() {
 		console.log("onSave");
 	};
-	
-	// that.types = [ "Unknown", "Headquarter", "Office", "Home" ];
-	
-	that.formMeta = {
-		fields: [
-			{
-				label: "ID:",
-				name: "id",
-				type: "label"
-			},
-			{
-				label: "Name:",
-				name: "name",
-				type: "text",
-				minLength: 3,
-				maxLength: 15,
-				required: true,
-				trim: true,
-				pattern: "[A-Za-z@0-9]+"
-			},
-			{
-				label: "e-mail:",
-				name: "email",
-				type: "email"
-			},
-			{
-				label: "type:",
-				name: "type",
-				type: "radio",
-				values: [ "Unknown", "Headquarter", "Office", "Home" ]
-			},
-			{
-				label: "type (same with combo):",
-				name: "type",
-				type: "combo",
-				values: [ "Unknown", "Headquarter", "Office", "Home" ]
-			}
-		]
-	};
 }
 
 module.component('myFormGen', {
 	templateUrl: 'myapp5/myFormGen.html',
 	bindings: {
-		item: "="
-//		formMeta: "="
+		item: "=",
+		formMeta: "="
 //		save: "&"
 	},
 	controller: Implementation
