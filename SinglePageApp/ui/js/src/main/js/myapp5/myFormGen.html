@@ -3,15 +3,16 @@
 		<my-form-field 
 			ng-repeat="field in $ctrl.formMeta.fields"
 			data-label="{{ field.label }}" data-name="{{ field.name }}">
+
+			<my-form-field-gen 
+				data-item="$ctrl.item"
+				data-form-field-meta="field" 
+			></my-form-field-gen>
 <!-- 
 			<my-radio ng-if="field.type === 'radio'"
 				data-model="item[field.name]" 
 				data-items="field.values" 
 			></my-radio>
- -->
-			<my-form-field-gen ng-if="field.type === 'radio'"
-				data-form-field-meta="field" 
-			></my-form-field-gen>
 
 			<my-combo ng-if="field.type === 'combo'"
 				data-model="item[field.name]" 
@@ -40,6 +41,7 @@
 				name="email"
 				ng-model="item[field.name]"
 			/>
+ -->
 		</my-form-field>
 	</my-form>
 </my-panel>
