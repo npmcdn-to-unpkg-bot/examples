@@ -6,12 +6,20 @@ Factory.$inject = ['$templateRequest', '$anchorScroll', '$animate', "$compile", 
 function Factory($templateRequest, $anchorScroll, $animate, $compile, $sce) {
 	
 	return {
-	    restrict: 'ECA',
-	    priority: 400,
-	    terminal: true,
-	    transclude: 'element',
-	    controller: angular.noop,
-	    compile: function(element, attr) {
+		restrict: 'ECA',
+		priority: 400,
+		terminal: true,
+		transclude: true,
+		controller: angular.noop,
+		compile: function(element, attr) {
+			if (1 == "1") {
+				return function(scope, $element, $attr, ctrl, $transclude) {
+					var html = $sce.trustAsHtml("<h2>This is Test for myInclude 3333</h2>");
+					$element.html(html);
+					$compile($element.contents())(scope);
+					console.log(html);
+				};
+			}
 	      var srcExp = attr.ngInclude || attr.src,
 	          onloadExp = attr.onload || '',
 	          autoScrollExp = attr.autoscroll;
