@@ -1,1 +1,1 @@
-var module = angular.module('my', ["ngResource", "ui.bootstrap", "slavi-log", "slavi-utils", "templates"]);
+var module = angular.module("my", ["ngSanitize", "ngResource", "ui.bootstrap", "slavi-log", "slavi-utils", "templates"]);

@@ -1,4 +1,4 @@
-var module = angular.module('myapp5', ["ngRoute", "ngResource", "ui.bootstrap", "slavi-log", "slavi-utils", "templates", "translations", "my"]);
+var module = angular.module('myapp5', ["ngSanitize", "ngRoute", "ngResource", "ui.bootstrap", "slavi-log", "slavi-utils", "templates", "translations", "my"]);
 
 module.value('$routerRootComponent', 'myapp');
 
