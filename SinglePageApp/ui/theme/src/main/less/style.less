@@ -5,6 +5,15 @@
 	cursor: pointer;
 }
 
+table.table-hover tr:hover td span.show-on-hover,
+table.table-hover tr.selected td span.show-on-hover,
+table.table-hover tr td a:focus span.show-on-hover {
+	color: inherit;
+}
+table.table-hover tr td span.show-on-hover {
+	color: rgba(0,0,0,0);
+}
+
 .popover {
 	max-width: initial;
 }

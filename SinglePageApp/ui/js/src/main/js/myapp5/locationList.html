@@ -30,14 +30,14 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="item in $ctrl.data.item" ng-class="{ 'info': service.isSelected(item) }" ng-click="$ctrl.onSelect(item)">
+				<tr ng-repeat="item in $ctrl.data.item" class="clickable" ng-class="service.isSelected(item) ? 'info selected' : ''" ng-click="$ctrl.onSelect(item)">
 					<td ng-repeat="column in $ctrl.columns">{{item[column.id]}}</td>
-					<td><a href="" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-chevron-right"></span></a></td>
+					<td><a href=""><span class="show-on-hover glyphicon glyphicon-chevron-right"></span></a></td>
 				</tr>
 			</tbody>
 		</table>
 
-		<uib-pagination 
+		<uib-pagination ng-if="$ctrl.data.recordsFiltered / $ctrl.size > 1"
 			class="pagination-sm" 
 			total-items="$ctrl.data.recordsFiltered"
 			items-per-page="$ctrl.size"
