@@ -1,4 +1,3 @@
-<my-include src="'myapp5/myIncludeTest.html'"></my-include>
 <div class="col-sm-12">
 	<button ng-click="$ctrl.onClick()">Click me</button>
 	<p>Sample data: <span class="badge">zzn@nw</span></p>
@@ -27,11 +26,13 @@
 						<span>{{column.name}}</span>
 						<span ng-class="$ctrl.getOrderByClass($index)" />
 					</th>
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
 				<tr ng-repeat="item in $ctrl.data.item" ng-class="{ 'info': service.isSelected(item) }" ng-click="$ctrl.onSelect(item)">
 					<td ng-repeat="column in $ctrl.columns">{{item[column.id]}}</td>
+					<td><a href="" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-chevron-right"></span></a></td>
 				</tr>
 			</tbody>
 		</table>
@@ -50,7 +51,7 @@
 	</my-panel>
 </div>
 <div class="col-sm-8">
-	<my-form-gen data-item="service.selectedItem" data-form-meta="$ctrl.formMeta"></my-form-gen>
+	<my-form-gen data-save="Done" data-item="service.selectedItem" data-form-meta="$ctrl.formMeta"></my-form-gen>
 <!--
 	<location-detail data-item="service.selectedItem"></location-detail>
  -->

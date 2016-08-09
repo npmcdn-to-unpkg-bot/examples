@@ -1,47 +1,13 @@
 <my-panel ng-show="$ctrl.item" data-title="Details">
-	<my-form data-save="Done" data-on-save="$ctrl.onSave()" data-on-cancel="$ctrl.onCancel()">
+	<my-form data-save="{{ $ctrl.save }}" data-on-save="$ctrl.onSave()" data-cancel="{{ $ctrl.cancel }}" data-on-cancel="$ctrl.onCancel()">
 		<my-form-field 
 			ng-repeat="field in $ctrl.formMeta.fields"
 			data-label="{{ field.label }}" data-name="{{ field.name }}">
 
 			<my-form-field-gen 
-				data-item="$ctrl.item"
+				data-item="item"
 				data-form-field-meta="field" 
 			></my-form-field-gen>
-<!-- 
-			<my-radio ng-if="field.type === 'radio'"
-				data-model="item[field.name]" 
-				data-items="field.values" 
-			></my-radio>
-
-			<my-combo ng-if="field.type === 'combo'"
-				data-model="item[field.name]" 
-				data-items="field.values" 
-			></my-combo>
-			
-			<p ng-if="field.type === 'label'"
-				class="form-control-static"
-			>{{item[field.name]}}</p>
-			
-			<input ng-if="field.type === 'text'"
-				type="text"
-				class="form-control"
-				name="name"
-				ng-model="item[field.name]"
-				ng-minlength="field.minLength"
-				ng-maxlength="field.maxLength"
-				ng-required="field.required"
-				ng-trim="field.trim"
-				ng-pattern="field.pattern"
-			/>
-			
-			<input ng-if="field.type === 'email'"
-				type="email"
-				class="form-control"
-				name="email"
-				ng-model="item[field.name]"
-			/>
- -->
 		</my-form-field>
 	</my-form>
 </my-panel>

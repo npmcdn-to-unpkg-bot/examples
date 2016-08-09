@@ -161,7 +161,7 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, service, 
 				name: "id",
 				type: "label"
 			},
-/*			{
+			{
 				label: "Name:",
 				name: "name",
 				type: "text",
@@ -187,7 +187,7 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, service, 
 				name: "type",
 				type: "combo",
 				values: [ "Unknown", "Headquarter", "Office", "Home" ]
-			}*/
+			}
 		]
 	};
 }
