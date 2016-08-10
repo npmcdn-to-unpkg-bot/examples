@@ -1,0 +1,18 @@
+<div class="col-sm-12">
+	<button ng-click="$ctrl.onClick()">Click me</button>
+	<p>Sample data: <span class="badge">zzn@nw</span></p>
+</div>
+<div class="col-sm-4">
+	<my-panel data-title="Location">
+		<my-form-list-gen data-form-meta="$ctrl.formMeta">
+		</my-form-list-gen>
+	</my-panel>
+</div>
+<div class="col-sm-8">
+	<my-panel ng-show="service.selectedItem" data-title="Details">
+		<my-form-gen data-save="Done" data-item="service.selectedItem" data-form-meta="$ctrl.formMeta"></my-form-gen>
+	</my-panel>
+<!--
+	<location-detail data-item="service.selectedItem"></location-detail>
+ -->
+</div>

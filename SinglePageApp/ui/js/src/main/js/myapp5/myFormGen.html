@@ -1,13 +1,11 @@
-<my-panel ng-show="$ctrl.item" data-title="Details">
-	<my-form data-save="{{ $ctrl.save }}" data-on-save="$ctrl.onSave()" data-cancel="{{ $ctrl.cancel }}" data-on-cancel="$ctrl.onCancel()">
-		<my-form-field 
-			ng-repeat="field in $ctrl.formMeta.fields"
-			data-label="{{ field.label }}" data-name="{{ field.name }}">
+<my-form data-save="{{ $ctrl.save }}" data-on-save="$ctrl.onSave()" data-cancel="{{ $ctrl.cancel }}" data-on-cancel="$ctrl.onCancel()">
+	<my-form-field 
+		ng-repeat="field in $ctrl.calcFields"
+		data-label="{{ field.label }}" data-name="{{ field.name }}">
 
-			<my-form-field-gen 
-				data-item="item"
-				data-form-field-meta="field" 
-			></my-form-field-gen>
-		</my-form-field>
-	</my-form>
-</my-panel>
+		<my-form-field-gen 
+			data-item="item"
+			data-form-field-meta="field" 
+		></my-form-field-gen>
+	</my-form-field>
+</my-form>

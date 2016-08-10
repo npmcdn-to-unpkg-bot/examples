@@ -1,0 +1,44 @@
+<form class="form-horizontal">
+	<div class="input-group">
+		<input placeholder="Search" type="text" class="form-control" ng-model="$ctrl.query" ng-change="$ctrl.updateList()" />
+		<span class="input-group-btn">
+			<a	href=""
+				class="btn btn-primary"
+				uib-popover-template="'myapp5/locationList-popover.html'" 
+				popover-placement="bottom-right"
+				popover-is-open="settings-isOpened">
+				<span class="glyphicon glyphicon-cog"></span>
+			</a>
+		</span>
+	</div>
+</form>
+
+<table class="table table-condensed table-striped table-hover">
+	<thead>
+		<tr>
+			<th ng-repeat="field in $ctrl.calcFields" ng-click="$ctrl.doOrderBy($index)" ng-class="$ctrl.getHeaderColumnClass($index)">
+				<span>{{field.label}}</span>
+				<span ng-class="$ctrl.getOrderByClass($index)" />
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="item in $ctrl.data.item" class="clickable" ng-class="service.isSelected(item) ? 'info selected' : ''" ng-click="$ctrl.onSelect(item)">
+			<td ng-repeat="field in $ctrl.calcFields">{{item[field.name]}}</td>
+			<td><a href=""><span class="show-on-hover glyphicon glyphicon-chevron-right"></span></a></td>
+		</tr>
+	</tbody>
+</table>
+
+<uib-pagination ng-if="$ctrl.data.recordsFiltered / $ctrl.size > 1"
+	class="pagination-sm" 
+	total-items="$ctrl.data.recordsFiltered"
+	items-per-page="$ctrl.size"
+	max-size="5"
+	previous-text="&lsaquo;" next-text="&rsaquo;" first-text="&laquo;" last-text="&raquo;"
+	boundary-links="true"
+	boundary-link-numbers="false"
+	ng-model="$ctrl.page"
+	ng-change="$ctrl.updateList()">
+</uib-pagination>

@@ -36,7 +36,7 @@ function Implementation($provide, $routeProvider, $locationProvider) {
 	.when("/link1",			{ template: "<link1-list></link1-list>" })
 	.when("/link1/:id",		{ template: "<link1-detail></link1-detail>" })
 	.when("/link2",			{ template: "<link2></link2>" })
-	.when("/location",		{ template: "<location-list></location-list>" })
+	.when("/location",		{ template: "<my-gen></my-gen>" })
 	.when("/uiBootstrap",	{ template: "<ui-bootstrap />" })
 	;
 }

@@ -51,7 +51,9 @@
 	</my-panel>
 </div>
 <div class="col-sm-8">
-	<my-form-gen data-save="Done" data-item="service.selectedItem" data-form-meta="$ctrl.formMeta"></my-form-gen>
+	<my-panel ng-show="service.selectedItem" data-title="Details">
+		<my-form-gen data-save="Done" data-item="service.selectedItem" data-form-meta="$ctrl.formMeta"></my-form-gen>
+	</my-panel>
 <!--
 	<location-detail data-item="service.selectedItem"></location-detail>
  -->
