@@ -105,18 +105,20 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, $parse) {
 				required: true,
 				trim: true,
 				pattern: "[A-Za-z@0-9]+",
-				list_col_width: 3
+				list_col_width: 5
 			},
 			{
 				label: "e-mail",
 				name: "email",
-				type: "email"
+				type: "email",
+				list_col_width: 2,
 			},
 			{
 				label: "type",
 				name: "type",
 				type: "radio",
-				values: [ "Unknown", "Headquarter", "Office", "Home" ]
+				values: [ "Unknown", "Headquarter", "Office", "Home" ],
+				list_col_width: 2,
 			},
 			{
 				label: "type (same with combo)",

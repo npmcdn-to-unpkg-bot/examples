@@ -34,23 +34,28 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, service, 
 		service.selectedItem = item === service.selectedItem ? null : item;
 	};
 	
-	that.onChange = function() {
+	that.$onChanges = function() {
 		var i, totalWidth = 0;
 		that.calcFields = [];
+		that.columnFields = [];
 		that.orderBy = [];
+		console.log("$onChanges ", that.formMeta);
 
-		for (i = 0; i < that.fieldMeta.fields.length; i++) {
-			var tmp = angular.extend(
-					{ name: i+1, label: "", list_col_width: 0, sortable: true },
-					that.fieldMeta.fields[i]
-			);
-			if (tmp.label === null || tmp.label === "" || tmp.list_col_width === 0)
-				tmp.sortable = false;
-			that.calcFields.push(tmp);
-			totalWidth += tmp.list_col_width;
-			if (tmp.sortable) {
-				that.orderBy.push({ k: "+" + tmp.name, v: tmp.label + " ascending" });
-				that.orderBy.push({ k: "-" + tmp.name, v: tmp.label + " descending" });
+		if (that.formMeta && that.formMeta.fields) {
+			for (i = 0; i < that.formMeta.fields.length; i++) {
+				var tmp = angular.extend(
+						{ name: i+1, label: "", list_col_width: 0, sortable: true },
+						that.formMeta.fields[i]
+				);
+				if (tmp.label === null || tmp.label === "" || tmp.list_col_width === 0)
+					tmp.sortable = false;
+				that.calcFields.push(tmp);
+				totalWidth += tmp.list_col_width;
+				if (tmp.sortable) {
+					that.columnFields.push(tmp);
+					that.orderBy.push({ k: "+" + tmp.name, v: tmp.label + " ascending" });
+					that.orderBy.push({ k: "-" + tmp.name, v: tmp.label + " descending" });
+				}
 			}
 		}
 		that.order = that.orderBy ? that.orderBy[0].k : "";

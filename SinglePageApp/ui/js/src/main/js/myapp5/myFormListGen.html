@@ -13,10 +13,19 @@
 	</div>
 </form>
 
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-sm-2">Id</div>
+		<div class="col-sm-4">Name</div>
+		<div class="col-sm-4">email</div>
+		<div class="col-sm-6">Address</div>
+	</div>
+</div>
+
 <table class="table table-condensed table-striped table-hover">
 	<thead>
 		<tr>
-			<th ng-repeat="field in $ctrl.calcFields" ng-click="$ctrl.doOrderBy($index)" ng-class="$ctrl.getHeaderColumnClass($index)">
+			<th ng-repeat="field in $ctrl.columnFields" ng-click="$ctrl.doOrderBy($index)" ng-class="$ctrl.getHeaderColumnClass($index)">
 				<span>{{field.label}}</span>
 				<span ng-class="$ctrl.getOrderByClass($index)" />
 			</th>
@@ -25,7 +34,7 @@
 	</thead>
 	<tbody>
 		<tr ng-repeat="item in $ctrl.data.item" class="clickable" ng-class="service.isSelected(item) ? 'info selected' : ''" ng-click="$ctrl.onSelect(item)">
-			<td ng-repeat="field in $ctrl.calcFields">{{item[field.name]}}</td>
+			<td ng-repeat="field in $ctrl.columnFields">{{item[field.name]}}</td>
 			<td><a href=""><span class="show-on-hover glyphicon glyphicon-chevron-right"></span></a></td>
 		</tr>
 	</tbody>
