@@ -13,12 +13,21 @@
 	</div>
 </form>
 
-<div class="container-fluid">
-	<div class="row">
-		<div class="col-sm-2">Id</div>
-		<div class="col-sm-4">Name</div>
-		<div class="col-sm-4">email</div>
-		<div class="col-sm-6">Address</div>
+<div class="container-fluid table table-striped table-hover">
+	<div class="thead">
+		<div class="row tr">
+			<div class="th col-sm-4" ng-repeat="field in $ctrl.columnFields" ng-click="$ctrl.doOrderBy($index)" ng-class="$ctrl.getHeaderColumnClass($index)">
+				<span>{{field.label}}</span>
+				<span ng-class="$ctrl.getOrderByClass($index)" />
+			</div>
+			<div class="th col-sm-1"></div>
+		</div>
+	</div>
+	<div class="tbody">
+		<div class="row tr clickable" ng-repeat="item in $ctrl.data.item" ng-class="service.isSelected(item) ? 'info selected' : ''" ng-click="$ctrl.onSelect(item)">
+			<div class="td col-sm-3" ng-repeat="field in $ctrl.columnFields" ng-class="$ctrl.getHeaderColumnClass($index)">{{item[field.name]}}</div>
+			<div class="td col-sm-1"><a href=""><span class="show-on-hover glyphicon glyphicon-chevron-right"></span></a></div>
+		</div>
 	</div>
 </div>
 

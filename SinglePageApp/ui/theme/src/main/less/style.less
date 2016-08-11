@@ -1,17 +1,76 @@
 // @import "jquery.dataTables.less";
 @import "sprite.less";
+@import "bootstrap.less";
+//@import "theme.less";
 
 .clickable {
 	cursor: pointer;
 }
 
-table.table-hover tr:hover td span.show-on-hover,
-table.table-hover tr.selected td span.show-on-hover,
-table.table-hover tr td a:focus span.show-on-hover {
-	color: inherit;
+.table {
+	// Cells
+	> .thead, 
+	> .tbody, 
+	> .tfoot {
+		> .tr {
+			border-top: 1px solid @table-border-color;
+			> .th {
+				font-weight: bold;
+			}
+			> .th, 
+			> .td {
+				padding: @table-cell-padding;
+				line-height: @line-height-base;
+				vertical-align: top;
+				overflow: hidden;
+				word-wrap: break-word;
+			}
+		}
+	}
+
+	> .thead > .tr { 
+		border-bottom: 2px solid @table-border-color;
+		> .th {
+			vertical-align: bottom;
+		}
+	}
+
+	> .caption + .thead , 
+	> .colgroup + .thead , 
+	> .thead:first-child {
+		> .tr {
+			> .th , 
+			> .td {
+				border-top: 0;
+			}
+		}
+	}
 }
-table.table-hover tr td span.show-on-hover {
-	color: rgba(0,0,0,0);
+
+.table-striped {
+	> .tbody > .tr:nth-of-type(odd) {
+		background-color: @table-bg-accent;
+	}
+}
+
+.table-hover {
+	> .tbody {
+		> .tr:hover {
+			background-color: @table-bg-hover;
+		}
+
+		> .tr:hover,
+		> .tr.selected,
+		> .tr a:focus {
+			span.show-on-hover {
+				color: inherit;
+			}
+		}
+	
+		> .tr a span.show-on-hover {
+			color: rgba(0,0,0,0);
+		}
+	}
 }
 
 .popover {

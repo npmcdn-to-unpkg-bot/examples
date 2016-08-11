@@ -31,14 +31,14 @@ module.exports = function( grunt ) {
 		less: {
 			all: {
 				options: {
-					paths: ["<%= params.srcLess %>", "<%= params.srcLess %>/include", "<%= params.tmp %>"],
+					paths: ["<%= params.srcLess %>", "<%= params.srcLess %>/include", "<%= params.tmp %>", "node_modules/bootstrap/less"],
 					compress: false,
 					strictImports: true,
 					banner: "// Built on <%= now %>\n",
 				},
 				files: {
 					"<%= params.dest %>/css/style.css": [
-						"node_modules/bootstrap/dist/css/bootstrap.css", 
+						// "node_modules/bootstrap/dist/css/bootstrap.css", 
 						"<%= params.srcLess %>/**/*.less", 
 						"!<%= params.srcLess %>/include/**/*.less"
 					]
