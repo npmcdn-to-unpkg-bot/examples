@@ -8,17 +8,30 @@
 }
 
 .table {
+	display: table;
+	> .thead {
+		display: table-header-group;
+	}
+	> .tfoot {
+		display: table-footer-group;
+	}
+	> .tbody {
+		display: table-row-group;
+	}
+	
 	// Cells
 	> .thead, 
 	> .tbody, 
 	> .tfoot {
 		> .tr {
+			display: table-row;
 			border-top: 1px solid @table-border-color;
-			> .th {
+			.th {
 				font-weight: bold;
 			}
-			> .th, 
-			> .td {
+			.th, 
+			.td {
+				display: table-cell;
 				padding: @table-cell-padding;
 				line-height: @line-height-base;
 				vertical-align: top;
@@ -30,7 +43,7 @@
 
 	> .thead > .tr { 
 		border-bottom: 2px solid @table-border-color;
-		> .th {
+		.th {
 			vertical-align: bottom;
 		}
 	}
@@ -39,8 +52,8 @@
 	> .colgroup + .thead , 
 	> .thead:first-child {
 		> .tr {
-			> .th , 
-			> .td {
+			.th , 
+			.td {
 				border-top: 0;
 			}
 		}

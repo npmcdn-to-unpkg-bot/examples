@@ -3,174 +3,83 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>TEST Angular JS</title>
-<base href="http://localhost:8080/examples.spa.backend/">
-<link rel="stylesheet" href="res/css/style.css">
+<style>
+.container {
+  width: 500px;
+  height: 100px;
+  border: 1px solid black;
+//  overflow: hidden;
+}
+.data:nth-of-type(even) {
+  background-color: blue;
+}
+.data:nth-of-type(odd) {
+  background-color: lightblue;
+}
+.data {
+  border: 1px solid black;
+  white-space: nowrap;
+//  position: relative;
+//  display: inline-flex;
+  display: inline;
+//  float: right;
+}
+.right {
+  float: right;
+  display: table;
+  height: 100%;
+  border: 1px solid yellow;
+  background-color: gray;
+}
+.v-box{
+  display: table-cell;
+  background-color: green;
+  vertical-align: middle;
+}
+.fixBox {
+  display: inline-block;
+  border: 1px solid black;
+  background-color: red;
+  width: 10px;
+  height: 10px;
+}
+.v-box2 {
+  display: block;
+  line-height: 100%;
+  vertical-align: middle;
+}
+</style>
 </head>
 
 <body>
+
+<div class="container">
+  <div class="right">
+      <div class="v-box">
+        <div class="fixBox"></div>
+      </div>
+  </div>
+  <div class="data-container">
+    <div class="data">Some data 1</div><div class="data">Some data 2</div>
+    <div class="data">Some data 3</div><div class="data">Some data 4</div>
+    <div class="data">Some data 5</div><div class="data">Some data 6</div>
+    <div class="data">Some data 7</div>
+  </div>
+</div>
+
 	<br/><br/><br/><br/><br/><br/><br/><br/><br/>
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-4">
-				<div class="panel panel-default">
-					<div class="panel-heading">Location</div>
-					<div class="panel-body">
 
-						<form class="form-horizontal">
-							<div class="input-group">
-								<input placeholder="Search" class="form-control" type="text"> <a href=""
-									class="btn btn-primary input-group-addon"><span class="glyphicon glyphicon-cog"></span></a>
-							</div>
-						</form>
-
-						<div class="container-fluid">
-							<div class="row">
-								<!-- ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-click="$ctrl.doOrderBy($index)" ng-class="$ctrl.getHeaderColumnClass($index)">
-									<span class="ng-binding">ID</span> <span class="glyphicon glyphicon-chevron-up"
-										ng-class="$ctrl.getOrderByClass($index)"></span>
-								</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-scope clickable col-sm-5" ng-repeat="field in $ctrl.columnFields"
-									ng-click="$ctrl.doOrderBy($index)" ng-class="$ctrl.getHeaderColumnClass($index)">
-									<span class="ng-binding">Name</span> <span ng-class="$ctrl.getOrderByClass($index)"></span>
-								</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-click="$ctrl.doOrderBy($index)" ng-class="$ctrl.getHeaderColumnClass($index)">
-									<span class="ng-binding">e-mail</span> <span ng-class="$ctrl.getOrderByClass($index)"></span>
-								</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-click="$ctrl.doOrderBy($index)" ng-class="$ctrl.getHeaderColumnClass($index)">
-									<span class="ng-binding">type</span> <span ng-class="$ctrl.getOrderByClass($index)"></span>
-								</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div></div>
-							</div>
-							<!-- ngRepeat: item in $ctrl.data.item -->
-							<div class="row clickable ng-scope" ng-repeat="item in $ctrl.data.item"
-								ng-class="service.isSelected(item) ? 'info selected' : ''" ng-click="$ctrl.onSelect(item)">
-								<!-- ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">1</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-5" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">Name 0</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">Name0@example.com</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">Office</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div>
-									<a href=""><span class="show-on-hover glyphicon glyphicon-chevron-right"></span></a>
-								</div>
-							</div>
-							<!-- end ngRepeat: item in $ctrl.data.item -->
-							<div class="row clickable ng-scope" ng-repeat="item in $ctrl.data.item"
-								ng-class="service.isSelected(item) ? 'info selected' : ''" ng-click="$ctrl.onSelect(item)">
-								<!-- ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">2</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-5" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">Name 1</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">1</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">Office</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div>
-									<a href=""><span class="show-on-hover glyphicon glyphicon-chevron-right"></span></a>
-								</div>
-							</div>
-							<!-- end ngRepeat: item in $ctrl.data.item -->
-							<div class="row clickable ng-scope" ng-repeat="item in $ctrl.data.item"
-								ng-class="service.isSelected(item) ? 'info selected' : ''" ng-click="$ctrl.onSelect(item)">
-								<!-- ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">3</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-5" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">Name 2</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">Name2@example.com</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">Office</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div>
-									<a href=""><span class="show-on-hover glyphicon glyphicon-chevron-right"></span></a>
-								</div>
-							</div>
-							<!-- end ngRepeat: item in $ctrl.data.item -->
-							<div class="row clickable ng-scope" ng-repeat="item in $ctrl.data.item"
-								ng-class="service.isSelected(item) ? 'info selected' : ''" ng-click="$ctrl.onSelect(item)">
-								<!-- ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">4</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-5" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">Name 3</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">3</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">Office</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div>
-									<a href=""><span class="show-on-hover glyphicon glyphicon-chevron-right"></span></a>
-								</div>
-							</div>
-							<!-- end ngRepeat: item in $ctrl.data.item -->
-							<div class="row clickable ng-scope" ng-repeat="item in $ctrl.data.item"
-								ng-class="service.isSelected(item) ? 'info selected' : ''" ng-click="$ctrl.onSelect(item)">
-								<!-- ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">5</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-5" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">Name 4</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">Name4@example.com</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div class="ng-binding ng-scope clickable col-sm-2" ng-repeat="field in $ctrl.columnFields"
-									ng-class="$ctrl.getHeaderColumnClass($index)">Office</div>
-								<!-- end ngRepeat: field in $ctrl.columnFields -->
-								<div>
-									<a href=""><span class="show-on-hover glyphicon glyphicon-chevron-right"></span></a>
-								</div>
-							</div>
-							<!-- end ngRepeat: item in $ctrl.data.item -->
-						</div>
-						
-						<p>
-						This is a veeeery long, long paragraph. 
-						This is a veeeery long, long paragraph. 
-						This is a veeeery long, long paragraph. 
-						This is a veeeery long, long paragraph. 
-						This is a veeeery long, long paragraph. 
-						This is a veeeery long, long paragraph. 
-						This is a veeeery long, long paragraph. 
-						This is a veeeery long, long paragraph. 
-						This is a veeeery long, long paragraph. 
-						This is a veeeery long, long paragraph. 
-						This is a veeeery long, long paragraph. 
-						This is a veeeery long, long paragraph. 
-						This is a veeeery long, long paragraph. 
-						This is a veeeery long, long paragraph. 
-						</p>
-					</div>
-				</div>
+	<div style="position: relative; left: 100px; width: 300px; height: auto;">
+		<div style="background-color: green; border: 1px solid black; display: table; float: right; height: 100%">
+			<div style="display: table-cell; vertical-align: middle;">
+				<div style="width:20px; height: 20px; background-color: red;"></div>
 			</div>
+		</div>
+		<div>
+			<div style="width: 120px; display: inline-block; background-color: yellow;" class="ttd">1</div>
+			<div style="width: 120px; display: inline-block; background-color: yellow;" class="ttd">Name 0</div>
+			<div style="width: 120px; display: inline-block; background-color: yellow;" class="ttd">Name0@example.com</div>
+			<div style="width: 120px; display: inline-block; background-color: yellow;" class="ttd">Office</div>
 		</div>
 	</div>
 </body>

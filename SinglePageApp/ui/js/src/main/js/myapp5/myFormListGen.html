@@ -24,8 +24,42 @@
 	</div>
 	<div class="tbody">
 		<div class="row tr clickable" ng-repeat="item in $ctrl.data.item" ng-class="service.isSelected(item) ? 'info selected' : ''" ng-click="$ctrl.onSelect(item)">
-			<div class="td col-sm-4" ng-repeat="field in $ctrl.columnFields" nng-class="$ctrl.getHeaderColumnClass($index)">{{item[field.name]}}</div>
-			<div style="display: block; float: right;"><a href=""><span class="show-on-hover glyphicon glyphicon-chevron-right"></span></a></div>
+			<div style="float: right; display: table; height: 100%; border: 1px solid black; background-color: red">
+				<div style="display: table-cell; vertical-align: middle; background-color: green;">
+					<a href=""><span class="show-on-hover glyphicon glyphicon-chevron-right"></span></a>
+				</div>
+			</div>
+			<div>
+				<div class="td col-sm-4" ng-repeat="field in $ctrl.columnFields" nng-class="$ctrl.getHeaderColumnClass($index)">{{item[field.name]}}</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- 
+<div class="container-fluid table table-striped table-hover">
+	<div class="thead">
+		<div class="row tr">
+			<div class="th col-sm-4" ng-repeat="field in $ctrl.columnFields" ng-click="$ctrl.doOrderBy($index)" nng-class="$ctrl.getHeaderColumnClass($index)">
+				<span>{{field.label}}</span>
+				<span ng-class="$ctrl.getOrderByClass($index)" />
+			</div>
+		</div>
+	</div>
+	<div class="tbody">
+		<div class="row tr clickable" ng-repeat="item in $ctrl.data.item" ng-class="service.isSelected(item) ? 'info selected' : ''" ng-click="$ctrl.onSelect(item)">
+			<div style="width: 100%; height: 100%;">
+				<div style="float: right; display: table; height: 100%; border: 1px solid black; background-color: red">
+					<div style="">
+						<div style="display: table-cell; vertical-align: middle">
+							<a style="display: inline-block" href=""><span class="show-on-hover glyphicon glyphicon-chevron-right"></span></a>
+						</div>
+					</div>
+				</div>
+				<div>
+					<div class="td col-sm-4" ng-repeat="field in $ctrl.columnFields" nng-class="$ctrl.getHeaderColumnClass($index)">{{item[field.name]}}</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
@@ -48,6 +82,8 @@
 	</tbody>
 </table>
 
+ -->
+ 
 <uib-pagination ng-if="$ctrl.data.recordsFiltered / $ctrl.size > 1"
 	class="pagination-sm" 
 	total-items="$ctrl.data.recordsFiltered"
