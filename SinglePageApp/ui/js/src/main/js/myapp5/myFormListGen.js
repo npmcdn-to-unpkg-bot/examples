@@ -90,7 +90,7 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, service, 
 		var column = that.calcFields[index];
 		if ((!column) || (!column.sortable))
 			return "";
-		return "clickable col-sm-" + column._calcWidth;
+		return "clickable col-sm-" + column.list_col_width; //_calcWidth;
 	};
 	
 	that.doOrderBy = function(index) {

@@ -111,14 +111,14 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, $parse) {
 				label: "e-mail",
 				name: "email",
 				type: "email",
-				list_col_width: 2,
+				list_col_width: 5,
 			},
 			{
 				label: "type",
 				name: "type",
 				type: "radio",
 				values: [ "Unknown", "Headquarter", "Office", "Home" ],
-				list_col_width: 2,
+				list_col_width: 0,
 			},
 			{
 				label: "type (same with combo)",

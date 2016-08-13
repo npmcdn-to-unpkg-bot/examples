@@ -13,24 +13,27 @@
 	</div>
 </form>
 
-<div class="container-fluid table table-striped table-hover">
+<div class="table table-striped table-hover">
 	<div class="thead">
-		<div class="row tr">
-			<div class="th col-sm-4" ng-repeat="field in $ctrl.columnFields" ng-click="$ctrl.doOrderBy($index)" nng-class="$ctrl.getHeaderColumnClass($index)">
-				<span>{{field.label}}</span>
-				<span ng-class="$ctrl.getOrderByClass($index)" />
+		<div class="tr container-flex">
+			<div>
+				<div class="th" ng-repeat="field in $ctrl.columnFields" ng-click="$ctrl.doOrderBy($index)" ng-class="$ctrl.getHeaderColumnClass($index)">
+					<span>{{field.label}}</span>
+					<span ng-class="$ctrl.getOrderByClass($index)" />
+				</div>
+			</div>
+			<div class="th fixed-flex">
+				<a href=""><span class="show-on-hover glyphicon glyphicon-chevron-right"></span></a>
 			</div>
 		</div>
 	</div>
 	<div class="tbody">
-		<div class="row tr clickable" ng-repeat="item in $ctrl.data.item" ng-class="service.isSelected(item) ? 'info selected' : ''" ng-click="$ctrl.onSelect(item)">
-			<div style="float: right; display: table; height: 100%; border: 1px solid black; background-color: red">
-				<div style="display: table-cell; vertical-align: middle; background-color: green;">
-					<a href=""><span class="show-on-hover glyphicon glyphicon-chevron-right"></span></a>
-				</div>
-			</div>
+		<div class="tr clickable container-flex" ng-repeat="item in $ctrl.data.item" ng-class="service.isSelected(item) ? 'info selected' : ''" ng-click="$ctrl.onSelect(item)">
 			<div>
-				<div class="td col-sm-4" ng-repeat="field in $ctrl.columnFields" nng-class="$ctrl.getHeaderColumnClass($index)">{{item[field.name]}}</div>
+				<div class="td" ng-repeat="field in $ctrl.columnFields" ng-class="$ctrl.getHeaderColumnClass($index)">{{item[field.name]}}</div>
+			</div>
+			<div class="td fixed-flex">
+				<a href=""><span class="show-on-hover glyphicon glyphicon-chevron-right"></span></a>
 			</div>
 		</div>
 	</div>

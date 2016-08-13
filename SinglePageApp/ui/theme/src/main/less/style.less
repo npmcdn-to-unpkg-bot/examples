@@ -75,14 +75,33 @@
 		> .tr:hover,
 		> .tr.selected,
 		> .tr a:focus {
-			span.show-on-hover {
+			.show-on-hover {
 				color: inherit;
 			}
 		}
 	
-		> .tr a span.show-on-hover {
+		> .tr a .show-on-hover {
 			color: rgba(0,0,0,0);
 		}
+	}
+	> .thead {
+		> .tr a .show-on-hover {
+			color: rgba(0,0,0,0);
+		}
+	
+}
+}
+
+.container-flex {
+	display: flex!important;
+	align-items: center;
+	
+	.fixed-flex {
+		flex: 0 0 auto;
+	}
+	
+	> * {
+		flex: 1 1 auto;
 	}
 }
 
