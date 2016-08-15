@@ -9,6 +9,7 @@ function Implementation($scope, $route, $routeParams, $location, logger) {
 		{ url: '/link1',		label: 'Link 1' },
 		{ url: '/link2',		label: 'Link 2' },
 		{ url: '/location',		label: 'Location' },
+		{ url: '/myroute',		label: 'My route' },
 		{ url: '/uiBootstrap',	label: 'UI Bootstrap' }
 	];
 

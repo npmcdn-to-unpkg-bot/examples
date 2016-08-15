@@ -88,6 +88,9 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, $parse) {
 	});
 	
 	that.formMeta = {
+		name: "locations",
+		baseUrl: "api/locations/:id",
+		bestRowIdColumns: ["id"],
 		fields: [
 			{
 				label: "ID",

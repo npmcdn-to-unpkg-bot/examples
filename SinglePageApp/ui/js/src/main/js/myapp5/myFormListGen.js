@@ -1,10 +1,8 @@
 var module = angular.module('myapp5');
 
-Implementation.$inject = ["$scope", "$resource", "$routeParams", "$q", "$timeout", "locationService", "$parse", "slavi-logger", "slavi-utils"];
-function Implementation($scope, $resource, $routeParams, $q, $timeout, service, $parse, logger, utils) {
+Implementation.$inject = ["$resource", "$routeParams", "$location", "slavi-utils"];
+function Implementation($resource, $routeParams, $location, utils) {
 	var that = this;
-	that.service = service;
-	$scope.service = service;
 	var delayedRunner = utils.delayedRunner();
 	
 	that.isDone = function() {
@@ -19,28 +17,68 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, service, 
 	that.order = "";
 	that.calcFields = [];
 	
-	that.updateList = function() {
-		delayedRunner.run(function() {
-			service.selectedItem = null;
-			var r = service.resource.search({ search: that.query, page: that.page-1, size: that.size, order: that.order });
-			r.$promise.then(function() {
-				that.data = r;
-			});
+	var resource = null;
+	var selectedItem = null;
+	
+	that.updateListImediately = function() {
+		selectedItem = null;
+		if (!resource)
+			return;
+		var r = resource.search({ search: that.query, page: that.page-1, size: that.size, order: that.order });
+		r.$promise.then(function() {
+			that.data = r;
 		});
 	};
+
+	that.updateListDelayed = function() {
+		delayedRunner.run(that.updateListImediately);
+	};
 	
-	that.onSelect = function(item) {
+	that.isSelected = function(item) {
+		return (item !== null) && (item === selectedItem);
+	};
+	
+	that.onDblClick = function(item) {
+		selectedItem = item;
+		var id = "";
+		if (item && that.formMeta) {
+			angular.forEach(that.formMeta.bestRowIdColumns, function(columnName) {
+				id += "/" + encodeURIComponent(item[columnName]);
+			});
+		}
+		var url = "/myroute/" + that.formMeta.name + id;
+		console.log(item);
+		console.log(id);
+		$location.path(url);
+	};
+	
+	that.onClick = function(item) {
 		// toggle selected item
-		service.selectedItem = item === service.selectedItem ? null : item;
+		// selectedItem = item === selectedItem ? null : item;
+		if ((item !== null) && (item === selectedItem)) {
+			that.onDblClick(item);
+		} else {
+			selectedItem = item;
+		}
 	};
 	
 	that.$onChanges = function() {
 		var i, totalWidth = 0;
+		resource = null;
 		that.calcFields = [];
 		that.columnFields = [];
 		that.orderBy = [];
-		console.log("$onChanges ", that.formMeta);
 
+		that.formMeta = angular.extend(
+			{
+				name: "",
+				baseUrl: "",
+				bestRowIdColumns: [],
+				fields: []
+			},
+			that.formMeta
+		);
+		
 		if (that.formMeta && that.formMeta.fields) {
 			for (i = 0; i < that.formMeta.fields.length; i++) {
 				var tmp = angular.extend(
@@ -83,7 +121,27 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, service, 
 			if (calcTotalWidth >= 12)
 				break;
 		}
-		that.updateList();
+		
+		if (that.formMeta) {
+			resource = $resource(that.formMeta.baseUrl, {
+//			callback: "JSON_CALLBACK",
+				search: "",
+				page: 0,
+				size: 10,
+				order: that.order
+			}, {
+				search: { method: "get" },
+//			delete: { method: "delete", params: { id: "@id" }},
+//			load: { method: "get", params: { id: "@id" }},
+//			new: { method: "get", params: { id: "new" }},
+//			save: { method: "post", callback: "" }
+			}, {
+				stripTrailingSlashes: false,
+				cancellable: true
+			});
+		}
+		
+		that.updateListImediately();
 	};
 	
 	that.getHeaderColumnClass = function(index) {
@@ -102,7 +160,7 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, service, 
 		} else {
 			that.order = '+' + column.name;
 		}
-		that.updateList();
+		that.updateListImediately();
 	};
 
 	that.getOrderByClass = function(index) {
@@ -123,6 +181,7 @@ module.component("myFormListGen", {
 	templateUrl: "myapp5/myFormListGen.html",
 	bindings: {
 		formMeta: "<",
+//		onSelect: "&"
 	},
 	controller: Implementation
 });

@@ -1,0 +1,9 @@
+<form class="form-horizontal" style="width: 250px">
+	<my-form-field data-label="max:" data-label-width="4">
+		<my-combo data-items="[3,5,10,20,50,100]" data-model="$ctrl.size" data-on-update="$ctrl.updateListDelayed()"></my-combo>
+	</my-form-field>
+	
+	<my-form-field data-label="order by:" data-label-width="4">
+		<my-combo data-items="$ctrl.orderBy" data-model="$ctrl.order" data-on-update="$ctrl.updateListDelayed()"></my-combo>
+	</my-form-field>
+</form>
