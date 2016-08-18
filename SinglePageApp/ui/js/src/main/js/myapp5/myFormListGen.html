@@ -17,7 +17,7 @@
 	<div class="thead">
 		<div class="tr container-flex">
 			<div>
-				<div class="th" ng-repeat="field in $ctrl.columnFields" ng-click="$ctrl.doOrderBy($index)" ng-class="$ctrl.getHeaderColumnClass($index)">
+				<div class="th" ng-repeat="field in $ctrl.formMeta.columnFields" ng-click="$ctrl.doOrderBy($index)" ng-class="$ctrl.getHeaderColumnClass($index)">
 					<span>{{field.label}}</span>
 					<span ng-class="$ctrl.getOrderByClass($index)" />
 				</div>
@@ -35,7 +35,7 @@
 			ng-click="$ctrl.onClick(item)"
 			ng-dblclick="$ctrl.onDblClick(item)">
 			<div>
-				<div class="td" ng-repeat="field in $ctrl.columnFields" ng-class="$ctrl.getHeaderColumnClass($index)">{{item[field.name]}}</div>
+				<div class="td" ng-repeat="field in $ctrl.formMeta.columnFields" ng-class="$ctrl.getHeaderColumnClass($index)">{{item[field.name]}}</div>
 			</div>
 			<div class="td fixed-flex">
 				<a href=""><span class="show-on-hover glyphicon glyphicon-chevron-right"></span></a>

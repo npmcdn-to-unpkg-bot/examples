@@ -25,6 +25,7 @@ function Implementation($resource, $routeParams, $location, utils) {
 		var r = resource.search({ search: that.query, page: that.page-1, size: that.size, order: that.order });
 		r.$promise.then(function() {
 			that.data = r;
+			console.log(r);
 		});
 	};
 
@@ -130,5 +131,6 @@ module.component("myFormListGen", {
 		formMeta: "<",
 //		onSelect: "&"
 	},
+	scope: true,
 	controller: Implementation
 });
