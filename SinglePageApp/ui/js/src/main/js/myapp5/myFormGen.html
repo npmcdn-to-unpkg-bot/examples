@@ -1,6 +1,6 @@
 <my-form data-save="{{ $ctrl.save }}" data-on-save="$ctrl.onSave()" data-cancel="{{ $ctrl.cancel }}" data-on-cancel="$ctrl.onCancel()">
 	<my-form-field 
-		ng-repeat="field in $ctrl.calcFields"
+		ng-repeat="field in $ctrl.formMeta.calcFields"
 		data-label="{{ field.label }}" data-name="{{ field.name }}">
 
 		<my-form-field-gen 

@@ -13,9 +13,7 @@ function Implementation($resource, $routeParams, $location, utils) {
 	that.page = 1;
 	that.size = 5;
 	that.data = {};
-	that.orderBy = [];
 	that.order = "";
-	that.calcFields = [];
 	
 	var resource = null;
 	var selectedItem = null;
@@ -63,65 +61,8 @@ function Implementation($resource, $routeParams, $location, utils) {
 	};
 	
 	that.$onChanges = function() {
-		var i, totalWidth = 0;
 		resource = null;
-		that.calcFields = [];
-		that.columnFields = [];
-		that.orderBy = [];
 
-		that.formMeta = angular.extend(
-			{
-				name: "",
-				baseUrl: "",
-				bestRowIdColumns: [],
-				fields: []
-			},
-			that.formMeta
-		);
-		
-		if (that.formMeta && that.formMeta.fields) {
-			for (i = 0; i < that.formMeta.fields.length; i++) {
-				var tmp = angular.extend(
-						{ name: i+1, label: "", list_col_width: 0, sortable: true },
-						that.formMeta.fields[i]
-				);
-				if (tmp.label === null || tmp.label === "" || tmp.list_col_width === 0)
-					tmp.sortable = false;
-				that.calcFields.push(tmp);
-				totalWidth += tmp.list_col_width;
-				if (tmp.sortable) {
-					that.columnFields.push(tmp);
-					that.orderBy.push({ k: "+" + tmp.name, v: tmp.label + " ascending" });
-					that.orderBy.push({ k: "-" + tmp.name, v: tmp.label + " descending" });
-				}
-			}
-		}
-		that.order = that.orderBy ? that.orderBy[0].k : "";
-
-		if (totalWidth < 1)
-			totalWidth = that.calcFields.length;
-		if (totalWidth > 12)
-			totalWidth = 12;
-
-		var calcTotalWidth = 0;
-		for (i = 0; i < that.calcFields.length; i++) {
-			var col = that.calcFields[i];
-			var c = col.list_col_width;
-			c = Math.floor(c * 12 / totalWidth);
-			if (c < 1)
-				c = 1;
-			if (c > 12)
-				c = 12;
-			calcTotalWidth += c;
-			col._calcWidth = c;
-		}
-		for (i = that.calcFields.length - 1; i >= 0; i--) {
-			that.calcFields[i]._calcWidth++;
-			calcTotalWidth++;
-			if (calcTotalWidth >= 12)
-				break;
-		}
-		
 		if (that.formMeta) {
 			resource = $resource(that.formMeta.baseUrl, {
 //			callback: "JSON_CALLBACK",
@@ -145,14 +86,18 @@ function Implementation($resource, $routeParams, $location, utils) {
 	};
 	
 	that.getHeaderColumnClass = function(index) {
-		var column = that.calcFields[index];
+		if (!that.formMeta)
+			return "";
+		var column = that.formMeta.calcFields[index];
 		if ((!column) || (!column.sortable))
 			return "";
 		return "clickable col-sm-" + column.list_col_width; //_calcWidth;
 	};
 	
 	that.doOrderBy = function(index) {
-		var column = that.calcFields[index];
+		if (!that.formMeta)
+			return "";
+		var column = that.formMeta.calcFields[index];
 		if ((!column) || (!column.sortable))
 			return;
 		if (that.order === '+' + column.name) {
@@ -164,7 +109,9 @@ function Implementation($resource, $routeParams, $location, utils) {
 	};
 
 	that.getOrderByClass = function(index) {
-		var column = that.calcFields[index];
+		if (!that.formMeta)
+			return "";
+		var column = that.formMeta.calcFields[index];
 		if ((!column) || (!column.sortable))
 			return "";
 		if (that.order === '+' + column.name) {

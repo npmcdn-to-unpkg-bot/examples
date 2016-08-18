@@ -1,7 +1,7 @@
 var module = angular.module('myapp5');
 
-Implementation.$inject = ["$scope", "$resource", "$routeParams", "$q", "$timeout", "$parse"];
-function Implementation($scope, $resource, $routeParams, $q, $timeout, $parse) {
+Implementation.$inject = ["$scope", "$resource", "$routeParams", "$q", "$timeout", "$parse", "myRouteService"];
+function Implementation($scope, $resource, $routeParams, $q, $timeout, $parse, myRouteService) {
 	var that = this;
 	
 	that.invokeMe = function() {
@@ -87,50 +87,7 @@ function Implementation($scope, $resource, $routeParams, $q, $timeout, $parse) {
 		}
 	});
 	
-	that.formMeta = {
-		name: "locations",
-		baseUrl: "api/locations/:id",
-		bestRowIdColumns: ["id"],
-		fields: [
-			{
-				label: "ID",
-				name: "id",
-				type: "label",
-				list_col_width: 2,
-				//sortable: false
-			},
-			{
-				label: "Name",
-				name: "name",
-				type: "text",
-				minLength: 3,
-				maxLength: 15,
-				required: true,
-				trim: true,
-				pattern: "[A-Za-z@0-9]+",
-				list_col_width: 5
-			},
-			{
-				label: "e-mail",
-				name: "email",
-				type: "email",
-				list_col_width: 5,
-			},
-			{
-				label: "type",
-				name: "type",
-				type: "radio",
-				values: [ "Unknown", "Headquarter", "Office", "Home" ],
-				list_col_width: 0,
-			},
-			{
-				label: "type (same with combo)",
-				name: "type",
-				type: "combo",
-				values: [ "Unknown", "Headquarter", "Office", "Home" ]
-			}
-		]
-	};
+	that.formMeta = myRouteService.getMeta("locations");
 }
 
 module.component("myGen", {
