@@ -2,8 +2,10 @@ package examples.spa.backend.component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
@@ -55,19 +57,9 @@ public class MyRestController {
 	MapListHandler mapListHandler = new MapListHandler();
 	ScalarHandler<Integer> longHandler = new ScalarHandler<>();
 	
-	@Autowired
-	// idea borrowed from: http://stackoverflow.com/questions/10898056/how-to-find-all-controllers-in-spring-mvc
-	RequestMappingHandlerMapping requestMappingHandlerMapping;
-	
 	@PostConstruct
 	void initialize() {
 		queryRunner = new QueryRunner(dataSource);
-		
-		Map<RequestMappingInfo, HandlerMethod> handlerMethods = requestMappingHandlerMapping.getHandlerMethods();
-		for (Map.Entry<RequestMappingInfo, HandlerMethod> i : handlerMethods.entrySet()) {
-			System.out.println(i.getKey());
-			System.out.println(i.getValue());
-		}
 	}
 
 	@RequestMapping(value="/", method=RequestMethod.GET)

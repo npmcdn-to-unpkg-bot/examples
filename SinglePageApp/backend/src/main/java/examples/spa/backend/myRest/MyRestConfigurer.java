@@ -3,6 +3,7 @@ package examples.spa.backend.myRest;
 import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -10,6 +11,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
@@ -20,10 +24,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import examples.spa.backend.component.EntityWithIdControllerBase;
 import examples.spa.backend.component.UtilsService;
+import examples.spa.backend.model.FieldDef;
 import examples.spa.backend.myRest.meta.MyDatabaseMeta;
 
 public class MyRestConfigurer {
@@ -43,14 +53,34 @@ public class MyRestConfigurer {
 	
 	Resource config;
 	
+	@Autowired
+	// idea borrowed from: http://stackoverflow.com/questions/10898056/how-to-find-all-controllers-in-spring-mvc
+	RequestMappingHandlerMapping requestMappingHandlerMapping;
+	
 	@PostConstruct
-	void initialize() throws SQLException {
+	void initialize() throws Exception {
 		try (Connection conn = dataSource.getConnection()) {
 			myDatabaseMeta = new MyDatabaseMeta();
 			DatabaseMetaData meta = conn.getMetaData();
 			myDatabaseMeta.load(meta, null, null);
 		}
 		logger.debug(utils.toJson(myDatabaseMeta));
+
+		loadConfig(config);
+		
+		Set<Class> controllers = new HashSet<>();
+		Map<RequestMappingInfo, HandlerMethod> handlerMethods = requestMappingHandlerMapping.getHandlerMethods();
+		for (Map.Entry<RequestMappingInfo, HandlerMethod> i : handlerMethods.entrySet()) {
+			//i.getKey().getPatternsCondition().getPatterns().iterator().next()
+			// i.getValue().getBeanType()MethodAnnotation(annotationType)
+			Class clazz = i.getValue().getBeanType();
+			if (EntityWithIdControllerBase.class.isAssignableFrom(clazz))
+				controllers.add(clazz);
+		}
+		for (Class clazz : controllers) {
+			RequestMapping ann = (RequestMapping) clazz.getAnnotation(RequestMapping.class);
+			System.out.println("PATH: " + ann.value());
+		}
 	}
 	
 	protected void loadConfig(Resource config) throws IOException, JDOMException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, IntrospectionException, SQLException {
@@ -131,11 +161,6 @@ public class MyRestConfigurer {
 
 	public void setConfig(Resource config) {
 		this.config = config;
-		try {
-			loadConfig(config);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	public MyRestConfigItem getConfigItem(String configName) {
