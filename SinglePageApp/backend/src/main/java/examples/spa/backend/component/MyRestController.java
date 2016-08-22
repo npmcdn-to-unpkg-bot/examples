@@ -22,6 +22,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
 import com.slavi.math.MathUtil;
 
@@ -52,11 +55,27 @@ public class MyRestController {
 	MapListHandler mapListHandler = new MapListHandler();
 	ScalarHandler<Integer> longHandler = new ScalarHandler<>();
 	
+	@Autowired
+	// idea borrowed from: http://stackoverflow.com/questions/10898056/how-to-find-all-controllers-in-spring-mvc
+	RequestMappingHandlerMapping requestMappingHandlerMapping;
+	
 	@PostConstruct
 	void initialize() {
 		queryRunner = new QueryRunner(dataSource);
+		
+		Map<RequestMappingInfo, HandlerMethod> handlerMethods = requestMappingHandlerMapping.getHandlerMethods();
+		for (Map.Entry<RequestMappingInfo, HandlerMethod> i : handlerMethods.entrySet()) {
+			System.out.println(i.getKey());
+			System.out.println(i.getValue());
+		}
 	}
 
+	@RequestMapping(value="/", method=RequestMethod.GET)
+	public ResponseEntity getFormMeta() {
+		String r = null;
+		return ResponseEntity.ok(r);
+	}
+	
 	@RequestMapping(value="{configName}/{id}", method=RequestMethod.GET)
 	public ResponseEntity loadItem(
 			@PathVariable("configName") String configName,
@@ -163,7 +182,7 @@ public class MyRestController {
 //		boolean keyHasNulls = false;
 		boolean keyHasNullsThatAreNotNull = false;
 		boolean keyHasNonNulls = false;
-		for (String col : config.bestRowIdColumnsSet) {
+		for (String col : config.bestRowIdColumns) {
 			Object val = itemCI.get(col);
 			if (val == null) {
 //				keyHasNulls = true;
@@ -191,7 +210,7 @@ public class MyRestController {
 			sql.append(config.name);
 			String prefix = " set ";
 			for (MyTabColumnMeta col : config.columns.values()) {
-				if (config.bestRowIdColumnsSet.contains(col.name))
+				if (config.bestRowIdColumns.contains(col.name))
 					continue;
 				Object val = itemCI.get(col.name);
 				sql.append(prefix);
@@ -201,7 +220,7 @@ public class MyRestController {
 				prefix = ",";
 			}
 			prefix = " where ";
-			for (String col : config.bestRowIdColumnsSet) {
+			for (String col : config.bestRowIdColumns) {
 				Object val = itemCI.get(col);
 				sql.append(prefix);
 				sql.append(col);

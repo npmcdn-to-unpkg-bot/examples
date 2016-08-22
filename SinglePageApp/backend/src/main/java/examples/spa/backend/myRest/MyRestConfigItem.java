@@ -7,7 +7,7 @@ import javax.persistence.AccessType;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlTransient;
 
-import examples.spa.backend.component.UtilsService;
+import examples.spa.backend.misc.Utils;
 
 @Access(AccessType.FIELD)
 public class MyRestConfigItem implements Serializable {
@@ -39,7 +39,7 @@ public class MyRestConfigItem implements Serializable {
 	}
 	
 	public String toString() {
-		return UtilsService.objectToString(this);
+		return Utils.objectToString(this);
 	}
 
 	public DbField[] getDbField() {

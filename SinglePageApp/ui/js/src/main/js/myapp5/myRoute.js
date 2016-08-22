@@ -3,8 +3,8 @@ var module = angular.module('myapp5');
 Factory.$inject = ["$compile", "$sce"];
 function Factory($compile, $sce) {
 	
-	Implementation.$inject = ["$scope", "$routeParams", "$resource", "$location", "$timeout", "myRouteService"];
-	function Implementation($scope, $routeParams, $resource, $location, $timeout, myRouteService) {
+	Implementation.$inject = ["$scope", "$route", "$routeParams", "$resource", "$location", "$timeout", "myRouteService"];
+	function Implementation($scope, $route, $routeParams, $resource, $location, $timeout, myRouteService) {
 		var that = this;
 
 		function init() {
@@ -15,7 +15,7 @@ function Factory($compile, $sce) {
 				return;
 			}
 			
-			var resource = $resource(that.formMeta.baseUrl, {
+			that.resource = $resource(that.formMeta.baseUrl, {
 //				callback: "JSON_CALLBACK",
 					search: "",
 					page: 0,
@@ -26,12 +26,13 @@ function Factory($compile, $sce) {
 //				delete: { method: "delete", params: { id: "@id" }},
 				load: { method: "get", params: { id: "@id" }},
 //				new: { method: "get", params: { id: "new" }},
-//				save: { method: "post", callback: "" }
+				save: { method: "post", callback: "" }
 				}, {
 					stripTrailingSlashes: false,
 					cancellable: true
 				});
 
+			console.log($routeParams);
 			var id = $routeParams.id;
 			if (id) {
 				id = id.split("/");
@@ -46,7 +47,7 @@ function Factory($compile, $sce) {
 				
 				that.selectedItem = null;
 
-				var r = resource.load({ id: id });
+				var r = that.resource.load({ id: id });
 				r.$promise.then(function() {
 					that.selectedItem = r;
 				});
@@ -60,6 +61,21 @@ function Factory($compile, $sce) {
 		}
 		
 		init();
+		
+		that.onSave = function() {
+			var save = that.resource.save({}, that.selectedItem);
+			save.$promise.then(function(d) {
+				var url = myRouteService.getFormMetaBasePath(that.formMeta);
+				$location.path(url);
+			}, function(e) {
+				$scope.$broadcast("myFormAddError", e, "submitError");
+			});
+		};
+
+		that.onCancel = function() {
+			var url = myRouteService.getFormMetaBasePath(that.formMeta);
+			$location.path(url);
+		};
 	}
 
 	function link($scope, $element, $attrs, $ctrl, $transclude) {
@@ -74,7 +90,8 @@ function Factory($compile, $sce) {
 					break;
 				case "EDIT":
 					r += '<my-panel ng-show="$ctrl.selectedItem" data-title="{{ $ctrl.formMeta.label }} - Details">';
-					r += '<my-form-gen data-save="Done" data-item="$ctrl.selectedItem" data-form-meta="$ctrl.formMeta" />';
+					r += '<my-form-gen data-save="Done" data-item="$ctrl.selectedItem" data-form-meta="$ctrl.formMeta"';
+					r += ' data-on-save="$ctrl.onSave()" data-on-cancel="$ctrl.onCancel()" />';
 					break;
 				case "ERROR": /* falls through */
 				default:
@@ -90,10 +107,6 @@ function Factory($compile, $sce) {
 	return {
 		restrict: "E",
 		bindToController: true,
-		scope: {
-			item: "=",
-			formFieldMeta: "="
-		},
 		controllerAs: "$ctrl",
 		controller: Implementation,
 		link: link

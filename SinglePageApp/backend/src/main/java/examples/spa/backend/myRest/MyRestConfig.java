@@ -6,15 +6,15 @@ import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.xml.bind.annotation.XmlRootElement;
 
-import examples.spa.backend.component.UtilsService;
+import examples.spa.backend.misc.Utils;
 
 @XmlRootElement(name = "myRestConfig")
 @Access(AccessType.FIELD)
 public class MyRestConfig implements Serializable {
 
-	MyRestConfigItem configItem[];
+	MyRestConfigItem configItem[] = new MyRestConfigItem[0];
 	
-	MyRestObject rest[];
+	MyRestObject rest[] = new MyRestObject[0];
 
 	public MyRestConfigItem[] getConfigItem() {
 		return configItem;
@@ -25,7 +25,7 @@ public class MyRestConfig implements Serializable {
 	}
 	
 	public String toString() {
-		return UtilsService.objectToString(this);
+		return Utils.objectToString(this);
 	}
 
 	public MyRestObject[] getRest() {

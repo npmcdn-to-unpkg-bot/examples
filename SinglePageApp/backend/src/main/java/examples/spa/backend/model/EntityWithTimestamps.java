@@ -10,7 +10,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 
-import examples.spa.backend.component.UtilsService;
+import examples.spa.backend.misc.Utils;
 import examples.spa.backend.model.FieldDef.Order;
 
 @MappedSuperclass
@@ -51,6 +51,6 @@ public abstract class EntityWithTimestamps<ID extends Serializable> implements E
 	}
 	
 	public String toString() {
-		return UtilsService.objectToString(this);
+		return Utils.objectToString(this);
 	}
 }

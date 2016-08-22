@@ -3,7 +3,7 @@ var module = angular.module('myapp5');
 Implementation.$inject = ["$scope", "slavi-logger", "$timeout"];
 function Implementation($scope, logger, $timeout) {
 	var that = this;
-
+/*
 	$scope.$watch("$ctrl.item", function(newValue) {
 		$scope.item = angular.copy(newValue);
 	});

@@ -6,8 +6,8 @@ function Implementation($q, $resource, logger) {
 	
 	var formMeta = [
 		{
-			label: "Locations",
 			name: "locations",
+			label: "Locations",
 			baseUrl: "api/locations/:id",
 			bestRowIdColumns: ["id"],
 			fields: [
@@ -87,7 +87,6 @@ function Implementation($q, $resource, logger) {
 				}
 			}
 		}
-		console.log("formMeta", formMeta);
 		formMeta.order = formMeta.orderBy.length > 0 ? formMeta.orderBy[0].k : "";
 
 		if (totalWidth < 1)
@@ -114,7 +113,7 @@ function Implementation($q, $resource, logger) {
 				break;
 		}
 	}
-	
+
 	
 	that.formMeta = {};
 	angular.forEach(formMeta, function(item) {
@@ -124,6 +123,35 @@ function Implementation($q, $resource, logger) {
 	
 	that.getMeta = function(name) {
 		return that.formMeta[name];
+	};
+	
+	that.makeId = function(formMeta, item) {
+		if ((!formMeta) || (!formMeta.bestRowIdColumns) || (!item))
+			return "";
+		var id = "";
+		var incompleteId = false;
+		if (item && formMeta) {
+			angular.forEach(formMeta.bestRowIdColumns, function(columnName) {
+				if (item[columnName]) {
+					id += "/" + encodeURIComponent(item[columnName]);
+				} else {
+					incompleteId = true;
+				}
+			});
+		}
+		return incompleteId ? "" : id;
+	};
+	
+	that.getFormMetaBasePath = function(formMeta) {
+		if ((!formMeta) || (!formMeta.name))
+			return "";
+		return "/myroute/" + formMeta.name;
+	};
+	
+	that.getItemUrl = function(formMeta, item) {
+		var baseUrl = that.getFormMetaBasePath(formMeta);
+		var id = that.makeId(formMeta, item);
+		return (baseUrl && id) ? baseUrl + id : "";
 	};
 }
 

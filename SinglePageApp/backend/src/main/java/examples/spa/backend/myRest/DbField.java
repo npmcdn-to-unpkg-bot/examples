@@ -3,7 +3,7 @@ package examples.spa.backend.myRest;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-import examples.spa.backend.component.UtilsService;
+import examples.spa.backend.misc.Utils;
 
 public class DbField {
 
@@ -45,6 +45,6 @@ public class DbField {
 		searchable = field.searchable;
 		ignoreCase = field.ignoreCase;
 		appendWildcards = field.appendWildcards;
-		order = UtilsService.nvl(field.order, SortOrder.NONE);
+		order = Utils.nvl(field.order, SortOrder.NONE);
 	}
 }

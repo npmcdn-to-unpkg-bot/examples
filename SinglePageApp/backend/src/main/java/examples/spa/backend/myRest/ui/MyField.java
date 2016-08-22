@@ -16,10 +16,15 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 		property = "type"
 	)
 @JsonSubTypes({
+	@Type(name = "label", value = MyFieldLabel.class),
 	@Type(name = "text", value = MyFieldText.class),
-	@Type(name = "combo", value = MyFieldCombo.class)
+	@Type(name = "email", value = MyFieldEmail.class),
+	@Type(name = "combo", value = MyFieldCombo.class),
+	@Type(name = "radio", value = MyFieldRadio.class)
 })
 public abstract class MyField implements Serializable {
 	public String name;
 	public String label;
+	public int list_col_width;
+	public boolean sortable;
 }

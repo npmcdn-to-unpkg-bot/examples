@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jdom2.JDOMException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,6 +109,19 @@ public class MyRestConfigurer {
 			}
 		}
 		
+		// Analyze config
+		for (MyRestObject item : myRestConfig.getRest()) {
+			item.baseUrl = StringUtils.trimToNull(item.baseUrl);
+			if (item.baseUrl == null) {
+				item.baseUrl = "api/rest/" + item.name;
+			}
+			item.label = StringUtils.trimToNull(item.label);
+			if (item.label == null) {
+				item.label = item.name;
+			}
+			
+		}
+		
 		this.myRestConfig = myRestConfig;
 	}
 
@@ -137,7 +151,11 @@ public class MyRestConfigurer {
 		}
 		return null;
 	}
-
+	
+	public MyRestConfig getMyRestConfig() {
+		return this.myRestConfig;
+	}
+	
 	public MyDatabaseMeta getMyDatabaseMeta() {
 		return myDatabaseMeta;
 	}

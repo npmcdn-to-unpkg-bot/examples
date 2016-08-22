@@ -5,6 +5,8 @@ import java.util.concurrent.TimeUnit;
 
 import javax.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.CacheControl;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,8 @@ import examples.spa.backend.model.ResponseWrapper;
 // @MyRestController
 // @RequestMapping("/someItem")
 public abstract class EntityWithIdControllerBase<ID extends Serializable, T extends EntityWithId<ID>> {
+	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
+
 	public EntityWithIdJpa<ID, T> jpa;
 	
 	CacheControl cacheControl = CacheControl.maxAge(1, TimeUnit.DAYS);
@@ -47,6 +51,7 @@ public abstract class EntityWithIdControllerBase<ID extends Serializable, T exte
 			@RequestParam(defaultValue = "") String search,
 			@RequestParam(defaultValue = "") String order,
 			@RequestParam(defaultValue = "0") int draw) throws Exception {
+		logger.debug("Filter items {}", search);
 		FilterItemResponse r = jpa.filter(page, size, search, order);
 		r.draw = draw;
 		return r;
@@ -54,6 +59,7 @@ public abstract class EntityWithIdControllerBase<ID extends Serializable, T exte
 
 	@RequestMapping(value="{id}", method=RequestMethod.GET)
 	public ResponseEntity<T> loadItem(@PathVariable("id") ID id) throws Exception {
+		logger.debug("Load item {}", id);
 		T t = jpa.load(id);
 		BodyBuilder r = ResponseEntity.ok();
 		if (t instanceof EntityWithTimestamps) {
@@ -65,12 +71,14 @@ public abstract class EntityWithIdControllerBase<ID extends Serializable, T exte
 
 	@RequestMapping(value="{id}", method=RequestMethod.DELETE)
 	public void deleteItem(@PathVariable("id") ID id) throws Exception {
+		logger.debug("Delete item {}", id);
 		jpa.delete(id);
 	}
 	
 	@RequestMapping(value="", method=RequestMethod.POST)
 	public ResponseEntity saveItem(
 			@RequestBody @Valid T item, BindingResult result) throws Exception {
+		logger.debug("Save item {}", item);
 		if (result.hasErrors() || (item == null)) {
 			return utils.makeErrorResponse(result);
 		} else {
@@ -81,6 +89,7 @@ public abstract class EntityWithIdControllerBase<ID extends Serializable, T exte
 
 	@RequestMapping(value="new", method=RequestMethod.GET)
 	public @ResponseBody T makeNewItem() throws Exception {
+		logger.debug("New item");
 		return jpa.makeNew();
 	}
 }

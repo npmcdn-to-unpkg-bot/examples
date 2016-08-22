@@ -8,6 +8,10 @@ public class MyRestObject implements Serializable {
 	
 	String table;
 
+	String baseUrl;
+	
+	String label;
+	
 	public String getName() {
 		return name;
 	}
@@ -22,5 +26,21 @@ public class MyRestObject implements Serializable {
 
 	public void setTable(String table) {
 		this.table = table;
+	}
+
+	public String getBaseUrl() {
+		return baseUrl;
+	}
+
+	public void setBaseUrl(String baseUrl) {
+		this.baseUrl = baseUrl;
+	}
+
+	public String getLabel() {
+		return label;
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
 	}
 }

@@ -5,24 +5,37 @@ function Implementation($scope, $q, utils) {
 	var that = this;
 	that.modelValue = "";
 	
+	var isInitialized = false;
 	function select(key) {
 		var found = false;
+		var model = null;
+		var modelValue = null;
+		
 		angular.forEach(that.itemList, function(item) {
-			if (key === item.key) {
+			if ((!found) && (key === item.key)) {
 				found = true;
-				that.model = item.key;
-				that.modelValue = item.value;
+				model = item.key;
+				modelValue = item.value;
 			}
 		});
 		if (!found && key) {
 			if (that.itemList) {
-				that.model = that.itemList[0].key;
-				that.modelValue = that.itemList[0].value;
+				model = that.itemList[0].key;
+				modelValue = that.itemList[0].value;
 			} else {
-				that.model = undefined;
-				that.modelValue = "";
+				model = undefined;
+				modelValue = "";
 			}
 		}
+		
+		if (isInitialized && (
+				(that.model !== model) ||
+				(that.modelValue !== modelValue))
+			) {
+			that.form.$setDirty();
+		}
+		that.model = model;
+		that.modelValue = modelValue;
 	}
 	
 	$scope.$watchCollection("$ctrl.items", function(newValue) {
@@ -30,7 +43,6 @@ function Implementation($scope, $q, utils) {
 		select(that.model);
 	});
 
-	var isInitialized = false;
 	$scope.$watch("$ctrl.model", function(newValue) {
 		if (!that.model)
 			return;
@@ -44,6 +56,9 @@ function Implementation($scope, $q, utils) {
 
 module.component('myRadio', {
 	templateUrl: "my/myRadio.html",
+	require: { 
+		form: "^form"
+	},
 	bindings: {
 		items: "<",
 		model: "=",

@@ -1,7 +1,7 @@
 var module = angular.module('myapp5');
 
-Implementation.$inject = ["$resource", "$routeParams", "$location", "slavi-utils"];
-function Implementation($resource, $routeParams, $location, utils) {
+Implementation.$inject = ["$resource", "$routeParams", "$location", "slavi-utils", "myRouteService"];
+function Implementation($resource, $routeParams, $location, utils, myRouteService) {
 	var that = this;
 	var delayedRunner = utils.delayedRunner();
 	
@@ -25,7 +25,6 @@ function Implementation($resource, $routeParams, $location, utils) {
 		var r = resource.search({ search: that.query, page: that.page-1, size: that.size, order: that.order });
 		r.$promise.then(function() {
 			that.data = r;
-			console.log(r);
 		});
 	};
 
@@ -39,15 +38,7 @@ function Implementation($resource, $routeParams, $location, utils) {
 	
 	that.onDblClick = function(item) {
 		selectedItem = item;
-		var id = "";
-		if (item && that.formMeta) {
-			angular.forEach(that.formMeta.bestRowIdColumns, function(columnName) {
-				id += "/" + encodeURIComponent(item[columnName]);
-			});
-		}
-		var url = "/myroute/" + that.formMeta.name + id;
-		console.log(item);
-		console.log(id);
+		var url = myRouteService.getItemUrl(that.formMeta, item);
 		$location.path(url);
 	};
 	

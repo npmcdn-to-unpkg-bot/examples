@@ -28,11 +28,16 @@ public class MyTableMeta {
 	public Map<String, MyTabColumnMeta> columns = new HashMap<>();
 	public List<String> primaryKeyColumns = new ArrayList<>();
 	public List<String> bestRowIdColumns = new ArrayList<>();
-	public Set<String> bestRowIdColumnsSet = new HashSet<>();
 	public Map<String, MyTabForegnKey> foreignKeys = new HashMap<>();
 	public Map<String, MyTabIndex> indexes = new HashMap<>();
 
 	public void load(DatabaseMetaData meta) throws SQLException {
+		columns.clear();
+		primaryKeyColumns.clear();
+		bestRowIdColumns.clear();
+		foreignKeys.clear();
+		indexes.clear();
+		
 		// Read table columns
 		try (ResultSet rs = meta.getColumns(catalog, schema, name, null)) {
 			while (rs.next()) {
@@ -68,7 +73,6 @@ public class MyTableMeta {
 			while (rs.next()) {
 				String columnName = StringUtils.upperCase(rs.getString("COLUMN_NAME"));
 				bestRowIdColumns.add(columnName);
-				bestRowIdColumnsSet.add(columnName);
 			}
 		}
 		

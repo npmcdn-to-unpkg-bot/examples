@@ -170,5 +170,5 @@
 		p:defaultEncoding="UTF-8" 
 		p:basename="classpath:messages"
 	/>
-	<bean class="examples.spa.backend.myRest.MyRestConfigurer" p:config="/WEB-INF/myRestConfig.xml" />
+	<bean class="examples.spa.backend.myRest.MyRestConfigurer" p:config="/myRestConfig.xml" />
 </beans>

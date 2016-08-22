@@ -24,7 +24,7 @@ import examples.spa.backend.model.Location;
 import examples.spa.backend.model.ResponseWrapper;
 import examples.spa.backend.myRest.ui.MyField;
 import examples.spa.backend.myRest.ui.MyFieldText;
-import examples.spa.backend.myRest.ui.MyForm;
+import examples.spa.backend.myRest.ui.MyFormMeta;
 
 public class TestSerializationToXML {
 
@@ -34,16 +34,19 @@ public class TestSerializationToXML {
 		text.name = "my name";
 		text.multiLine = true;
 		
-		MyForm form = new MyForm();
-		form.field = text; //new MyField[] { text };
+		MyFormMeta form = new MyFormMeta();
+		form.fields.add(text); //new MyField[] { text };
+		form.bestRowIdColumns = new ArrayList<>();
+		form.bestRowIdColumns.add("asd");
+		form.bestRowIdColumns.add("qwe");
 		
-		ObjectMapper m = xmlMapper();
+		ObjectMapper m = jsonMapper();
 		StringPrintStream out = new StringPrintStream();
 		m.writeValue(out, form);
 		String str = out.toString();
 		System.out.println(str);
 		
-		MyForm f = m.readValue(str, MyForm.class);
+		MyFormMeta f = m.readValue(str, MyFormMeta.class);
 		m.writeValue(System.out, f);
 		
 		System.out.println(str);

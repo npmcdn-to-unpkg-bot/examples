@@ -2,8 +2,6 @@ package examples.spa.backend.component;
 
 import java.util.Locale;
 
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,13 +54,5 @@ public class UtilsService {
 			logger.error("Error parsing object as json", e);
 			return e.toString();
 		}
-	}
-	
-	public static String objectToString(Object o) {
-		return ReflectionToStringBuilder.toString(o, ToStringStyle.SHORT_PREFIX_STYLE);	
-	}
-	
-	public static <T> T nvl(T value, T defaultValue) {
-		return value == null ? defaultValue : value;
 	}
 }
