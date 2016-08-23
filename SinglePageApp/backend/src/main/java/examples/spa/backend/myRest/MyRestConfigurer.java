@@ -3,7 +3,6 @@ package examples.spa.backend.myRest;
 import java.beans.IntrospectionException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
@@ -14,6 +13,8 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
@@ -33,8 +34,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import examples.spa.backend.component.EntityWithIdControllerBase;
 import examples.spa.backend.component.UtilsService;
-import examples.spa.backend.model.FieldDef;
 import examples.spa.backend.myRest.meta.MyDatabaseMeta;
+import examples.spa.backend.myRest.ui.MyFormMeta;
 
 public class MyRestConfigurer {
 	protected final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -77,9 +78,27 @@ public class MyRestConfigurer {
 			if (EntityWithIdControllerBase.class.isAssignableFrom(clazz))
 				controllers.add(clazz);
 		}
+		
+		Pattern pattern = Pattern.compile("^(/?)([^/]+)(/?)");
 		for (Class clazz : controllers) {
 			RequestMapping ann = (RequestMapping) clazz.getAnnotation(RequestMapping.class);
-			System.out.println("PATH: " + ann.value());
+			String path = StringUtils.trimToNull((ann != null && ann.value() != null && ann.value().length > 0) ? ann.value()[0] : null);
+			if (path == null) {
+				logger.warn("No RequestMapping annotation for class " + clazz);
+				continue;
+			}
+			Matcher matcher = pattern.matcher(path);
+			String name = matcher.find() ? StringUtils.trimToNull(matcher.group(2)) : null;
+			if (name == null) {
+				logger.warn("Invalid RequestMapping annotation for class " + clazz);
+				continue;
+			}
+			MyFormMeta formMeta = new MyFormMeta();
+			formMeta.baseUrl = "/api" + path;
+			formMeta.name = name;
+			formMeta.label = StringUtils.capitalize(name);
+			formMeta.bestRowIdColumns.add("id");
+			// formMeta.fields
 		}
 	}
 	
