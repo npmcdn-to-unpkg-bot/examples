@@ -4,12 +4,18 @@ import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.Arrays;
+import java.util.Collections;
+
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.cfg.DeserializerFactoryConfig;
+import com.fasterxml.jackson.databind.deser.BeanDeserializerFactory;
+import com.fasterxml.jackson.databind.deser.DefaultDeserializationContext;
+import com.fasterxml.jackson.databind.deser.DeserializerFactory;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 
 import examples.spa.backend.component.EntityWithIdControllerBase;
 import examples.spa.backend.component.EntityWithIdJpa;
-import examples.spa.backend.component.LocationController;
-import examples.spa.backend.misc.Utils;
 import examples.spa.backend.model.EntityWithId;
 
 public class Dummy {
@@ -92,6 +98,15 @@ public class Dummy {
 		Class entType = findEntytyClass(TestControllerInt.class);
 		System.out.println(entType);
 		
+		DeserializerFactoryConfig dfc = new DeserializerFactoryConfig();
+		DeserializerFactory df = new BeanDeserializerFactory(dfc);
+		DefaultDeserializationContext.Impl ddc = new DefaultDeserializationContext.Impl(df);
+		TypeFactory tf = TypeFactory.defaultInstance();
+		JavaType jt = tf.constructType(entType);
+		JsonDeserializer jd = ddc.findRootValueDeserializer(jt);
+		System.out.println("-----");
+		System.out.println(jd.getKnownPropertyNames());
+		System.out.println("-----");
 	}
 
 	public static void main(String[] args) throws Exception {
