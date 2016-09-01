@@ -1,16 +1,21 @@
 package examples.spa.backend.test;
 
+import java.io.FileInputStream;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import com.fasterxml.jackson.core.Base64Variants;
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
@@ -40,6 +45,7 @@ import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import examples.spa.backend.component.EntityWithIdControllerBase;
 import examples.spa.backend.component.EntityWithIdJpa;
 import examples.spa.backend.model.EntityWithId;
+import examples.spa.backend.myRest.MyRestConfig;
 
 public class Dummy {
 
@@ -60,7 +66,7 @@ public class Dummy {
 		configureMapper(m);
 		return m;
 	}
-	
+
 	ObjectMapper jsonMapper() {
 		ObjectMapper m = new ObjectMapper();
 		configureMapper(m);
@@ -70,22 +76,26 @@ public class Dummy {
 	@XmlAccessorType(XmlAccessType.FIELD)
 	public static class TestEntityWithIdBase<QQ, TT extends Serializable> implements EntityWithId<TT> {
 		QQ qq;
-		
+
 		@XmlElement
 		String asd;
 
+		@XmlTransient
+		TT internalId;
+
 		public TT getId() {
-			return null;
+			return internalId;
 		}
 
 		public void setId(TT id) {
+			internalId = id;
 		}
 	}
-	
+
 	public static class TestEntityWithIdInt extends TestEntityWithIdBase<Integer, Integer> {
-		
+
 	}
-	
+
 	public static class TestControllerBase<QQ, PP extends Serializable, SS extends TestEntityWithIdBase<QQ, PP>> extends EntityWithIdControllerBase<PP, SS> {
 		public TestControllerBase(EntityWithIdJpa<PP, SS> jpa) {
 			super(null);
@@ -97,7 +107,7 @@ public class Dummy {
 			super(null);
 		}
 	}
-	
+
 	public Class getDescendand(Class clazz, Class parentClass) {
 		Class p = clazz;
 		while (p != null) {
@@ -111,7 +121,7 @@ public class Dummy {
 		}
 		return null;
 	}
-	
+
 	public Class findEntytyClass(Class entityControllerClass) {
 		Class entChild = EntityWithIdControllerBase.class;
 		entChild = getDescendand(entityControllerClass, entChild);
@@ -144,22 +154,29 @@ public class Dummy {
 			entType = type.getActualTypeArguments()[typeIndex];
 		}
 	}
-	
-	void doIt() throws Exception {
+
+	void doIt2() throws Exception {
 		TestEntityWithIdInt val = new TestEntityWithIdInt();
 		val.asd = "ASD";
 		val.qq = 123;
 		val.setId(222);
-		
+
 		ObjectMapper m = jsonMapper();
 		System.out.println(m.writeValueAsString(val));
 		System.out.println("----------");
-		
+
 		Class entType = findEntytyClass(TestControllerInt.class);
 		System.out.println(entType);
+		Type type = entType.getGenericSuperclass();
+		ParameterizedType ptype = (ParameterizedType) type;
+		System.out.println(Arrays.toString(ptype.getActualTypeArguments()));
+		for (TypeVariable i : entType.getTypeParameters()) {
+			System.out.println(i);
+		}
 
 		//JsonFactory _jsonFactory = new MappingJsonFactory();
 		//JsonGenerator g = _jsonFactory.createGenerator(NullOutputStream.NULL_OUTPUT_STREAM);
+		/*
 		BaseSettings DEFAULT_BASE = new BaseSettings(
 				null, // can not share global ClassIntrospector any more (2.5+)
 				new JacksonAnnotationIntrospector(),
@@ -172,21 +189,24 @@ public class Dummy {
 		BaseSettings base = DEFAULT_BASE.withClassIntrospector(new BasicClassIntrospector());
 		SerializationConfig cfg = new SerializationConfig(base,
 				new StdSubtypeResolver(), new SimpleMixInResolver(null), new RootNameLookup());
+		*/
+		SerializationConfig cfg = m.getSerializationConfig();
 		//cfg.initialize(g);
 		DefaultSerializerProvider _serializerProvider = new DefaultSerializerProvider.Impl();
 		_serializerProvider = _serializerProvider.createInstance(cfg, BeanSerializerFactory.instance);
 		JsonSerializer ser = _serializerProvider.findTypedValueSerializer(entType, true, null);
-		
+
+
 		//Object o = BeanSerializerFactory.instance.createTypeSerializer(cfg, cfg.constructType(entType));
 		//ser = (JsonSerializer) o;
-		
+		/*
 		BeanDescription bd = cfg.introspect(cfg.constructType(entType));
 		List<BeanPropertyDefinition> props = bd.findProperties();
 		for (BeanPropertyDefinition i : props) {
 			System.out.println(i);
 		}
 		System.out.println("----------");
-		
+		*/
 		for (Iterator<PropertyWriter> i = ser.properties(); i.hasNext();) {
 			PropertyWriter pw = i.next();
 			if (pw instanceof BeanPropertyWriter) {
@@ -194,6 +214,12 @@ public class Dummy {
 				System.out.println(bpw.getName() + ":" + bpw.getType() + ":" + bpw.getGenericPropertyType());
 			}
 		}
+	}
+
+	void doIt() throws Exception {
+
+		MyRestConfig myRestConfig = xmlMapper().readValue(MyRestConfig.class.getResourceAsStream("myRestConfig.xml"), MyRestConfig.class);
+		System.out.println(jsonMapper().writeValueAsString(myRestConfig));
 	}
 
 	public static void main(String[] args) throws Exception {

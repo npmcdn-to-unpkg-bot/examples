@@ -3,7 +3,7 @@
 	xmlns=			"http://www.springframework.org/schema/beans"
 	xmlns:aop=		"http://www.springframework.org/schema/aop"
 	xmlns:c=		"http://www.springframework.org/schema/c"
-	xmlns:context=	"http://www.springframework.org/schema/context" 
+	xmlns:context=	"http://www.springframework.org/schema/context"
 	xmlns:jee=		"http://www.springframework.org/schema/jee"
 	xmlns:jpa=		"http://www.springframework.org/schema/data/jpa"
 	xmlns:mvc=		"http://www.springframework.org/schema/mvc"
@@ -38,12 +38,12 @@
 		class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
 		p:dataSource-ref="dataSource"
 		p:packagesToScan="examples.spa.backend.model">
-		
+
 		<property name="persistenceUnitName" value="example"/>
 		<property name="jpaVendorAdapter">
 			<bean class="org.springframework.orm.jpa.vendor.EclipseLinkJpaVendorAdapter" p:database="DERBY" p:showSql="true" />
 		</property>
-	
+
 		<property name="jpaProperties">
 			<props>
 				<prop key="eclipselink.ddl-generation">create-or-extend-tables</prop>
@@ -64,20 +64,20 @@
 
 	<bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager" p:entityManagerFactory-ref="entityManagerFactory"/>
 
-<!-- 
+<!--
 	<bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
- -->	
+ -->
 	<tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" />
 	<!-- <jpa:repositories base-package="example.grunt.jpa"/> -->
-<!-- 
+<!--
  -->
 	<context:annotation-config />
 	<context:component-scan base-package="examples.spa.backend.component" />
-	
-	<!-- Tells Spring to use persistence context annotation 
+
+	<!-- Tells Spring to use persistence context annotation
 	<bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 	-->
-	
+
 <!-- <tx:annotation-driven/> -->
 
 	<bean
@@ -95,7 +95,7 @@
 	</bean>
 
 <!-- 	<bean id="multipartResolver" class="org.springframework.web.multipart.support.StandardServletMultipartResolver" /> -->
-<!-- 
+<!--
 	<bean id="multipartResolver"
 		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
 		<!- - one of the properties available; the maximum file size in bytes - ->
@@ -113,7 +113,7 @@
 	<bean id="castorMarshaller" class="org.springframework.oxm.castor.CastorMarshaller" />
 -->
 
-<!-- 
+<!--
 	<mvc:resources mapping="/js/**"    location="/WEB-INF/js/,    classpath:/js/"   >
 		<mvc:cache-control max-age="3600" cache-public="true" />
 	</mvc:resources>
@@ -147,28 +147,28 @@
 			</bean>
 		</mvc:message-converters>
 	</mvc:annotation-driven>
-<!-- 
+<!--
 	<mvc:default-servlet-handler/>
  -->
 
 	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.CookieLocaleResolver" p:defaultLocale="en" p:cookieName="lang" />
 
-	<bean 
-		id="localeChangeInterceptor" 
-		class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor" 
-		p:paramName="lang" 
+	<bean
+		id="localeChangeInterceptor"
+		class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"
+		p:paramName="lang"
 		p:httpMethods="GET,POST,PUT,DELETE"
 	/>
-	
+
 	<mvc:interceptors>
 		<ref bean="localeChangeInterceptor" />
 	</mvc:interceptors>
 
-	<bean 
-		id="messageSource" 
-		class="org.springframework.context.support.ReloadableResourceBundleMessageSource" 
-		p:defaultEncoding="UTF-8" 
+	<bean
+		id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
+		p:defaultEncoding="UTF-8"
 		p:basename="classpath:messages"
 	/>
-	<bean class="examples.spa.backend.myRest.MyRestConfigurer" p:config="classpath:myRestConfig.xml" />
+	<bean class="examples.spa.backend.myRest.MyRestConfigurer" p:config="classpath:myRestConfig.json" />
 </beans>

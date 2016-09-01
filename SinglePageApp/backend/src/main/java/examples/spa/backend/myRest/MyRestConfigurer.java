@@ -42,22 +42,24 @@ public class MyRestConfigurer {
 
 	@Autowired
 	UtilsService utils;
-	
+
 	@Autowired
 	DataSource dataSource;
 
 	@Autowired
 	ObjectMapper xmlObjectMapper;
-	
+	@Autowired
+	ObjectMapper jsonObjectMapper;
+
 	MyRestConfig myRestConfig;
 	MyDatabaseMeta myDatabaseMeta;
-	
+
 	Resource config;
-	
+
 	@Autowired
 	// idea borrowed from: http://stackoverflow.com/questions/10898056/how-to-find-all-controllers-in-spring-mvc
 	RequestMappingHandlerMapping requestMappingHandlerMapping;
-	
+
 	@PostConstruct
 	void initialize() throws Exception {
 		try (Connection conn = dataSource.getConnection()) {
@@ -68,7 +70,7 @@ public class MyRestConfigurer {
 		logger.debug(utils.toJson(myDatabaseMeta));
 
 		loadConfig(config);
-		
+
 		Set<Class> controllers = new HashSet<>();
 		Map<RequestMappingInfo, HandlerMethod> handlerMethods = requestMappingHandlerMapping.getHandlerMethods();
 		for (Map.Entry<RequestMappingInfo, HandlerMethod> i : handlerMethods.entrySet()) {
@@ -78,7 +80,7 @@ public class MyRestConfigurer {
 			if (EntityWithIdControllerBase.class.isAssignableFrom(clazz))
 				controllers.add(clazz);
 		}
-		
+
 		Pattern pattern = Pattern.compile("^(/?)([^/]+)(/?)");
 		for (Class clazz : controllers) {
 			RequestMapping ann = (RequestMapping) clazz.getAnnotation(RequestMapping.class);
@@ -101,7 +103,7 @@ public class MyRestConfigurer {
 			// formMeta.fields
 		}
 	}
-	
+
 	protected void loadConfig(Resource config) throws IOException, JDOMException, IllegalArgumentException, SecurityException, InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, IntrospectionException, SQLException {
 		if (config == null) {
 			System.out.println("Resource is null.");
@@ -109,7 +111,8 @@ public class MyRestConfigurer {
 		}
 		MyRestConfig myRestConfig = null;
 		try (InputStream is = config.getInputStream()) {
-			myRestConfig = xmlObjectMapper.readValue(is, MyRestConfig.class);
+			// myRestConfig = xmlObjectMapper.readValue(is, MyRestConfig.class);
+			myRestConfig = jsonObjectMapper.readValue(is, MyRestConfig.class);
 		}
 		if (myRestConfig == null)
 			return;
@@ -152,12 +155,12 @@ public class MyRestConfigurer {
 					ResultSet rs = meta.getTables(null, null, item.getTable(), null);
 					) {
 					while (rs.next()) {
-						
+
 					}
 				}
 			}
 		}
-		
+
 		// Analyze config
 		for (MyRestObject item : myRestConfig.getRest()) {
 			item.baseUrl = StringUtils.trimToNull(item.baseUrl);
@@ -168,9 +171,9 @@ public class MyRestConfigurer {
 			if (item.label == null) {
 				item.label = item.name;
 			}
-			
+
 		}
-		
+
 		this.myRestConfig = myRestConfig;
 	}
 
@@ -186,7 +189,7 @@ public class MyRestConfigurer {
 		MyRestConfig myRestConfig = this.myRestConfig;
 		if ((myRestConfig == null) || (myRestConfig.configItem == null) || (configName == null))
 			return null;
-		
+
 		for (MyRestConfigItem item : myRestConfig.configItem) {
 			if (item == null)
 				continue;
@@ -195,11 +198,11 @@ public class MyRestConfigurer {
 		}
 		return null;
 	}
-	
+
 	public MyRestConfig getMyRestConfig() {
 		return this.myRestConfig;
 	}
-	
+
 	public MyDatabaseMeta getMyDatabaseMeta() {
 		return myDatabaseMeta;
 	}
